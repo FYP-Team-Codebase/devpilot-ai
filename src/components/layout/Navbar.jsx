@@ -36,70 +36,80 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false)
 
   return (
-    <header className={styles.header}>
-      <nav className={styles.bar} aria-label="Primary">
+    <>
+      <div className={styles.staticControls}>
+        <div className={styles.staticBar}>
         <a href="#top" className={styles.brand} aria-label="Code Nova home">
           <img src={codenovaMark} alt="" className={styles.mark} width="34" height="34" />
           <span className={styles.wordmark}>Code Nova</span>
         </a>
 
-        <div className={`${styles.pill} ${isSolid ? styles.solid : styles.transparent}`}>
-          <ul className={styles.links}>
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className={styles.link}>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={styles.actions}>
-          <a href="#login" className={styles.login}>
-            Login
-          </a>
-          <a href="#try" className={styles.cta}>
-            Try DevPilot AI
-          </a>
-        </div>
-
-        <button
-          type="button"
-          className={styles.menuToggle}
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-menu"
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setIsMenuOpen((open) => !open)}
-        >
-          <span className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ''}`} aria-hidden="true" />
-        </button>
-
-        <div
-          id="mobile-menu"
-          className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}
-          aria-hidden={!isMenuOpen}
-          inert={!isMenuOpen}
-        >
-          <ul className={styles.mobileLinks}>
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className={styles.mobileLink} onClick={closeMenu}>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className={styles.mobileActions}>
-            <a href="#login" className={styles.mobileLogin} onClick={closeMenu}>
+          <div className={styles.actions}>
+            <a href="#login" className={styles.login}>
               Login
             </a>
-            <a href="#try" className={styles.mobileCta} onClick={closeMenu}>
+            <a href="#try" className={styles.cta}>
               Try DevPilot AI
             </a>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+
+      <header className={styles.header}>
+        <nav className={styles.bar} aria-label="Primary">
+          <div className={styles.headerSpacer} aria-hidden="true" />
+
+          <div className={`${styles.pill} ${isSolid ? styles.solid : styles.transparent}`}>
+            <ul className={styles.links}>
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={styles.link}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={styles.headerSpacer} aria-hidden="true" />
+
+          <button
+            type="button"
+            className={styles.menuToggle}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            <span className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ''}`} aria-hidden="true" />
+          </button>
+
+          <div
+            id="mobile-menu"
+            className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}
+            aria-hidden={!isMenuOpen}
+            inert={!isMenuOpen}
+          >
+            <ul className={styles.mobileLinks}>
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={styles.mobileLink} onClick={closeMenu}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.mobileActions}>
+              <a href="#login" className={styles.mobileLogin} onClick={closeMenu}>
+                Login
+              </a>
+              <a href="#try" className={styles.mobileCta} onClick={closeMenu}>
+                Try DevPilot AI
+              </a>
+            </div>
+          </div>
+        </nav>
+      </header>
+    </>
   )
 }

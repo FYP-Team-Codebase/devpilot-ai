@@ -21,6 +21,25 @@
   padding: 0 16px;
 }
 
+.staticControls {
+  position: absolute;
+  inset-inline: 0;
+  top: 16px;
+  z-index: 99;
+  padding-inline: 20px;
+  pointer-events: none;
+}
+
+.staticBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
 .pill {
   justify-self: center;
   pointer-events: auto;
@@ -377,6 +396,14 @@
   .pill,
   .actions {
     display: none;
+  }
+
+  .staticControls {
+    padding-inline: 20px;
+  }
+
+  .staticBar {
+    padding-inline: 8px;
   }
 
   .menuToggle {

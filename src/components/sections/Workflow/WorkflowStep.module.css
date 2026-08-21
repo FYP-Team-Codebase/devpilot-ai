@@ -1,0 +1,168 @@
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.rail {
+  flex-shrink: 0;
+  width: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.dot {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-border-dark);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.dot[data-active='true'] {
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.dotNumber {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-text-gray);
+  transition: color 0.3s ease;
+}
+
+.dot[data-active='true'] .dotNumber {
+  color: var(--color-white);
+}
+
+.content {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(32px, 5vw, 64px);
+}
+
+.reverse .content {
+  flex-direction: row-reverse;
+}
+
+.centered .content {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 40px;
+}
+
+.text {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.centered .text {
+  flex: none;
+  max-width: 640px;
+  align-items: center;
+}
+
+.stepLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted-gray);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 1.4rem + 1.3vw, 2.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--color-black);
+}
+
+.description {
+  margin: 0;
+  max-width: 420px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-gray);
+}
+
+.centered .description {
+  max-width: 520px;
+}
+
+.visual {
+  flex: 1.15 1 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.centered .visual {
+  flex: none;
+  width: 100%;
+  max-width: 1040px;
+}
+
+@media (max-width: 900px) {
+  .content,
+  .reverse .content,
+  .centered .content {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    gap: 24px;
+  }
+
+  .centered .text {
+    align-items: flex-start;
+    max-width: none;
+  }
+
+  .description,
+  .centered .description {
+    max-width: none;
+  }
+
+  .visual,
+  .centered .visual {
+    max-width: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .step {
+    gap: 12px;
+  }
+
+  .rail {
+    width: 22px;
+  }
+
+  .dot {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dotNumber {
+    font-size: 9.5px;
+  }
+}

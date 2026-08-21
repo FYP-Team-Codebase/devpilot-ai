@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-labelledby="nodejsTitle">
+  <title id="nodejsTitle">Node.js</title>
+  <path d="M12 1.6 21 6.8v10.4L12 22.4 3 17.2V6.8L12 1.6Z" fill="#539E43" />
+  <path d="M9 9.4v6.3l1.2-.7v-4.9l1.6 2.7 1.6-2.7v4.9l1.2.7V9.4l-1.2-.7-1.6 2.7-1.6-2.7-1.2.7Z" fill="#fff" />
+</svg>

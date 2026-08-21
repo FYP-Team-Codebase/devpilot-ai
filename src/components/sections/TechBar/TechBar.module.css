@@ -1,0 +1,100 @@
+.techBar {
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 24px 0;
+  overflow: hidden;
+}
+
+.viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: max-content;
+  will-change: transform;
+}
+
+.viewport:hover .techItem {
+  opacity: 0.5;
+}
+
+.viewport:hover .techItem:hover {
+  opacity: 1;
+}
+
+.techGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.techItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.techIcon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.techItem:hover .techIcon {
+  opacity: 1;
+}
+
+.techName {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-gray);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.techItem:hover .techName {
+  color: var(--color-black);
+}
+
+.separator {
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--color-border-dark);
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .techBar {
+    padding: 20px 0;
+  }
+
+  .track {
+    gap: 22px;
+  }
+
+  .techGroup {
+    gap: 10px;
+  }
+
+  .techName {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    will-change: auto;
+  }
+}

@@ -1,0 +1,92 @@
+.workflow {
+  background-color: var(--color-white);
+  padding: clamp(80px, 10vw, 140px) 24px;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.header {
+  max-width: 640px;
+  margin: 0 auto clamp(72px, 9vw, 120px);
+  text-align: center;
+}
+
+.heading {
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(2rem, 1.6rem + 1.8vw, 3.15rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--color-black);
+}
+
+.subheading {
+  margin: 0 auto;
+  max-width: 480px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--color-text-gray);
+}
+
+.steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(72px, 9vw, 128px);
+}
+
+.railTrack,
+.railProgress {
+  position: absolute;
+  left: 13px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  z-index: 0;
+}
+
+.railTrack {
+  background-color: var(--color-border);
+}
+
+.railProgress {
+  background-color: var(--color-black);
+  transform-origin: top;
+}
+
+@media (max-width: 640px) {
+  .workflow {
+    padding: 64px 16px;
+  }
+
+  .header {
+    margin-bottom: 56px;
+    text-align: left;
+  }
+
+  .subheading {
+    margin: 0;
+    max-width: none;
+  }
+
+  .steps {
+    gap: 56px;
+  }
+}
+
+@media (max-width: 520px) {
+  .railTrack,
+  .railProgress {
+    left: 10px;
+    top: 11px;
+    bottom: 11px;
+  }
+}

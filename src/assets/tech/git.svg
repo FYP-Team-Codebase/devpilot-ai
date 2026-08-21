@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-labelledby="gitTitle">
+  <title id="gitTitle">Git</title>
+  <path d="M7 8.1V15.9" stroke="#F05033" stroke-width="1.8" />
+  <path d="M9 8 15 11" stroke="#F05033" stroke-width="1.8" />
+  <circle cx="7" cy="6" r="2.1" fill="#F05033" />
+  <circle cx="7" cy="18" r="2.1" fill="#F05033" />
+  <circle cx="17" cy="12" r="2.1" fill="#F05033" />
+</svg>

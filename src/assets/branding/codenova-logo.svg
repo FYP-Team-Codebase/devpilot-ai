@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 36" fill="none" role="img" aria-labelledby="codenovaLogoTitle">
+  <title id="codenovaLogoTitle">Code Nova</title>
+  <rect x="4" y="10" width="22" height="22" rx="7" fill="#000000" />
+  <rect x="20" y="2" width="14" height="14" rx="5" fill="#000000" />
+  <text x="46" y="25" font-family="Geist, 'Geist Sans', system-ui, sans-serif" font-size="21" font-weight="600" letter-spacing="-0.4" fill="#000000">Code Nova</text>
+</svg>

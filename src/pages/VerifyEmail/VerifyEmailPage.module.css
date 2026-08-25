@@ -1,0 +1,374 @@
+.page {
+  min-height: 100svh;
+  background: var(--color-white);
+  color: var(--color-near-black);
+  padding: 28px clamp(20px, 5vw, 72px) 44px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.logoLink {
+  display: inline-flex;
+  border-radius: 4px;
+}
+
+.logoLink:focus-visible,
+.backLink:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 4px;
+}
+
+.logoLink img {
+  display: block;
+  width: 170px;
+  height: auto;
+}
+
+.backLink {
+  color: var(--color-text-gray);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--color-black);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 430px) minmax(360px, 540px);
+  align-items: center;
+  justify-content: center;
+  gap: clamp(64px, 10vw, 150px);
+  max-width: 1080px;
+  min-height: calc(100svh - 120px);
+  margin: 0 auto;
+}
+
+.formPanel {
+  width: 100%;
+}
+
+.formIntro {
+  margin-bottom: 34px;
+}
+
+.eyebrow {
+  margin: 0 0 15px;
+  color: var(--color-text-gray);
+  font: 500 11px var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.formIntro h1 {
+  margin: 0;
+  color: var(--color-black);
+  font-size: clamp(2.3rem, 4vw, 3.3rem);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.formIntro p:last-child {
+  margin: 16px 0 0;
+  color: var(--color-text-gray);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-near-black);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: 13px 14px;
+  font: 500 18px var(--font-mono);
+  letter-spacing: .2em;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.field input[type='email'] {
+  font: 400 15px var(--font-sans);
+  letter-spacing: 0;
+}
+
+.emailBadge {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 12px;
+  background: var(--color-light-gray);
+  padding: 13px 14px;
+}
+
+.emailBadge span {
+  color: var(--color-text-gray);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.emailBadge strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-black);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.otpGroup {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.otpGroup input {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 0;
+  border-radius: 10px;
+  padding: 0;
+  text-align: center;
+  font: 700 22px var(--font-mono);
+  letter-spacing: 0;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 10px;
+  background: var(--color-light-gray);
+  padding: 11px 12px;
+  color: var(--color-text-gray);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.timer strong {
+  color: var(--color-black);
+  font: 700 14px var(--font-mono);
+}
+
+.timerExpired {
+  border-color: #e6caca;
+  background: #fff8f8;
+  color: #7b2828;
+}
+
+.timerExpired strong {
+  color: #7b2828;
+}
+
+.field input::placeholder {
+  color: var(--color-muted-gray);
+}
+
+.field input:focus {
+  border-color: var(--color-black);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .07);
+}
+
+.field input[aria-invalid='true'] {
+  border-color: #8b2d2d;
+}
+
+.error {
+  display: block;
+  min-height: 16px;
+  margin-top: 6px;
+  color: #8b2d2d;
+  font-size: 12px;
+}
+
+.authError {
+  margin: -2px 0 0;
+  border: 1px solid #e6caca;
+  border-radius: 10px;
+  background: #fff8f8;
+  color: #7b2828;
+  padding: 11px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.notice,
+.successState {
+  border: 1px solid #cfe4d4;
+  border-radius: 10px;
+  background: #f6fbf7;
+  color: #2f6b40;
+  padding: 11px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.successState {
+  padding: 18px;
+}
+
+.successState p {
+  margin: 0;
+  color: #245633;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.successState span {
+  display: block;
+  margin-top: 8px;
+  color: #39704a;
+  font-size: 13px;
+}
+
+.submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 2px;
+  border: 1px solid var(--color-black);
+  border-radius: 999px;
+  background: var(--color-black);
+  color: var(--color-white);
+  font: 600 15px var(--font-sans);
+  cursor: pointer;
+  transition: background-color .2s ease, transform .15s ease;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--color-near-black);
+  transform: translateY(-1px);
+}
+
+.submit:active:not(:disabled) {
+  transform: scale(.99);
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 4px;
+}
+
+.submit:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+.resend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-text-gray);
+  font-size: 13px;
+  text-align: center;
+}
+
+.resend button {
+  border: 0;
+  background: transparent;
+  color: var(--color-black);
+  padding: 0;
+  font: 600 13px var(--font-sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.resend button:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+
+.resend button:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 4px;
+}
+
+@media (max-width: 820px) {
+  .page {
+    padding: 24px 24px 38px;
+  }
+
+  .layout {
+    grid-template-columns: minmax(320px, 430px);
+    min-height: auto;
+    padding: 74px 0 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 20px 16px 30px;
+  }
+
+  .logoLink img {
+    width: 145px;
+  }
+
+  .backLink {
+    font-size: 12px;
+  }
+
+  .layout {
+    display: block;
+    padding-top: 78px;
+  }
+
+  .formIntro {
+    margin-bottom: 28px;
+  }
+
+  .resend {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .otpGroup {
+    gap: 6px;
+  }
+
+  .otpGroup input {
+    border-radius: 8px;
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field input,
+  .submit {
+    transition: none;
+  }
+
+  .submit:hover:not(:disabled) {
+    transform: none;
+  }
+}

@@ -63,7 +63,7 @@ export default function WorkflowSection() {
   const railScale = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
-    <section className={styles.workflow} aria-label="How DevPilot works">
+    <section id="workflow" className={styles.workflow} aria-label="How DevPilot works">
       <div className={styles.container}>
         <div ref={headerRef} className={styles.header}>
           <motion.h2

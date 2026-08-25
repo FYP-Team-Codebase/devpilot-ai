@@ -16,7 +16,7 @@ export default function FinalCtaSection() {
   })
 
   return (
-    <section ref={sectionRef} className={styles.cta} aria-labelledby="final-cta-heading">
+    <section id="try" ref={sectionRef} className={styles.cta} aria-labelledby="final-cta-heading">
       <div className={styles.container}>
         <motion.div className={styles.promptMotif} aria-hidden="true" {...reveal(0.04)}>
           <span className={styles.promptMark}>&gt;</span>

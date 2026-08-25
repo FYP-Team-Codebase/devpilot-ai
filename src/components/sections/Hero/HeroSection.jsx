@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { useRef } from 'react'
 import PromptBar from './PromptBar'
 import styles from './HeroSection.module.css'
 
@@ -6,17 +7,23 @@ const WORKFLOW_STEPS = ['Prompt', 'Generate', 'Preview', 'Own']
 const EASE = [0.16, 1, 0.3, 1]
 
 export default function HeroSection() {
+  const sectionRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -54])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.82], [1, 0.35])
+  const backdropY = useTransform(scrollYProgress, [0, 1], [0, -32])
 
   return (
-    <section id="top" className={styles.hero} aria-label="Introduction">
-      <div className={styles.backdrop} aria-hidden="true" />
+    <section ref={sectionRef} id="top" className={styles.hero} aria-label="Introduction">
+      <motion.div className={styles.backdrop} style={shouldReduceMotion ? undefined : { y: backdropY }} aria-hidden="true" />
 
       <div className={styles.container}>
         <motion.div
           className={styles.content}
           initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
+          style={shouldReduceMotion ? undefined : { y: contentY, opacity: contentOpacity }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.7, ease: EASE }}
         >
           <p className={styles.eyebrow}>Code Nova · DevPilot AI</p>

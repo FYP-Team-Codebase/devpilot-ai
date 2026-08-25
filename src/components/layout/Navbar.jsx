@@ -45,7 +45,7 @@ export default function Navbar() {
         </a>
 
           <div className={styles.actions}>
-            <a href="#login" className={styles.login}>
+            <a href="/login" className={styles.login}>
               Login
             </a>
             <a href="#try" className={styles.cta}>
@@ -100,7 +100,7 @@ export default function Navbar() {
               ))}
             </ul>
             <div className={styles.mobileActions}>
-              <a href="#login" className={styles.mobileLogin} onClick={closeMenu}>
+              <a href="/login" className={styles.mobileLogin} onClick={closeMenu}>
                 Login
               </a>
               <a href="#try" className={styles.mobileCta} onClick={closeMenu}>

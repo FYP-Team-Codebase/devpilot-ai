@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
+import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './FinalCtaSection.module.css'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -8,6 +9,7 @@ export default function FinalCtaSection() {
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.35 })
   const shouldReduceMotion = useReducedMotion()
+  const { handleStartBuilding } = useLandingNavigation()
 
   const reveal = (delay = 0) => ({
     initial: shouldReduceMotion ? false : { opacity: 0, y: 18 },
@@ -16,7 +18,7 @@ export default function FinalCtaSection() {
   })
 
   return (
-    <section id="try" ref={sectionRef} className={styles.cta} aria-labelledby="final-cta-heading">
+    <section id="try" ref={sectionRef} className={`${styles.cta} landing-scroll-target`} aria-labelledby="final-cta-heading">
       <div className={styles.container}>
         <motion.div className={styles.promptMotif} aria-hidden="true" {...reveal(0.04)}>
           <span className={styles.promptMark}>&gt;</span>
@@ -34,7 +36,7 @@ export default function FinalCtaSection() {
         </motion.p>
 
         <motion.div className={styles.actions} {...reveal(0.26)}>
-          <a className={styles.primaryCta} href="#try">
+          <a className={styles.primaryCta} href="/prompt" onClick={handleStartBuilding}>
             Start Building
             <span aria-hidden="true">→</span>
           </a>

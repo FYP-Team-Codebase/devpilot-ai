@@ -1,5 +1,6 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
+import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import PromptBar from './PromptBar'
 import styles from './HeroSection.module.css'
 
@@ -13,9 +14,11 @@ export default function HeroSection() {
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -54])
   const contentOpacity = useTransform(scrollYProgress, [0, 0.82], [1, 0.35])
   const backdropY = useTransform(scrollYProgress, [0, 1], [0, -32])
+  const { handleStartBuilding } = useLandingNavigation()
 
   return (
-    <section ref={sectionRef} id="top" className={styles.hero} aria-label="Introduction">
+    <section ref={sectionRef} id="about" className={`${styles.hero} landing-scroll-target`} aria-label="Introduction">
+      <span id="top" className="landing-anchor" aria-hidden="true" />
       <motion.div className={styles.backdrop} style={shouldReduceMotion ? undefined : { y: backdropY }} aria-hidden="true" />
 
       <div className={styles.container}>
@@ -42,8 +45,9 @@ export default function HeroSection() {
 
           <div className={styles.actions}>
             <motion.a
-              href="#try"
+              href="/prompt"
               className={styles.primaryCta}
+              onClick={handleStartBuilding}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.15 }}
@@ -51,8 +55,9 @@ export default function HeroSection() {
               Start Building
             </motion.a>
             <motion.a
-              href="#try"
+              href="/prompt"
               className={styles.secondaryCta}
+              onClick={handleStartBuilding}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.15 }}

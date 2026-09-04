@@ -1,0 +1,173 @@
+{
+  "inspirations-01": {
+    "title": "Pet Ecommerce",
+    "category": "Ecommerce",
+    "type": "Website",
+    "style": "Friendly",
+    "tags": [
+      "pets",
+      "shop",
+      "friendly"
+    ],
+    "classifiedFrom": "pet cover.png",
+    "assetFingerprint": "b0309eb78cd124c3",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-02": {
+    "title": "AI SaaS",
+    "category": "SaaS",
+    "type": "Website",
+    "style": "Dark",
+    "tags": [
+      "ai",
+      "automation",
+      "saas"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "0a01328f14e3dd33",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-03": {
+    "title": "Data SaaS",
+    "category": "SaaS",
+    "type": "Website",
+    "style": "Minimal",
+    "tags": [
+      "data",
+      "ai",
+      "business"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "e23ba9c7e09103cf",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-04": {
+    "title": "Productivity SaaS",
+    "category": "SaaS",
+    "type": "Website",
+    "style": "Bold",
+    "tags": [
+      "productivity",
+      "dashboard",
+      "tasks"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "1f66a70bcd4ce971",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-05": {
+    "title": "Finance SaaS",
+    "category": "SaaS",
+    "type": "Website",
+    "style": "Playful",
+    "tags": [
+      "finance",
+      "expenses",
+      "saas"
+    ],
+    "classifiedFrom": "cover-image.png",
+    "assetFingerprint": "6ac3dcc4442b3796",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-06": {
+    "title": "Analytics Dashboard",
+    "category": "Business",
+    "type": "Website",
+    "style": "Minimal",
+    "tags": [
+      "analytics",
+      "dashboard",
+      "business"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "26e4d94be60d23ed",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "Inspirations-07": {
+    "title": "Furniture Ecommerce",
+    "category": "Ecommerce",
+    "type": "Website",
+    "style": "Minimal",
+    "tags": [
+      "furniture",
+      "shop",
+      "home"
+    ],
+    "classifiedFrom": "Cover'.png",
+    "assetFingerprint": "ec091eb50829a70f",
+    "classificationVersion": 2,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "inspirations-08": {
+    "title": "Portfolio Website",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio"
+    ],
+    "classifiedFrom": "Cover-iamge.png",
+    "assetFingerprint": "55247fe53422841b",
+    "classificationVersion": 2,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "inspirations-09": {
+    "title": "UI/UX Portfolio",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio",
+      "design"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "f0e47c17d189757b",
+    "classificationVersion": 2,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "inspirations-10": {
+    "title": "UI/UX Portfolio",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio",
+      "design"
+    ],
+    "classifiedFrom": "Cover-image 1.png",
+    "assetFingerprint": "3d0d4f0698021afa",
+    "classificationVersion": 2,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "inspirations-11": {
+    "title": "UI/UX Portfolio",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio",
+      "design"
+    ],
+    "classifiedFrom": "Cover-image.png",
+    "assetFingerprint": "41a875d8df5cba19",
+    "classificationVersion": 2,
+    "generated": true,
+    "source": "heuristic"
+  }
+}

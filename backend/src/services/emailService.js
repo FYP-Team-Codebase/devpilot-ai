@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 
 const isTrue = (value) => ["true", "1", "yes"].includes(String(value).toLowerCase());
 
-const createTransporter = () => {
+const createTransport = () => {
   const port = Number(process.env.EMAIL_PORT || 587);
   const secure =
     process.env.EMAIL_SECURE === undefined ? port === 465 : isTrue(process.env.EMAIL_SECURE);
@@ -98,7 +98,7 @@ const sendVerificationEmail = async ({
   verificationCode,
   expiresInMinutes,
 }) => {
-  const transporter = createTransporter();
+  const transporter = createTransport();
   const message = buildVerificationEmail({
     name,
     verificationCode,

@@ -40,46 +40,183 @@
   line-height: 1.6;
 }
 
-.canvas {
+.reelWrap {
   position: relative;
   width: min(100%, 1100px);
-  height: 682px;
   margin: clamp(44px, 6vw, 74px) auto 0;
   isolation: isolate;
 }
 
-.screen {
-  position: absolute;
-  left: var(--screen-left);
-  top: var(--screen-top);
-  z-index: var(--screen-z);
-  width: var(--screen-width);
-  margin: 0;
-  border-radius: 17px;
-  box-shadow: 0 18px 34px rgba(0, 0, 0, .13), 0 3px 8px rgba(0, 0, 0, .08);
-  cursor: default;
+.reelStage {
+  position: relative;
+  height: 660px;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
+  isolation: isolate;
   overflow: hidden;
-  transform-origin: center center;
-  will-change: transform;
+  cursor: grab;
+  touch-action: pan-y;
+  transform-style: preserve-3d;
 }
 
-.screen img {
+.reelStage:active {
+  cursor: grabbing;
+}
+
+.reelBase {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  width: min(64%, 620px);
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .13) 0%, rgba(0, 0, 0, .05) 42%, transparent 72%);
+  opacity: .42;
+  pointer-events: none;
+}
+
+.screenCard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 28px;
+  display: flex;
+  width: clamp(178px, 21vw, 236px);
+  height: 570px;
+  margin: 0 auto;
+  padding: 9px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 22px;
+  background-color: var(--color-white);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .11), 0 3px 8px rgba(0, 0, 0, .06);
+  cursor: pointer;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
+  appearance: none;
+}
+
+.screenCard::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+}
+
+.screenCard img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  border-radius: 15px;
+  object-fit: contain;
+  object-position: top center;
+  pointer-events: none;
+  user-select: none;
 }
 
-.screen:hover {
-  box-shadow: 0 25px 46px rgba(0, 0, 0, .17), 0 5px 13px rgba(0, 0, 0, .1);
+.activeScreen {
+  border-color: #b8b8b8;
+  box-shadow: 0 24px 44px rgba(0, 0, 0, .16), 0 6px 14px rgba(0, 0, 0, .08);
+}
+
+.screenCard:focus-visible,
+.arrow:focus-visible,
+.dot:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 4px;
+}
+
+.arrow {
+  position: absolute;
+  top: 48%;
+  z-index: 12;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid var(--color-border-dark);
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, .94);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .1), 0 2px 6px rgba(0, 0, 0, .06);
+  color: var(--color-black);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.arrow span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.arrowPrevious {
+  left: clamp(4px, 2vw, 18px);
+}
+
+.arrowNext {
+  right: clamp(4px, 2vw, 18px);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: -22px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: #c8c8c8;
+  cursor: pointer;
+  transition:
+    width .2s ease,
+    background-color .2s ease,
+    transform .2s ease;
+}
+
+.dot[data-active='true'] {
+  width: 16px;
+  background-color: var(--color-black);
+}
+
+.dot:hover {
+  transform: translateY(-1px);
+  background-color: #8f8f8f;
 }
 
 @media (max-width: 920px) {
-  .canvas {
-    width: 860px;
-    height: 590px;
-    transform: scale(.78);
-    transform-origin: top center;
-    margin-bottom: -130px;
+  .reelWrap {
+    width: min(100%, 860px);
+  }
+
+  .reelStage {
+    height: 610px;
+    perspective: 1300px;
+  }
+
+  .screenCard {
+    top: 24px;
+    width: clamp(168px, 28vw, 214px);
+    height: 526px;
+  }
+
+  .reelBase {
+    bottom: 48px;
+    width: 68%;
+  }
+
+  .dots {
+    margin-top: -18px;
   }
 }
 
@@ -97,34 +234,71 @@
     margin-left: 0;
   }
 
-  .canvas {
+  .reelWrap {
     width: 100%;
-    height: 500px;
     margin-top: 46px;
-    margin-bottom: 0;
+  }
+
+  .reelStage {
+    height: 510px;
+    perspective: 1200px;
+  }
+
+  .screenCard {
+    top: 18px;
+    width: clamp(150px, 48vw, 184px);
+    height: 440px;
+    padding: 7px;
+    border-radius: 18px;
+  }
+
+  .screenCard img {
+    border-radius: 12px;
+  }
+
+  .arrow {
+    width: 44px;
+    height: 44px;
+    top: auto;
+    bottom: 18px;
     transform: none;
   }
 
-  .screen {
-    left: var(--mobile-left);
-    top: var(--mobile-top);
-    width: var(--mobile-width);
-    border-radius: 11px;
-    box-shadow: 0 13px 27px rgba(0, 0, 0, .14), 0 2px 6px rgba(0, 0, 0, .07);
+  .arrowPrevious {
+    left: calc(50% - 58px);
+  }
+
+  .arrowNext {
+    right: calc(50% - 58px);
+  }
+
+  .reelBase {
+    bottom: 62px;
+    width: 82%;
+  }
+
+  .dots {
+    margin-top: 8px;
   }
 }
 
 @media (max-width: 380px) {
-  .canvas {
-    height: 455px;
-    transform: scale(.9);
-    transform-origin: top center;
-    margin-bottom: -46px;
+  .reelStage {
+    height: 470px;
+  }
+
+  .screenCard {
+    width: 154px;
+    height: 400px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .screen {
+  .screenCard {
     will-change: auto;
+  }
+
+  .dot {
+    transition: none;
   }
 }

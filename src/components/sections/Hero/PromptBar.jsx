@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './PromptBar.module.css'
 
 const EXAMPLE_PROMPT = 'Build a modern SaaS dashboard with authentication and analytics'
@@ -12,6 +13,7 @@ function prefersReducedMotion() {
 
 export default function PromptBar() {
   const shouldReduceMotion = useReducedMotion()
+  const { handleStartBuilding } = useLandingNavigation()
   const [value, setValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -59,7 +61,8 @@ export default function PromptBar() {
     setIsSubmitting(true)
     window.setTimeout(
       () => {
-        window.location.hash = 'try'
+        sessionStorage.setItem('devpilot-prompt', value.trim())
+        handleStartBuilding()
       },
       prefersReducedMotion() ? 0 : SUBMIT_HOLD_MS,
     )

@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './PricingSection.module.css'
 
 const PLANS = [
@@ -9,8 +10,9 @@ const PLANS = [
     period: '',
     description: 'For exploring DevPilot AI and turning your first ideas into working projects.',
     features: ['3 projects', 'AI website generation', 'Live preview', 'Basic code export'],
-    action: 'Start Building',
-    href: '#try',
+    action: 'Try for Free',
+    href: '/prompt',
+    intent: 'start',
   },
   {
     name: 'Pro',
@@ -18,8 +20,9 @@ const PLANS = [
     period: '/ month',
     description: 'For developers who want to build, iterate, and ship faster.',
     features: ['Unlimited projects', 'Advanced AI generation', 'Live preview & editing', 'Full code export', 'Priority generation'],
-    action: 'Start Building',
-    href: '#try',
+    action: 'Go Pro',
+    href: '/dashboard/pricing',
+    intent: 'upgrade',
     featured: true,
   },
   {
@@ -30,12 +33,13 @@ const PLANS = [
     features: ['Everything in Pro', 'Team collaboration', 'Shared projects', 'Higher generation limits', 'Team workspace'],
     action: 'Contact Us',
     href: '#contact',
+    intent: 'contact',
   },
 ]
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1]
 
-function PricingCard({ plan, progress, index, shouldReduceMotion }) {
+function PricingCard({ plan, progress, index, shouldReduceMotion, onPlanAction }) {
   const start = 0.2 + index * 0.12
   const end = start + 0.32
   const opacity = useTransform(progress, [start, end], [0, 1])
@@ -66,7 +70,11 @@ function PricingCard({ plan, progress, index, shouldReduceMotion }) {
           ))}
         </ul>
 
-        <a className={`${styles.cardCta} ${plan.featured ? styles.featuredCta : ''}`} href={plan.href}>
+        <a
+          className={`${styles.cardCta} ${plan.featured ? styles.featuredCta : ''}`}
+          href={plan.href}
+          onClick={(event) => onPlanAction(event, plan)}
+        >
           {plan.action}
         </a>
       </article>
@@ -80,9 +88,24 @@ export default function PricingSection() {
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start 0.92', 'start 0.25'] })
   const headerOpacity = useTransform(scrollYProgress, [0, 0.32], [0, 1])
   const headerY = useTransform(scrollYProgress, [0, 0.32], [24, 0])
+  const { handleGoPro, handleSectionClick, handleStartBuilding } = useLandingNavigation()
+
+  function handlePlanAction(event, plan) {
+    if (plan.intent === 'upgrade') {
+      handleGoPro(event)
+      return
+    }
+
+    if (plan.intent === 'contact') {
+      handleSectionClick(event, 'contact')
+      return
+    }
+
+    handleStartBuilding(event)
+  }
 
   return (
-    <section id="pricing" ref={sectionRef} className={styles.pricing} aria-labelledby="pricing-heading">
+    <section id="pricing" ref={sectionRef} className={`${styles.pricing} landing-scroll-target`} aria-labelledby="pricing-heading">
       <div className={styles.container}>
         <motion.div className={styles.header} style={shouldReduceMotion ? undefined : { opacity: headerOpacity, y: headerY }}>
           <p className={styles.eyebrow}>Pricing</p>
@@ -100,6 +123,7 @@ export default function PricingSection() {
               progress={scrollYProgress}
               index={index}
               shouldReduceMotion={shouldReduceMotion}
+              onPlanAction={handlePlanAction}
             />
           ))}
         </div>

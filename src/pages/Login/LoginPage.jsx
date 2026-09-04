@@ -1,10 +1,12 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import codenovaLogo from '../../assets/branding/codenova-logo.svg'
 import LoginVisualCarousel from '../../components/auth/LoginVisualCarousel'
 
 import { login } from '../../services/authService'
+import { getSafeRedirectPath } from '../../utils/routeRedirect'
 
 import styles from './LoginPage.module.css'
 
@@ -28,6 +30,9 @@ function validate(values) {
 
 export default function LoginPage() {
   const shouldReduceMotion = useReducedMotion()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const redirectPath = getSafeRedirectPath(location.state?.from)
 
   const [values, setValues] = useState({
     email: '',
@@ -81,13 +86,7 @@ export default function LoginPage() {
 
       setStatus('success')
 
-      /*
-       * TEMPORARY:
-       * We will connect this to your Dashboard route next.
-       *
-       * For now, reload the page after successful login.
-       */
-      window.location.href = '/dashboard'
+      navigate(redirectPath, { replace: true })
     } catch (error) {
       console.error('LOGIN ERROR:', error)
 
@@ -103,9 +102,9 @@ export default function LoginPage() {
           error.email
         )
 
-        window.location.href = `/verify-email?email=${encodeURIComponent(
-          error.email
-        )}`
+        navigate(`/verify-email?email=${encodeURIComponent(error.email)}`, {
+          state: { from: redirectPath },
+        })
         return
       }
 
@@ -138,10 +137,10 @@ export default function LoginPage() {
   return (
     <main className={styles.page}>
       <div className={styles.topbar}>
-        <a
-          href="/"
+        <Link
+          to="/"
           className={styles.logoLink}
-          aria-label="Code Nova home"
+          aria-label="Go to Code Nova home"
         >
           <img
             src={codenovaLogo}
@@ -149,15 +148,15 @@ export default function LoginPage() {
             width="190"
             height="36"
           />
-        </a>
+        </Link>
 
-        <a
+        <Link
           className={styles.backLink}
-          href="/"
+          to="/"
         >
           Back to CodeNova{' '}
           <span aria-hidden="true">↗</span>
-        </a>
+        </Link>
       </div>
 
       <div className={styles.layout}>
@@ -310,9 +309,9 @@ export default function LoginPage() {
 
           <p className={styles.signup}>
             Don't have an account?{' '}
-            <a href="/signup">
+            <Link to="/signup">
               Sign up
-            </a>
+            </Link>
           </p>
 
           <p className={styles.legal}>

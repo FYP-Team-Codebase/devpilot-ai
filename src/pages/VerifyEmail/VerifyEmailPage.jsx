@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import codenovaLogo from '../../assets/branding/codenova-logo.svg'
 import LoginVisualCarousel from '../../components/auth/LoginVisualCarousel'
@@ -7,6 +8,7 @@ import {
   resendVerification,
   verifyEmail,
 } from '../../services/authService'
+import { getSafeRedirectPath } from '../../utils/routeRedirect'
 
 import styles from './VerifyEmailPage.module.css'
 
@@ -64,6 +66,9 @@ function validateCode(code) {
 
 export default function VerifyEmailPage() {
   const shouldReduceMotion = useReducedMotion()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const redirectPath = getSafeRedirectPath(location.state?.from)
   const inputRefs = useRef([])
 
   const [email, setEmail] = useState(getInitialEmail)
@@ -101,11 +106,11 @@ export default function VerifyEmailPage() {
     if (!isVerified) return undefined
 
     const redirectTimer = window.setTimeout(() => {
-      window.location.href = '/dashboard'
+      navigate(redirectPath, { replace: true })
     }, 1200)
 
     return () => window.clearTimeout(redirectTimer)
-  }, [isVerified])
+  }, [isVerified, navigate, redirectPath])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -321,10 +326,10 @@ export default function VerifyEmailPage() {
   return (
     <main className={styles.page}>
       <div className={styles.topbar}>
-        <a
-          href="/"
+        <Link
+          to="/"
           className={styles.logoLink}
-          aria-label="Code Nova home"
+          aria-label="Go to Code Nova home"
         >
           <img
             src={codenovaLogo}
@@ -332,11 +337,11 @@ export default function VerifyEmailPage() {
             width="190"
             height="36"
           />
-        </a>
+        </Link>
 
-        <a className={styles.backLink} href="/login">
+        <Link className={styles.backLink} to="/login" state={{ from: redirectPath }}>
           Back to login <span aria-hidden="true">-&gt;</span>
-        </a>
+        </Link>
       </div>
 
       <div className={styles.layout}>

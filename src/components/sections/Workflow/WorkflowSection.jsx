@@ -63,7 +63,8 @@ export default function WorkflowSection() {
   const railScale = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
-    <section id="workflow" className={styles.workflow} aria-label="How DevPilot works">
+    <section id="business" className={`${styles.workflow} landing-scroll-target`} aria-label="How DevPilot works">
+      <span id="workflow" className="landing-anchor" aria-hidden="true" />
       <div className={styles.container}>
         <div ref={headerRef} className={styles.header}>
           <motion.h2

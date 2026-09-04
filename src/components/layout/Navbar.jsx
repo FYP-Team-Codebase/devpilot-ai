@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import codenovaMark from '../../assets/branding/codenova-mark.svg'
+import useLandingNavigation from '../../hooks/useLandingNavigation'
 import { useScrollDirection } from './useScrollDirection'
 import styles from './Navbar.module.css'
 
@@ -14,6 +16,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const isSolid = useScrollDirection()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { handleHomeClick, handleSectionClick, handleStartBuilding } = useLandingNavigation()
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -35,20 +38,30 @@ export default function Navbar() {
 
   const closeMenu = () => setIsMenuOpen(false)
 
+  function handleMobileSectionClick(event, sectionId) {
+    closeMenu()
+    handleSectionClick(event, sectionId)
+  }
+
+  function handleMobileStartBuilding(event) {
+    closeMenu()
+    handleStartBuilding(event)
+  }
+
   return (
     <>
       <div className={styles.staticControls}>
         <div className={styles.staticBar}>
-        <a href="#top" className={styles.brand} aria-label="Code Nova home">
-          <img src={codenovaMark} alt="" className={styles.mark} width="34" height="34" />
-          <span className={styles.wordmark}>Code Nova</span>
-        </a>
+          <Link to="/" className={styles.brand} aria-label="Go to Code Nova home" onClick={handleHomeClick}>
+            <img src={codenovaMark} alt="" className={styles.mark} width="34" height="34" />
+            <span className={styles.wordmark}>Code Nova</span>
+          </Link>
 
           <div className={styles.actions}>
-            <a href="/login" className={styles.login}>
+            <Link to="/login" className={styles.login}>
               Login
-            </a>
-            <a href="#try" className={styles.cta}>
+            </Link>
+            <a href="/prompt" className={styles.cta} onClick={handleStartBuilding}>
               Try DevPilot AI
             </a>
           </div>
@@ -63,7 +76,11 @@ export default function Navbar() {
             <ul className={styles.links}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} className={styles.link}>
+                  <a
+                    href={link.href}
+                    className={styles.link}
+                    onClick={(event) => handleSectionClick(event, link.href.slice(1))}
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -93,17 +110,21 @@ export default function Navbar() {
             <ul className={styles.mobileLinks}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a href={link.href} className={styles.mobileLink} onClick={closeMenu}>
+                  <a
+                    href={link.href}
+                    className={styles.mobileLink}
+                    onClick={(event) => handleMobileSectionClick(event, link.href.slice(1))}
+                  >
                     {link.label}
                   </a>
                 </li>
               ))}
             </ul>
             <div className={styles.mobileActions}>
-              <a href="/login" className={styles.mobileLogin} onClick={closeMenu}>
+              <Link to="/login" className={styles.mobileLogin} onClick={closeMenu}>
                 Login
-              </a>
-              <a href="#try" className={styles.mobileCta} onClick={closeMenu}>
+              </Link>
+              <a href="/prompt" className={styles.mobileCta} onClick={handleMobileStartBuilding}>
                 Try DevPilot AI
               </a>
             </div>

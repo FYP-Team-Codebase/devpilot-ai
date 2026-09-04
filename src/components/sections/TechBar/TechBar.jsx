@@ -67,7 +67,6 @@ export default function TechBar() {
 
   return (
     <section
-      id="products"
       className={styles.techBar}
       aria-label="Built with HTML, CSS, JavaScript, React, Express.js, Node.js, MongoDB, Claude, Git and GitHub"
     >

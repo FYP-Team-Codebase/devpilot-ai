@@ -1,0 +1,547 @@
+{
+  "root": "/inspirations",
+  "count": 11,
+  "skipped": [],
+  "inspirations": [
+    {
+      "id": "inspirations-01",
+      "folder": "inspirations-01",
+      "title": "Pet Ecommerce",
+      "category": "Ecommerce",
+      "type": "Website",
+      "style": "Friendly",
+      "tags": [
+        "pets",
+        "shop",
+        "friendly"
+      ],
+      "description": "Website inspiration assets from the inspirations-01 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-01/pet%20cover.png",
+      "fullPage": "/inspirations/inspirations-01/pet%20homepage.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-01/pet%20homepage.png",
+          "label": "Pet Homepage",
+          "width": 2880,
+          "height": 9768
+        },
+        {
+          "src": "/inspirations/inspirations-01/pet%20cover.png",
+          "label": "Pet Cover",
+          "width": 2865,
+          "height": 1386
+        },
+        {
+          "src": "/inspirations/inspirations-01/footer.png",
+          "label": "Footer",
+          "width": 2710,
+          "height": 1548
+        },
+        {
+          "src": "/inspirations/inspirations-01/pet%20feature.png",
+          "label": "Pet Feature",
+          "width": 2848,
+          "height": 1914
+        },
+        {
+          "src": "/inspirations/inspirations-01/pet%20products.png",
+          "label": "Pet Products",
+          "width": 2873,
+          "height": 2026
+        }
+      ]
+    },
+    {
+      "id": "inspirations-02",
+      "folder": "inspirations-02",
+      "title": "AI SaaS",
+      "category": "SaaS",
+      "type": "Website",
+      "style": "Dark",
+      "tags": [
+        "ai",
+        "automation",
+        "saas"
+      ],
+      "description": "Website inspiration assets from the inspirations-02 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-02/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-02/AI%20Landing%20Page%201.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-02/AI%20Landing%20Page%201.png",
+          "label": "AI Landing Page 1",
+          "width": 2880,
+          "height": 11220
+        },
+        {
+          "src": "/inspirations/inspirations-02/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2868,
+          "height": 1960
+        },
+        {
+          "src": "/inspirations/inspirations-02/Footer-image.png",
+          "label": "Footer Image",
+          "width": 2880,
+          "height": 1878
+        },
+        {
+          "src": "/inspirations/inspirations-02/pricing-Ai.png",
+          "label": "Pricing Ai",
+          "width": 2836,
+          "height": 2272
+        },
+        {
+          "src": "/inspirations/inspirations-02/question-image.png",
+          "label": "Question Image",
+          "width": 2880,
+          "height": 2104
+        }
+      ]
+    },
+    {
+      "id": "inspirations-03",
+      "folder": "inspirations-03",
+      "title": "Data SaaS",
+      "category": "SaaS",
+      "type": "Website",
+      "style": "Minimal",
+      "tags": [
+        "data",
+        "ai",
+        "business"
+      ],
+      "description": "Website inspiration assets from the inspirations-03 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-03/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-03/full-page.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-03/full-page.png",
+          "label": "Full Page",
+          "width": 2880,
+          "height": 10874
+        },
+        {
+          "src": "/inspirations/inspirations-03/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2900,
+          "height": 2104
+        },
+        {
+          "src": "/inspirations/inspirations-03/Blog%20section.png",
+          "label": "Blog Section",
+          "width": 2880,
+          "height": 1610
+        },
+        {
+          "src": "/inspirations/inspirations-03/Feature-section.png",
+          "label": "Feature Section",
+          "width": 2880,
+          "height": 1898
+        },
+        {
+          "src": "/inspirations/inspirations-03/Nav-bar.png",
+          "label": "Nav Bar",
+          "width": 3304,
+          "height": 1248
+        }
+      ]
+    },
+    {
+      "id": "inspirations-04",
+      "folder": "inspirations-04",
+      "title": "Productivity SaaS",
+      "category": "SaaS",
+      "type": "Website",
+      "style": "Bold",
+      "tags": [
+        "productivity",
+        "dashboard",
+        "tasks"
+      ],
+      "description": "Website inspiration assets from the inspirations-04 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-04/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-04/Productivty-landing.jpg",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-04/Productivty-landing.jpg",
+          "label": "Productivty Landing",
+          "width": 2880,
+          "height": 14066
+        },
+        {
+          "src": "/inspirations/inspirations-04/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2880,
+          "height": 2308
+        },
+        {
+          "src": "/inspirations/inspirations-04/feature-image.png",
+          "label": "Feature Image",
+          "width": 2880,
+          "height": 2132
+        },
+        {
+          "src": "/inspirations/inspirations-04/footer.png",
+          "label": "Footer",
+          "width": 2880,
+          "height": 2280
+        },
+        {
+          "src": "/inspirations/inspirations-04/section2.png",
+          "label": "Section2",
+          "width": 2846,
+          "height": 2268
+        }
+      ]
+    },
+    {
+      "id": "inspirations-05",
+      "folder": "inspirations-05",
+      "title": "Finance SaaS",
+      "category": "SaaS",
+      "type": "Website",
+      "style": "Playful",
+      "tags": [
+        "finance",
+        "expenses",
+        "saas"
+      ],
+      "description": "Website inspiration assets from the inspirations-05 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-05/cover-image.png",
+      "fullPage": "/inspirations/inspirations-05/xpense%20landing.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-05/xpense%20landing.png",
+          "label": "Xpense Landing",
+          "width": 2880,
+          "height": 16280
+        },
+        {
+          "src": "/inspirations/inspirations-05/cover-image.png",
+          "label": "Cover Image",
+          "width": 2880,
+          "height": 1800
+        },
+        {
+          "src": "/inspirations/inspirations-05/Feature-1.png",
+          "label": "Feature 1",
+          "width": 2880,
+          "height": 1590
+        },
+        {
+          "src": "/inspirations/inspirations-05/Footer-image.png",
+          "label": "Footer Image",
+          "width": 2880,
+          "height": 2535
+        },
+        {
+          "src": "/inspirations/inspirations-05/pricing-part.png",
+          "label": "Pricing Part",
+          "width": 2880,
+          "height": 1800
+        }
+      ]
+    },
+    {
+      "id": "inspirations-06",
+      "folder": "inspirations-06",
+      "title": "Analytics Dashboard",
+      "category": "Business",
+      "type": "Website",
+      "style": "Minimal",
+      "tags": [
+        "analytics",
+        "dashboard",
+        "business"
+      ],
+      "description": "Website inspiration assets from the inspirations-06 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-06/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-06/power-data-full.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-06/power-data-full.png",
+          "label": "Power Data Full",
+          "width": 2880,
+          "height": 13724
+        },
+        {
+          "src": "/inspirations/inspirations-06/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2880,
+          "height": 3366
+        },
+        {
+          "src": "/inspirations/inspirations-06/Faqs.png",
+          "label": "Faqs",
+          "width": 2880,
+          "height": 2454
+        },
+        {
+          "src": "/inspirations/inspirations-06/Feature-section.png",
+          "label": "Feature Section",
+          "width": 2880,
+          "height": 2494
+        },
+        {
+          "src": "/inspirations/inspirations-06/Footer-section.png",
+          "label": "Footer Section",
+          "width": 2880,
+          "height": 888
+        },
+        {
+          "src": "/inspirations/inspirations-06/Pricing-page.png",
+          "label": "Pricing Page",
+          "width": 2880,
+          "height": 2252
+        }
+      ]
+    },
+    {
+      "id": "Inspirations-07",
+      "folder": "Inspirations-07",
+      "title": "Furniture Ecommerce",
+      "category": "Ecommerce",
+      "type": "Website",
+      "style": "Minimal",
+      "tags": [
+        "furniture",
+        "shop",
+        "home"
+      ],
+      "description": "Website inspiration assets from the Inspirations-07 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/Inspirations-07/Cover'.png",
+      "fullPage": "/inspirations/Inspirations-07/Home.png",
+      "images": [
+        {
+          "src": "/inspirations/Inspirations-07/Home.png",
+          "label": "Home",
+          "width": 2880,
+          "height": 9670
+        },
+        {
+          "src": "/inspirations/Inspirations-07/Cover'.png",
+          "label": "Cover'",
+          "width": 2940,
+          "height": 1774
+        },
+        {
+          "src": "/inspirations/Inspirations-07/Features.png",
+          "label": "Features",
+          "width": 3670,
+          "height": 2830
+        },
+        {
+          "src": "/inspirations/Inspirations-07/product%20page.png",
+          "label": "Product Page",
+          "width": 3232,
+          "height": 2340
+        },
+        {
+          "src": "/inspirations/Inspirations-07/products%20section.png",
+          "label": "Products Section",
+          "width": 3098,
+          "height": 2328
+        }
+      ]
+    },
+    {
+      "id": "inspirations-08",
+      "folder": "inspirations-08",
+      "title": "Portfolio Website",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio"
+      ],
+      "description": "Website inspiration assets from the inspirations-08 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-08/Cover-iamge.png",
+      "fullPage": "/inspirations/inspirations-08/Porfolio%20home.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-08/Porfolio%20home.png",
+          "label": "Porfolio Home",
+          "width": 2880,
+          "height": 15690
+        },
+        {
+          "src": "/inspirations/inspirations-08/Cover-iamge.png",
+          "label": "Cover Iamge",
+          "width": 2870,
+          "height": 1956
+        },
+        {
+          "src": "/inspirations/inspirations-08/features-section3.png",
+          "label": "Features Section3",
+          "width": 2890,
+          "height": 2276
+        },
+        {
+          "src": "/inspirations/inspirations-08/Features.png",
+          "label": "Features",
+          "width": 2894,
+          "height": 1748
+        },
+        {
+          "src": "/inspirations/inspirations-08/footer.png",
+          "label": "Footer",
+          "width": 2882,
+          "height": 2652
+        }
+      ]
+    },
+    {
+      "id": "inspirations-09",
+      "folder": "inspirations-09",
+      "title": "UI/UX Portfolio",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio",
+        "design"
+      ],
+      "description": "Website inspiration assets from the inspirations-09 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-09/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-09/Sj%20portfolio.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-09/Sj%20portfolio.png",
+          "label": "Sj Portfolio",
+          "width": 2880,
+          "height": 10731
+        },
+        {
+          "src": "/inspirations/inspirations-09/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2882,
+          "height": 2162
+        },
+        {
+          "src": "/inspirations/inspirations-09/design.png",
+          "label": "Design",
+          "width": 2972,
+          "height": 1505
+        },
+        {
+          "src": "/inspirations/inspirations-09/feature-section.png",
+          "label": "Feature Section",
+          "width": 2877,
+          "height": 2040
+        },
+        {
+          "src": "/inspirations/inspirations-09/skills.png",
+          "label": "Skills",
+          "width": 2888,
+          "height": 1860
+        }
+      ]
+    },
+    {
+      "id": "inspirations-10",
+      "folder": "inspirations-10",
+      "title": "UI/UX Portfolio",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio",
+        "design"
+      ],
+      "description": "Website inspiration assets from the inspirations-10 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-10/Cover-image%201.png",
+      "fullPage": "/inspirations/inspirations-10/Landing%20Page.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-10/Landing%20Page.png",
+          "label": "Landing Page",
+          "width": 3840,
+          "height": 11200
+        },
+        {
+          "src": "/inspirations/inspirations-10/Cover-image%201.png",
+          "label": "Cover Image 1",
+          "width": 3834,
+          "height": 2000
+        },
+        {
+          "src": "/inspirations/inspirations-10/About%20me.png",
+          "label": "About Me",
+          "width": 3826,
+          "height": 1650
+        },
+        {
+          "src": "/inspirations/inspirations-10/My%20projects.png",
+          "label": "My Projects",
+          "width": 3848,
+          "height": 2408
+        },
+        {
+          "src": "/inspirations/inspirations-10/Services-port.png",
+          "label": "Services Port",
+          "width": 3838,
+          "height": 1568
+        }
+      ]
+    },
+    {
+      "id": "inspirations-11",
+      "folder": "inspirations-11",
+      "title": "UI/UX Portfolio",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio",
+        "design"
+      ],
+      "description": "Website inspiration assets from the inspirations-11 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "galleryPreview": "/inspirations/inspirations-11/Cover-image.png",
+      "fullPage": "/inspirations/inspirations-11/full%20landing.png",
+      "images": [
+        {
+          "src": "/inspirations/inspirations-11/full%20landing.png",
+          "label": "Full Landing",
+          "width": 2880,
+          "height": 12914
+        },
+        {
+          "src": "/inspirations/inspirations-11/Cover-image.png",
+          "label": "Cover Image",
+          "width": 2864,
+          "height": 2063
+        },
+        {
+          "src": "/inspirations/inspirations-11/Contact%20Us.png",
+          "label": "Contact Us",
+          "width": 2876,
+          "height": 2406
+        },
+        {
+          "src": "/inspirations/inspirations-11/porfolio-section.png",
+          "label": "Porfolio Section",
+          "width": 2846,
+          "height": 2466
+        },
+        {
+          "src": "/inspirations/inspirations-11/Services.png",
+          "label": "Services",
+          "width": 2883,
+          "height": 2012
+        }
+      ]
+    }
+  ]
+}

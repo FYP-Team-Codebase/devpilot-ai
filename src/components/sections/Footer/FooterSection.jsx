@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import codenovaLogo from '../../../assets/branding/codenova-logo.svg'
+import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './FooterSection.module.css'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -52,6 +53,7 @@ export default function FooterSection() {
   const footerRef = useRef(null)
   const isInView = useInView(footerRef, { once: true, amount: 0.18 })
   const shouldReduceMotion = useReducedMotion()
+  const { handleHomeClick } = useLandingNavigation()
 
   const reveal = (delay = 0) => ({
     initial: shouldReduceMotion ? false : { opacity: 0, y: 14 },
@@ -60,11 +62,11 @@ export default function FooterSection() {
   })
 
   return (
-    <footer ref={footerRef} className={styles.footer}>
+    <footer id="contact" ref={footerRef} className={`${styles.footer} landing-scroll-target`}>
       <div className={styles.container}>
         <div className={styles.top}>
           <motion.div className={styles.brand} {...reveal()}>
-            <a href="#top" className={styles.logoLink} aria-label="Code Nova home">
+            <a href="/" className={styles.logoLink} aria-label="Go to Code Nova home" onClick={handleHomeClick}>
               <img className={styles.logo} src={codenovaLogo} alt="Code Nova" width="190" height="36" />
             </a>
             <p className={styles.tagline}>Build software from a single prompt.</p>

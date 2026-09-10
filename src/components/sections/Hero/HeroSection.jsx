@@ -2,7 +2,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import PromptBar from './PromptBar'
-import styles from './HeroSection.module.css'
+import { heroStyles } from './HeroSection.styles'
 
 const WORKFLOW_STEPS = ['Prompt', 'Generate', 'Preview', 'Own']
 const EASE = [0.16, 1, 0.3, 1]
@@ -17,36 +17,41 @@ export default function HeroSection() {
   const { handleStartBuilding } = useLandingNavigation()
 
   return (
-    <section ref={sectionRef} id="about" className={`${styles.hero} landing-scroll-target`} aria-label="Introduction">
+    <section
+      ref={sectionRef}
+      id="about"
+      className={heroStyles.section}
+      aria-label="Introduction"
+    >
       <span id="top" className="landing-anchor" aria-hidden="true" />
-      <motion.div className={styles.backdrop} style={shouldReduceMotion ? undefined : { y: backdropY }} aria-hidden="true" />
+      <motion.div className={heroStyles.backdrop} style={shouldReduceMotion ? undefined : { y: backdropY }} aria-hidden="true" />
 
-      <div className={styles.container}>
+      <div className={heroStyles.container}>
         <motion.div
-          className={styles.content}
+          className={heroStyles.content}
           initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           style={shouldReduceMotion ? undefined : { y: contentY, opacity: contentOpacity }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.7, ease: EASE }}
         >
-          <p className={styles.eyebrow}>Code Nova · DevPilot AI</p>
+          <p className={heroStyles.eyebrow}>Code Nova · DevPilot AI</p>
 
-          <h1 className={styles.headline}>
+          <h1 className={heroStyles.headline}>
             <span>Build Software</span>
             <span>From A Single Prompt.</span>
           </h1>
 
-          <p className={styles.description}>
+          <p className={heroStyles.description}>
             DevPilot AI turns natural-language ideas into production-ready MERN
             applications — from interface to backend and database.
           </p>
 
           <PromptBar />
 
-          <div className={styles.actions}>
+          <div className={heroStyles.actions}>
             <motion.a
               href="/prompt"
-              className={styles.primaryCta}
+              className={heroStyles.primaryCta}
               onClick={handleStartBuilding}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
@@ -56,7 +61,7 @@ export default function HeroSection() {
             </motion.a>
             <motion.a
               href="/prompt"
-              className={styles.secondaryCta}
+              className={heroStyles.secondaryCta}
               onClick={handleStartBuilding}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
@@ -66,12 +71,12 @@ export default function HeroSection() {
             </motion.a>
           </div>
 
-          <div className={styles.workflow}>
+          <div className={heroStyles.workflow}>
             {WORKFLOW_STEPS.map((step, index) => (
-              <span className={styles.workflowGroup} key={step}>
-                <span className={styles.workflowStep}>{step}</span>
+              <span className={heroStyles.workflowGroup} key={step}>
+                <span className={heroStyles.workflowLabel}>{step}</span>
                 {index < WORKFLOW_STEPS.length - 1 && (
-                  <span className={styles.workflowArrow} aria-hidden="true">
+                  <span className={heroStyles.workflowArrow} aria-hidden="true">
                     →
                   </span>
                 )}

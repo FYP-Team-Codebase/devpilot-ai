@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { inspirationGalleryStyles } from './InspirationGallery.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 const buttonMotion = { duration: 0.2, ease: 'easeOut' }
@@ -231,18 +232,18 @@ export default function InspirationGallery({ mode = 'standalone' }) {
   }
 
   return (
-    <div className="pb-20">
+    <div className={inspirationGalleryStyles.page}>
       <motion.div
         initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: shouldReduceMotion ? 0 : 0.34, ease: EASE }}
-        className="mb-6 flex flex-wrap items-end justify-between gap-4"
+        className={inspirationGalleryStyles.headingRow}
       >
         <div>
-          <h1 className="m-0 text-[clamp(2rem,3.4vw,2.5rem)] font-bold leading-tight tracking-[-0.045em] text-dp-black">
+          <h1 className={inspirationGalleryStyles.heading}>
             Inspiration Gallery
           </h1>
-          <p className="m-0 mt-2 max-w-[620px] text-[15px] leading-6 text-dp-text">
+          <p className={inspirationGalleryStyles.intro}>
             {isGenerationMode
               ? 'Open a cover to inspect its screens, details, and reusable design direction.'
               : 'Explore design references or add your own inspiration.'}
@@ -254,7 +255,7 @@ export default function InspirationGallery({ mode = 'standalone' }) {
           <motion.button
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={inspirationGalleryStyles.primaryButton}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
@@ -306,12 +307,12 @@ export default function InspirationGallery({ mode = 'standalone' }) {
       </AnimatePresence>
 
       {isGenerationMode && (
-        <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-dp-border bg-[#FAFAF8]/92 px-6 py-3 backdrop-blur-sm md:left-[228px] max-md:px-4 max-sm:px-3.5">
-          <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-3">
+        <div className={inspirationGalleryStyles.bottomBar}>
+          <div className={inspirationGalleryStyles.bottomInner}>
             <motion.button
               type="button"
               onClick={handleBack}
-              className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-sm font-medium text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+              className={inspirationGalleryStyles.secondaryButton}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
@@ -319,12 +320,12 @@ export default function InspirationGallery({ mode = 'standalone' }) {
               {activeItem ? 'Close' : 'Back'}
             </motion.button>
 
-            <div className="flex min-w-0 flex-col items-end">
+            <div className={inspirationGalleryStyles.bottomActions}>
               <ValidationError>{validationError}</ValidationError>
               <motion.button
                 type="button"
                 onClick={handleContinue}
-                className="group inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+                className={inspirationGalleryStyles.primaryButton}
                 whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                 transition={buttonMotion}
@@ -352,7 +353,7 @@ function AddInspirationModal({ onClose, shouldReduceMotion }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-5 max-sm:p-3"
+      className={inspirationGalleryStyles.modalOverlay}
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}
@@ -365,31 +366,31 @@ function AddInspirationModal({ onClose, shouldReduceMotion }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-inspiration-title"
-        className="w-[min(92vw,480px)] rounded-xl border border-dp-border bg-white p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)]"
+        className={inspirationGalleryStyles.addModal}
         initial={shouldReduceMotion ? false : { opacity: 0, y: 8, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={shouldReduceMotion ? undefined : { opacity: 0, y: 8, scale: 0.985 }}
         transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: EASE }}
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className={inspirationGalleryStyles.modalHeader}>
           <div>
-            <h2 id="add-inspiration-title" className="m-0 text-[20px] font-bold tracking-[-0.04em] text-dp-black">Add Inspiration</h2>
-            <p className="m-0 mt-2 text-[13.5px] leading-6 text-dp-text">
+            <h2 id="add-inspiration-title" className={inspirationGalleryStyles.modalTitle}>Add Inspiration</h2>
+            <p className={inspirationGalleryStyles.modalCopy}>
               User inspiration uploads are not connected to persistent storage yet. This entry point is ready for image or website reference capture when that API is added.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-neutral-200 bg-white text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className={inspirationGalleryStyles.iconButton}
             aria-label="Close add inspiration dialog"
           >
             <InspirationIcon name="x" />
           </button>
         </div>
-        <div className="mt-5 rounded-xl border border-dashed border-dp-border bg-[#FAFAF8] p-5 text-center">
-          <p className="m-0 text-[13px] font-semibold text-dp-black">Upload service required</p>
-          <p className="m-0 mt-1 text-[12.5px] leading-5 text-dp-muted">No inspiration will be saved from this screen until storage is implemented.</p>
+        <div className={inspirationGalleryStyles.modalNotice}>
+          <p className={inspirationGalleryStyles.noticeTitle}>Upload service required</p>
+          <p className={inspirationGalleryStyles.noticeText}>No inspiration will be saved from this screen until storage is implemented.</p>
         </div>
       </motion.section>
     </motion.div>
@@ -416,12 +417,12 @@ function GalleryOverview({
 }) {
   return (
     <motion.div
-      className={`${showSelectionPanel ? 'grid grid-cols-[minmax(0,1fr)_286px] items-start gap-5 max-lg:grid-cols-1' : 'block'}`}
+      className={showSelectionPanel ? inspirationGalleryStyles.overviewGrid : inspirationGalleryStyles.overviewBlock}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: EASE }}
     >
-      <section aria-label="Inspiration covers" className="min-w-0">
+      <section aria-label="Inspiration covers" className={inspirationGalleryStyles.coversSection}>
         {loadState === 'loading' && <GallerySkeleton />}
         {loadState === 'error' && <GalleryMessage title={loadError} body="Check that the inspirations manifest was generated successfully." />}
         {loadState === 'success' && inspirations.length === 0 && (
@@ -438,7 +439,7 @@ function GalleryOverview({
             />
 
             {visibleInspirations.length ? (
-              <motion.div layout className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
+              <motion.div layout className={inspirationGalleryStyles.cardsGrid}>
                 <AnimatePresence>
                   {visibleInspirations.map((item, index) => (
                     <CoverCard
@@ -463,17 +464,17 @@ function GalleryOverview({
         <aside
           ref={panelRef}
           tabIndex={-1}
-          className="sticky top-20 min-w-0 rounded-xl border border-dp-border bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.02)] outline-none max-lg:static"
+          className={inspirationGalleryStyles.selectionPanel}
           aria-labelledby="selected-inspirations-heading"
         >
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 id="selected-inspirations-heading" className="m-0 text-[16px] font-bold tracking-[-0.03em] text-dp-black">Selected</h2>
-            <span className="shrink-0 text-[12px] font-medium text-dp-muted">{selectedInspirations.length} selected</span>
+          <div className={inspirationGalleryStyles.selectionHeader}>
+            <h2 id="selected-inspirations-heading" className={inspirationGalleryStyles.selectionTitle}>Selected</h2>
+            <span className={inspirationGalleryStyles.selectionCount}>{selectedInspirations.length} selected</span>
           </div>
           <ValidationError>{validationError}</ValidationError>
 
           {selectedInspirations.length ? (
-            <motion.div layout className="mt-4 grid gap-3 max-lg:grid-cols-3 max-md:flex max-md:overflow-x-auto max-md:pb-1">
+            <motion.div layout className={inspirationGalleryStyles.selectionGrid}>
               <AnimatePresence initial={false}>
                 {selectedInspirations.map((item) => (
                   <SelectedItem
@@ -486,14 +487,14 @@ function GalleryOverview({
               </AnimatePresence>
             </motion.div>
           ) : (
-            <div className="mt-4 rounded-xl border border-dashed border-dp-border bg-[#FAFAF8] p-4">
-              <p className="m-0 text-[13px] font-semibold text-dp-black">No inspirations selected yet.</p>
-              <p className="m-0 mt-1 text-[12.5px] leading-5 text-dp-muted">Open a cover and choose Use this inspiration.</p>
+            <div className={inspirationGalleryStyles.emptySelection}>
+              <p className={inspirationGalleryStyles.noticeTitle}>No inspirations selected yet.</p>
+              <p className={inspirationGalleryStyles.noticeText}>Open a cover and choose Use this inspiration.</p>
             </div>
           )}
 
-          <div className="mt-4 rounded-xl border border-dp-border bg-[#FAFAF8] p-4">
-            <p className="m-0 text-[13px] font-semibold text-dp-black">Current brief</p>
+          <div className={inspirationGalleryStyles.briefPanel}>
+            <p className={inspirationGalleryStyles.noticeTitle}>Current brief</p>
             <RequirementSummary />
           </div>
         </aside>
@@ -504,8 +505,8 @@ function GalleryOverview({
 
 function CategoryFilterBar({ options, activeCategory, resultCount, onChange, shouldReduceMotion }) {
   return (
-    <div className="mb-4 flex min-w-0 items-center justify-between gap-3 max-sm:block">
-      <div className="flex min-w-0 gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Filter inspirations by category">
+    <div className={inspirationGalleryStyles.filterWrap}>
+      <div className={inspirationGalleryStyles.filterList} role="tablist" aria-label="Filter inspirations by category">
         {options.map((option) => {
           const isActive = option.key === activeCategory
           return (
@@ -515,10 +516,10 @@ function CategoryFilterBar({ options, activeCategory, resultCount, onChange, sho
               role="tab"
               aria-selected={isActive}
               onClick={() => onChange(option.key)}
-              className={`shrink-0 cursor-pointer rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] ${
+              className={`${inspirationGalleryStyles.filterButtonBase} ${
                 isActive
-                  ? 'border-dp-black bg-dp-black text-white'
-                  : 'border-dp-border bg-white text-dp-black hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black'
+                  ? inspirationGalleryStyles.filterButtonActive
+                  : inspirationGalleryStyles.filterButtonDefault
               }`}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
@@ -529,7 +530,7 @@ function CategoryFilterBar({ options, activeCategory, resultCount, onChange, sho
           )
         })}
       </div>
-      <p className="m-0 shrink-0 text-[12.5px] font-medium text-dp-muted max-sm:mt-2">
+      <p className={inspirationGalleryStyles.resultCount}>
         {resultCount}
       </p>
     </div>
@@ -538,13 +539,13 @@ function CategoryFilterBar({ options, activeCategory, resultCount, onChange, sho
 
 function GallerySkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1" aria-label="Loading inspirations">
+    <div className={inspirationGalleryStyles.skeletonGrid} aria-label="Loading inspirations">
       {Array.from({ length: 6 }).map((_, index) => (
-        <div key={index} className="overflow-hidden rounded-xl border border-dp-border bg-white">
-          <div className="aspect-[4/3] bg-neutral-100 motion-safe:animate-pulse" />
-          <div className="p-3.5">
-            <div className="h-4 w-32 rounded bg-neutral-100 motion-safe:animate-pulse" />
-            <div className="mt-2 h-3 w-40 rounded bg-neutral-100 motion-safe:animate-pulse" />
+        <div key={index} className={inspirationGalleryStyles.skeletonCard}>
+          <div className={inspirationGalleryStyles.skeletonPreview} />
+          <div className={inspirationGalleryStyles.skeletonBody}>
+            <div className={inspirationGalleryStyles.skeletonLineTitle} />
+            <div className={inspirationGalleryStyles.skeletonLineMeta} />
           </div>
         </div>
       ))}
@@ -554,9 +555,9 @@ function GallerySkeleton() {
 
 function GalleryMessage({ title, body }) {
   return (
-    <div className="rounded-xl border border-dashed border-dp-border bg-white p-6 text-center">
-      <p className="m-0 text-[14px] font-semibold text-dp-black">{title}</p>
-      <p className="m-0 mt-2 text-[13px] leading-5 text-dp-muted">{body}</p>
+    <div className={inspirationGalleryStyles.message}>
+      <p className={inspirationGalleryStyles.messageTitle}>{title}</p>
+      <p className={inspirationGalleryStyles.messageBody}>{body}</p>
     </div>
   )
 }
@@ -567,8 +568,8 @@ function CoverCard({ item, index, isSelected, onOpen, shouldReduceMotion }) {
       layout
       type="button"
       onClick={onOpen}
-      className={`group min-w-0 cursor-pointer overflow-hidden rounded-xl border bg-white p-0 text-left shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] ${
-        isSelected ? 'border-dp-black' : 'border-dp-border hover:border-neutral-300'
+      className={`${inspirationGalleryStyles.coverBase} ${
+        isSelected ? inspirationGalleryStyles.coverSelected : inspirationGalleryStyles.coverDefault
       }`}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -577,20 +578,20 @@ function CoverCard({ item, index, isSelected, onOpen, shouldReduceMotion }) {
       whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
       aria-label={`Open ${item.title} inspiration details`}
     >
-      <div className="aspect-[4/3] overflow-hidden border-b border-dp-border bg-neutral-100">
+      <div className={inspirationGalleryStyles.coverMedia}>
         {item.galleryPreview ? (
           <GalleryPreviewImage item={item} loading={index < 3 ? 'eager' : 'lazy'} />
         ) : (
           <MissingPreview title={item.title} folder={item.folder} />
         )}
       </div>
-      <div className="grid min-h-[82px] grid-cols-[1fr_auto] items-start gap-3 p-3.5">
+      <div className={inspirationGalleryStyles.coverBody}>
         <div className="min-w-0">
-          <h2 className="m-0 truncate text-[16px] font-bold leading-tight tracking-[-0.03em] text-dp-black">{item.title}</h2>
-          <p className="m-0 mt-1 truncate text-[13px] leading-5 text-dp-muted">{formatInspirationMeta(item)}</p>
+          <h2 className={inspirationGalleryStyles.coverTitle}>{item.title}</h2>
+          <p className={inspirationGalleryStyles.coverMeta}>{formatInspirationMeta(item)}</p>
         </div>
         {isSelected && (
-          <span className="inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-lg bg-dp-black px-2.5 text-[12px] font-semibold text-white" aria-label="Selected">
+          <span className={inspirationGalleryStyles.selectedBadge} aria-label="Selected">
             <InspirationIcon name="check" />
             Selected
           </span>
@@ -698,7 +699,7 @@ function InspirationDetailModal({ item, titleRef, isSelected, onClose, onToggle,
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/45 p-5 max-sm:p-3"
+      className={inspirationGalleryStyles.detailOverlay}
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}
@@ -711,17 +712,17 @@ function InspirationDetailModal({ item, titleRef, isSelected, onClose, onToggle,
         role="dialog"
         aria-modal="true"
         aria-labelledby="inspiration-detail-title"
-        className="flex h-[90dvh] w-[min(94vw,1400px)] min-w-0 flex-col overflow-hidden rounded-xl border border-dp-border bg-white shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
+        className={inspirationGalleryStyles.detailModal}
         initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.985, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.985, y: 8 }}
         transition={{ duration: shouldReduceMotion ? 0 : 0.22, ease: EASE }}
       >
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-dp-border px-5 py-4 max-sm:px-4">
+        <div className={inspirationGalleryStyles.detailHeader}>
           <motion.button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-3.5 py-2 text-[13px] font-semibold text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className={inspirationGalleryStyles.detailBack}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
@@ -729,16 +730,16 @@ function InspirationDetailModal({ item, titleRef, isSelected, onClose, onToggle,
             <InspirationIcon name="arrow-left" />
             All covers
           </motion.button>
-          <div className="flex min-w-0 items-center gap-2 text-[12.5px] font-medium text-dp-muted">
+          <div className={inspirationGalleryStyles.detailMeta}>
             <span className="truncate">{item.category}</span>
             <span aria-hidden="true">/</span>
             <span className="truncate">{item.style}</span>
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_390px] max-xl:grid-cols-[minmax(0,1fr)_340px] max-lg:block max-lg:overflow-y-auto">
-          <div className="flex min-h-0 flex-col border-r border-dp-border bg-[#FAFAF8] p-5 max-lg:border-r-0 max-lg:border-b max-sm:p-4">
-            <h2 className="m-0 mb-4 text-[15px] font-bold tracking-[-0.02em] text-dp-black">Design Screens</h2>
+        <div className={inspirationGalleryStyles.detailGrid}>
+          <div className={inspirationGalleryStyles.screensPane}>
+            <h2 className={inspirationGalleryStyles.screensTitle}>Design Screens</h2>
             {detailImages.length ? (
               <ScreenshotCarousel
                 title={item.title}
@@ -758,40 +759,40 @@ function InspirationDetailModal({ item, titleRef, isSelected, onClose, onToggle,
                 shouldReduceMotion={shouldReduceMotion}
               />
             ) : (
-              <div className="rounded-xl border border-dashed border-dp-border bg-white p-6 text-center">
-                <p className="m-0 text-[14px] font-semibold text-dp-black">No screenshots found.</p>
-                <p className="m-0 mt-2 text-[13px] leading-5 text-dp-muted">This inspiration folder is present, but it does not contain image files yet.</p>
+              <div className={inspirationGalleryStyles.message}>
+                <p className={inspirationGalleryStyles.messageTitle}>No screenshots found.</p>
+                <p className={inspirationGalleryStyles.messageBody}>This inspiration folder is present, but it does not contain image files yet.</p>
               </div>
             )}
           </div>
 
-          <aside className="min-h-0 overflow-y-auto p-5 max-lg:overflow-visible max-sm:p-4">
-            <div tabIndex={-1} ref={titleRef} className="outline-none">
-              <p className="m-0 text-[13px] font-semibold text-dp-muted">{item.category}</p>
-              <h2 id="inspiration-detail-title" className="m-0 mt-1 text-[26px] font-bold leading-tight tracking-[-0.045em] text-dp-black">
+          <aside className={inspirationGalleryStyles.detailAside}>
+            <div tabIndex={-1} ref={titleRef} className={inspirationGalleryStyles.focusTarget}>
+              <p className={inspirationGalleryStyles.detailCategory}>{item.category}</p>
+              <h2 id="inspiration-detail-title" className={inspirationGalleryStyles.detailTitle}>
                 {item.title}
               </h2>
-              <p className="m-0 mt-2 text-[13px] font-medium leading-5 text-dp-text">{formatInspirationMeta(item)}</p>
+              <p className={inspirationGalleryStyles.detailSubtitle}>{formatInspirationMeta(item)}</p>
             </div>
 
-            <div className="mt-7 border-t border-dp-border pt-5">
-              <h3 className="m-0 text-[14px] font-bold tracking-[-0.02em] text-dp-black">Description</h3>
-              <p className="m-0 mt-3 text-[13.5px] leading-6 text-dp-text">{item.description}</p>
+            <div className={inspirationGalleryStyles.detailSection}>
+              <h3 className={inspirationGalleryStyles.detailSectionTitle}>Description</h3>
+              <p className={inspirationGalleryStyles.detailSectionText}>{item.description}</p>
             </div>
 
-            <div className="mt-7 border-t border-dp-border pt-5">
-              <h3 className="m-0 text-[14px] font-bold tracking-[-0.02em] text-dp-black">Design direction</h3>
-              <p className="m-0 mt-3 text-[13.5px] leading-6 text-dp-text">{item.designDirection}</p>
+            <div className={inspirationGalleryStyles.detailSection}>
+              <h3 className={inspirationGalleryStyles.detailSectionTitle}>Design direction</h3>
+              <p className={inspirationGalleryStyles.detailSectionText}>{item.designDirection}</p>
             </div>
 
             {showSelectionAction && (
               <motion.button
                 type="button"
                 onClick={onToggle}
-                className={`mt-7 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                className={`${inspirationGalleryStyles.selectButtonBase} ${
                   isSelected
-                    ? 'border-dp-black bg-white text-dp-black hover:bg-neutral-50 hover:text-dp-black'
-                    : 'border-dp-black bg-dp-black text-white hover:bg-neutral-800 hover:text-white'
+                    ? inspirationGalleryStyles.selectButtonActive
+                    : inspirationGalleryStyles.selectButtonDefault
                 }`}
                 aria-label={isSelected ? 'Remove this inspiration' : 'Use this inspiration'}
                 whileHover={shouldReduceMotion ? undefined : { y: -1 }}
@@ -898,20 +899,20 @@ function ScreenshotCarousel({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="relative h-[320px] overflow-hidden rounded-xl border border-dp-border bg-neutral-100 sm:h-[420px] lg:h-[min(56dvh,560px)] xl:h-[min(60dvh,620px)]">
+    <div className={inspirationGalleryStyles.carousel}>
+      <div className={inspirationGalleryStyles.viewport}>
         <div
           ref={viewportRef}
           tabIndex={0}
-          className="absolute inset-0 overflow-auto overscroll-contain outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-inset"
+          className={inspirationGalleryStyles.scrollArea}
           onKeyDown={handleViewerKeyDown}
           onWheel={handleWheel}
         >
           <AnimatePresence custom={direction} mode="wait" initial={false}>
             <motion.div
               key={activeImage.src}
-              className={`min-h-full min-w-full p-3 sm:p-4 ${
-                isFullPage ? 'flex items-start justify-center touch-pan-y' : 'flex h-full items-center justify-center touch-pan-y'
+              className={`${inspirationGalleryStyles.imageFrameBase} ${
+                isFullPage ? inspirationGalleryStyles.imageFrameFull : inspirationGalleryStyles.imageFrameFit
               }`}
               custom={direction}
               drag={shouldReduceMotion ? false : 'x'}
@@ -938,7 +939,7 @@ function ScreenshotCarousel({
               <img
                 src={activeImage.src}
                 alt={`${title} screenshot ${activeIndex + 1} of ${images.length}: ${activeImage.label}`}
-                className={`block h-auto object-contain ${isFullPage ? 'max-w-none object-top' : 'w-auto object-center'}`}
+                className={`${inspirationGalleryStyles.imageBase} ${isFullPage ? inspirationGalleryStyles.imageFull : inspirationGalleryStyles.imageFit}`}
                 style={imageStyle}
                 loading="lazy"
                 draggable="false"
@@ -956,7 +957,7 @@ function ScreenshotCarousel({
         />
 
         {isFullPage && (
-          <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-dp-border bg-white/92 px-3 py-1 text-[11px] font-medium text-dp-muted shadow-[0_4px_14px_rgba(0,0,0,0.08)]">
+          <div className={inspirationGalleryStyles.fullPageHint}>
             Scroll to explore full page
           </div>
         )}
@@ -969,11 +970,11 @@ function ScreenshotCarousel({
         )}
       </div>
 
-      <div className="mt-3 text-center text-[12.5px] font-medium text-dp-muted">
+      <div className={inspirationGalleryStyles.carouselCount}>
         {activeIndex + 1} / {images.length}
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Screenshot thumbnails">
+      <div className={inspirationGalleryStyles.thumbnails} aria-label="Screenshot thumbnails">
         {images.map((image, index) => {
           const isActive = index === activeIndex
           return (
@@ -981,13 +982,13 @@ function ScreenshotCarousel({
               key={image.src}
               type="button"
               onClick={() => onThumbnail(index)}
-              className={`h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-white p-0 transition-[border-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] max-sm:h-14 max-sm:w-20 ${
-                isActive ? 'border-dp-black opacity-100' : 'border-dp-border opacity-65 hover:border-neutral-300 hover:opacity-90'
+              className={`${inspirationGalleryStyles.thumbnailBase} ${
+                isActive ? inspirationGalleryStyles.thumbnailActive : inspirationGalleryStyles.thumbnailDefault
               }`}
               aria-label={`View image ${index + 1}`}
               aria-current={isActive ? 'true' : undefined}
             >
-              <img src={image.src} alt="" className="h-full w-full object-cover object-top" loading="lazy" draggable="false" />
+              <img src={image.src} alt="" className={inspirationGalleryStyles.thumbnailImage} loading="lazy" draggable="false" />
             </button>
           )
         })}
@@ -998,24 +999,24 @@ function ScreenshotCarousel({
 
 function ZoomToolbar({ zoom, onZoomIn, onZoomOut, onFit }) {
   return (
-    <div className="absolute right-3 top-3 z-20 inline-flex items-center overflow-hidden rounded-xl border border-dp-border bg-white/95 text-dp-black shadow-[0_6px_18px_rgba(0,0,0,0.10)]">
+    <div className={inspirationGalleryStyles.zoomToolbar}>
       <button
         type="button"
         onClick={onZoomOut}
         disabled={zoom <= MIN_ZOOM}
-        className="grid h-9 w-9 cursor-pointer place-items-center border-r border-dp-border text-[16px] font-semibold transition-colors duration-200 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:text-dp-muted disabled:opacity-45"
+        className={`${inspirationGalleryStyles.zoomButton} ${inspirationGalleryStyles.zoomOutButton}`}
         aria-label="Zoom out"
       >
         -
       </button>
-      <span className="min-w-14 px-2 text-center text-[12px] font-semibold text-dp-black" aria-live="polite">
+      <span className={inspirationGalleryStyles.zoomValue} aria-live="polite">
         {zoom}%
       </span>
       <button
         type="button"
         onClick={onZoomIn}
         disabled={zoom >= MAX_ZOOM}
-        className="grid h-9 w-9 cursor-pointer place-items-center border-l border-r border-dp-border text-[16px] font-semibold transition-colors duration-200 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:text-dp-muted disabled:opacity-45"
+        className={`${inspirationGalleryStyles.zoomButton} ${inspirationGalleryStyles.zoomInButton}`}
         aria-label="Zoom in"
       >
         +
@@ -1023,7 +1024,7 @@ function ZoomToolbar({ zoom, onZoomIn, onZoomOut, onFit }) {
       <button
         type="button"
         onClick={onFit}
-        className="h-9 cursor-pointer px-3 text-[12px] font-semibold text-dp-black transition-colors duration-200 hover:bg-neutral-50"
+        className={inspirationGalleryStyles.zoomFit}
         aria-label="Fit image"
       >
         Fit
@@ -1039,8 +1040,8 @@ function CarouselArrow({ label, direction, onClick, shouldReduceMotion }) {
     <motion.button
       type="button"
       onClick={onClick}
-      className={`absolute top-1/2 grid h-10 w-10 -translate-y-1/2 cursor-pointer place-items-center rounded-full border border-dp-border bg-white/92 text-dp-black shadow-[0_6px_18px_rgba(0,0,0,0.12)] backdrop-blur-sm transition-colors duration-200 hover:border-neutral-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-        isPrevious ? 'left-3' : 'right-3'
+      className={`${inspirationGalleryStyles.arrowBase} ${
+        isPrevious ? inspirationGalleryStyles.arrowPrevious : inspirationGalleryStyles.arrowNext
       }`}
       aria-label={label}
       whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
@@ -1057,7 +1058,7 @@ function LoadableImage({ src, alt, className, loading, onLoad }) {
 
   if (hasFailed) {
     return (
-      <div className="grid h-full w-full place-items-center px-4 text-center text-[12.5px] font-medium text-dp-muted">
+      <div className={inspirationGalleryStyles.loadError}>
         Image unavailable
       </div>
     )
@@ -1067,7 +1068,7 @@ function LoadableImage({ src, alt, className, loading, onLoad }) {
     <img
       src={src}
       alt={alt}
-      className={`block ${className}`}
+      className={`${inspirationGalleryStyles.image} ${className}`}
       loading={loading}
       decoding="async"
       draggable="false"
@@ -1079,10 +1080,10 @@ function LoadableImage({ src, alt, className, loading, onLoad }) {
 
 function MissingPreview({ title, folder }) {
   return (
-    <div className="grid h-full w-full place-items-center px-4 text-center">
+    <div className={inspirationGalleryStyles.missingPreview}>
       <div>
-        <p className="m-0 text-[14px] font-semibold text-dp-black">{title}</p>
-        <p className="m-0 mt-1 text-[12.5px] leading-5 text-dp-muted">{folder} has no image files.</p>
+        <p className={inspirationGalleryStyles.missingPreviewTitle}>{title}</p>
+        <p className={inspirationGalleryStyles.missingPreviewText}>{folder} has no image files.</p>
       </div>
     </div>
   )
@@ -1092,27 +1093,27 @@ function SelectedItem({ item, onRemove, shouldReduceMotion }) {
   return (
     <motion.div
       layout
-      className="grid min-w-0 grid-cols-[72px_minmax(0,1fr)_32px] items-center gap-3 rounded-xl border border-dp-border bg-[#FAFAF8] p-2 max-md:min-w-[240px]"
+      className={inspirationGalleryStyles.selectedItem}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: 'easeOut' }}
     >
       {item.galleryPreview ? (
-        <img src={item.galleryPreview} alt={`${item.title} selected preview`} className="h-12 w-[72px] rounded-lg border border-dp-border object-cover object-top" loading="lazy" />
+        <img src={item.galleryPreview} alt={`${item.title} selected preview`} className={inspirationGalleryStyles.selectedImage} loading="lazy" />
       ) : (
-        <div className="grid h-12 w-[72px] place-items-center rounded-lg border border-dp-border bg-white text-[10px] font-semibold text-dp-muted">
+        <div className={inspirationGalleryStyles.selectedFallback}>
           No image
         </div>
       )}
-      <div className="min-w-0">
-        <p className="m-0 truncate text-[13px] font-semibold text-dp-black">{item.title}</p>
-        <p className="m-0 mt-0.5 truncate text-[12px] text-dp-muted">{item.category}</p>
+      <div className={inspirationGalleryStyles.selectedText}>
+        <p className={inspirationGalleryStyles.selectedTitle}>{item.title}</p>
+        <p className={inspirationGalleryStyles.selectedCategory}>{item.category}</p>
       </div>
       <motion.button
         type="button"
         onClick={onRemove}
-        className="grid h-8 w-8 cursor-pointer place-items-center rounded-lg border border-neutral-200 bg-white text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+        className={inspirationGalleryStyles.selectedRemove}
         aria-label={`Remove ${item.title}`}
         whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
         whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
@@ -1126,18 +1127,18 @@ function SelectedItem({ item, onRemove, shouldReduceMotion }) {
 
 function ProgressSteps() {
   return (
-    <ol className="flex flex-wrap items-center gap-2 p-0">
+    <ol className={inspirationGalleryStyles.progressList}>
       {FLOW_STEPS.map((step, index) => {
         const isActive = step === 'Inspiration'
         const isComplete = index < FLOW_STEPS.indexOf('Inspiration')
         return (
-          <li key={step} className="flex items-center gap-2">
-            <span className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[12px] font-semibold ${
+          <li key={step} className={inspirationGalleryStyles.progressItem}>
+            <span className={`${inspirationGalleryStyles.progressPillBase} ${
               isActive
-                ? 'border-dp-black bg-dp-black text-white'
+                ? inspirationGalleryStyles.progressActive
                 : isComplete
-                  ? 'border-dp-border bg-white text-dp-black'
-                  : 'border-dp-border bg-white text-dp-muted'
+                  ? inspirationGalleryStyles.progressComplete
+                  : inspirationGalleryStyles.progressDefault
             }`}>
               {isComplete && <InspirationIcon name="check-small" />}
               {step}
@@ -1166,11 +1167,11 @@ function RequirementSummary() {
   ]
 
   return (
-    <dl className="m-0 mt-3 grid gap-2">
+    <dl className={inspirationGalleryStyles.requirementSummary}>
       {rows.map(([label, value]) => (
-        <div key={label} className="min-w-0 border-t border-dp-border pt-2 first:border-t-0 first:pt-0">
-          <dt className="text-[11px] font-semibold text-dp-muted">{label}</dt>
-          <dd className="m-0 mt-0.5 line-clamp-2 text-[12.5px] font-medium leading-5 text-dp-black">{value}</dd>
+        <div key={label} className={inspirationGalleryStyles.requirementSummaryItem}>
+          <dt className={inspirationGalleryStyles.requirementSummaryTerm}>{label}</dt>
+          <dd className={inspirationGalleryStyles.requirementSummaryValue}>{value}</dd>
         </div>
       ))}
     </dl>
@@ -1182,7 +1183,7 @@ function ValidationError({ children }) {
 
   return (
     <motion.p
-      className="m-0 mb-2 text-[12px] font-medium text-red-700"
+      className={inspirationGalleryStyles.validationError}
       initial={{ opacity: 0, y: -2 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.16, ease: 'easeOut' }}

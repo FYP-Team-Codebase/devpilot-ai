@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import HeroSection from './components/sections/Hero/HeroSection'
@@ -9,26 +9,35 @@ import PricingSection from './components/sections/Pricing/PricingSection'
 import FinalCtaSection from './components/sections/FinalCta/FinalCtaSection'
 import FooterSection from './components/sections/Footer/FooterSection'
 import ScrollHandoff from './components/motion/ScrollHandoff'
-import LoginPage from './pages/Login/LoginPage'
-import SignupPage from './pages/Signup/SignupPage'
-import VerifyEmailPage from './pages/VerifyEmail/VerifyEmailPage'
-import PromptPage from './pages/Prompt/PromptPage'
-import RequirementsPage from './pages/Requirements/RequirementsPage'
-import DashboardPage, {
-  DashboardHome,
-  GenerationInspirationPage,
-  MyAssetsPage,
-  PricingPage,
-  ProfilePage,
-  ProjectsPage,
-  SettingsPage,
-  StandaloneInspirationPage,
-} from './pages/Dashboard/DashboardPage'
 import { getCurrentUser, getToken } from './services/authService'
 import { getSectionIdFromHash, scrollToLandingSection } from './utils/landingScroll'
 import useDocumentTitle from './hooks/useDocumentTitle'
 import { getDocumentTitle } from './utils/documentTitle'
-import './App.css'
+
+const LoginPage = lazy(() => import('./pages/Login/LoginPage'))
+const SignupPage = lazy(() => import('./pages/Signup/SignupPage'))
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmail/VerifyEmailPage'))
+const PromptPage = lazy(() => import('./pages/Prompt/PromptPage'))
+const RequirementsPage = lazy(() => import('./pages/Requirements/RequirementsPage'))
+
+const loadDashboardModule = () => import('./pages/Dashboard/DashboardPage')
+const DashboardPage = lazy(loadDashboardModule)
+const DashboardHome = lazy(() => loadDashboardModule().then((module) => ({ default: module.DashboardHome })))
+const ProjectsPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.ProjectsPage })))
+const MyAssetsPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.MyAssetsPage })))
+const StandaloneInspirationPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.StandaloneInspirationPage })))
+const GenerationInspirationPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.GenerationInspirationPage })))
+const PricingPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.PricingPage })))
+const SettingsPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.SettingsPage })))
+const ProfilePage = lazy(() => loadDashboardModule().then((module) => ({ default: module.ProfilePage })))
+
+function RouteLoader() {
+  return (
+    <div className="sr-only" role="status" aria-live="polite">
+      Loading page...
+    </div>
+  )
+}
 
 function ProtectedRoute({ children }) {
   const location = useLocation()
@@ -121,56 +130,58 @@ function App() {
   return (
     <BrowserRouter>
       <DocumentTitleManager />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route
-          path="/prompt"
-          element={
-            <ProtectedRoute>
-              {() => <PromptPage />}
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/requirements"
-          element={
-            <ProtectedRoute>
-              {() => <RequirementsPage />}
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/inspiration"
-          element={
-            <ProtectedRoute>
-              {(user) => <DashboardPage user={user} content={<GenerationInspirationPage />} />}
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              {(user) => <DashboardPage user={user} />}
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardHome />} />
-          <Route path="projects" element={<ProjectsPage />} />
-          <Route path="assets" element={<MyAssetsPage />} />
-          <Route path="inspiration" element={<StandaloneInspirationPage />} />
-          <Route path="generate/inspiration" element={<Navigate to="/inspiration" replace />} />
-          <Route path="pricing" element={<PricingPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="templates" element={<Navigate to="/dashboard/assets" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<RouteLoader />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route
+            path="/prompt"
+            element={
+              <ProtectedRoute>
+                {() => <PromptPage />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/requirements"
+            element={
+              <ProtectedRoute>
+                {() => <RequirementsPage />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inspiration"
+            element={
+              <ProtectedRoute>
+                {(user) => <DashboardPage user={user} content={<GenerationInspirationPage />} />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                {(user) => <DashboardPage user={user} />}
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DashboardHome />} />
+            <Route path="projects" element={<ProjectsPage />} />
+            <Route path="assets" element={<MyAssetsPage />} />
+            <Route path="inspiration" element={<StandaloneInspirationPage />} />
+            <Route path="generate/inspiration" element={<Navigate to="/inspiration" replace />} />
+            <Route path="pricing" element={<PricingPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="templates" element={<Navigate to="/dashboard/assets" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

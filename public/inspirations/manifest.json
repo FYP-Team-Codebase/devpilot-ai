@@ -17,38 +17,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-01 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-01/pet%20cover.png",
-      "fullPage": "/inspirations/inspirations-01/pet%20homepage.png",
+      "thumbnail": "/inspirations/inspirations-01/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-01/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-01/optimized/pet%20cover.jpg",
+      "fullPage": "/inspirations/inspirations-01/optimized/pet%20homepage.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-01/pet%20homepage.png",
+          "src": "/inspirations/inspirations-01/optimized/pet%20homepage.jpg",
           "label": "Pet Homepage",
-          "width": 2880,
-          "height": 9768
+          "width": 1800,
+          "height": 6105
         },
         {
-          "src": "/inspirations/inspirations-01/pet%20cover.png",
+          "src": "/inspirations/inspirations-01/optimized/pet%20cover.jpg",
           "label": "Pet Cover",
-          "width": 2865,
-          "height": 1386
+          "width": 1800,
+          "height": 871
         },
         {
-          "src": "/inspirations/inspirations-01/footer.png",
+          "src": "/inspirations/inspirations-01/optimized/footer.jpg",
           "label": "Footer",
-          "width": 2710,
-          "height": 1548
+          "width": 1800,
+          "height": 1028
         },
         {
-          "src": "/inspirations/inspirations-01/pet%20feature.png",
+          "src": "/inspirations/inspirations-01/optimized/pet%20feature.jpg",
           "label": "Pet Feature",
-          "width": 2848,
-          "height": 1914
+          "width": 1800,
+          "height": 1210
         },
         {
-          "src": "/inspirations/inspirations-01/pet%20products.png",
+          "src": "/inspirations/inspirations-01/optimized/pet%20products.jpg",
           "label": "Pet Products",
-          "width": 2873,
-          "height": 2026
+          "width": 1800,
+          "height": 1269
         }
       ]
     },
@@ -66,38 +68,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-02 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-02/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-02/AI%20Landing%20Page%201.png",
+      "thumbnail": "/inspirations/inspirations-02/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-02/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-02/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-02/optimized/AI%20Landing%20Page%201.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-02/AI%20Landing%20Page%201.png",
+          "src": "/inspirations/inspirations-02/optimized/AI%20Landing%20Page%201.jpg",
           "label": "AI Landing Page 1",
-          "width": 2880,
-          "height": 11220
+          "width": 1800,
+          "height": 7012
         },
         {
-          "src": "/inspirations/inspirations-02/Cover-image.png",
+          "src": "/inspirations/inspirations-02/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2868,
-          "height": 1960
+          "width": 1800,
+          "height": 1230
         },
         {
-          "src": "/inspirations/inspirations-02/Footer-image.png",
+          "src": "/inspirations/inspirations-02/optimized/Footer-image.jpg",
           "label": "Footer Image",
-          "width": 2880,
-          "height": 1878
+          "width": 1800,
+          "height": 1174
         },
         {
-          "src": "/inspirations/inspirations-02/pricing-Ai.png",
+          "src": "/inspirations/inspirations-02/optimized/pricing-Ai.jpg",
           "label": "Pricing Ai",
-          "width": 2836,
-          "height": 2272
+          "width": 1800,
+          "height": 1442
         },
         {
-          "src": "/inspirations/inspirations-02/question-image.png",
+          "src": "/inspirations/inspirations-02/optimized/question-image.jpg",
           "label": "Question Image",
-          "width": 2880,
-          "height": 2104
+          "width": 1800,
+          "height": 1315
         }
       ]
     },
@@ -115,38 +119,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-03 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-03/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-03/full-page.png",
+      "thumbnail": "/inspirations/inspirations-03/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-03/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-03/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-03/optimized/full-page.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-03/full-page.png",
+          "src": "/inspirations/inspirations-03/optimized/full-page.jpg",
           "label": "Full Page",
-          "width": 2880,
-          "height": 10874
+          "width": 1800,
+          "height": 6796
         },
         {
-          "src": "/inspirations/inspirations-03/Cover-image.png",
+          "src": "/inspirations/inspirations-03/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2900,
-          "height": 2104
+          "width": 1800,
+          "height": 1306
         },
         {
-          "src": "/inspirations/inspirations-03/Blog%20section.png",
+          "src": "/inspirations/inspirations-03/optimized/Blog%20section.jpg",
           "label": "Blog Section",
-          "width": 2880,
-          "height": 1610
+          "width": 1800,
+          "height": 1006
         },
         {
-          "src": "/inspirations/inspirations-03/Feature-section.png",
+          "src": "/inspirations/inspirations-03/optimized/Feature-section.jpg",
           "label": "Feature Section",
-          "width": 2880,
-          "height": 1898
+          "width": 1800,
+          "height": 1186
         },
         {
-          "src": "/inspirations/inspirations-03/Nav-bar.png",
+          "src": "/inspirations/inspirations-03/optimized/Nav-bar.jpg",
           "label": "Nav Bar",
-          "width": 3304,
-          "height": 1248
+          "width": 1800,
+          "height": 680
         }
       ]
     },
@@ -164,38 +170,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-04 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-04/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-04/Productivty-landing.jpg",
+      "thumbnail": "/inspirations/inspirations-04/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-04/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-04/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-04/optimized/Productivty-landing.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-04/Productivty-landing.jpg",
+          "src": "/inspirations/inspirations-04/optimized/Productivty-landing.jpg",
           "label": "Productivty Landing",
-          "width": 2880,
-          "height": 14066
+          "width": 1800,
+          "height": 8791
         },
         {
-          "src": "/inspirations/inspirations-04/Cover-image.png",
+          "src": "/inspirations/inspirations-04/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2880,
-          "height": 2308
+          "width": 1800,
+          "height": 1442
         },
         {
-          "src": "/inspirations/inspirations-04/feature-image.png",
+          "src": "/inspirations/inspirations-04/optimized/feature-image.jpg",
           "label": "Feature Image",
-          "width": 2880,
-          "height": 2132
+          "width": 1800,
+          "height": 1332
         },
         {
-          "src": "/inspirations/inspirations-04/footer.png",
+          "src": "/inspirations/inspirations-04/optimized/footer.jpg",
           "label": "Footer",
-          "width": 2880,
-          "height": 2280
+          "width": 1800,
+          "height": 1425
         },
         {
-          "src": "/inspirations/inspirations-04/section2.png",
+          "src": "/inspirations/inspirations-04/optimized/section2.jpg",
           "label": "Section2",
-          "width": 2846,
-          "height": 2268
+          "width": 1800,
+          "height": 1434
         }
       ]
     },
@@ -213,38 +221,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-05 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-05/cover-image.png",
-      "fullPage": "/inspirations/inspirations-05/xpense%20landing.png",
+      "thumbnail": "/inspirations/inspirations-05/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-05/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-05/optimized/cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-05/optimized/xpense%20landing.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-05/xpense%20landing.png",
+          "src": "/inspirations/inspirations-05/optimized/xpense%20landing.jpg",
           "label": "Xpense Landing",
-          "width": 2880,
-          "height": 16280
+          "width": 1592,
+          "height": 9000
         },
         {
-          "src": "/inspirations/inspirations-05/cover-image.png",
+          "src": "/inspirations/inspirations-05/optimized/cover-image.jpg",
           "label": "Cover Image",
-          "width": 2880,
-          "height": 1800
+          "width": 1800,
+          "height": 1125
         },
         {
-          "src": "/inspirations/inspirations-05/Feature-1.png",
+          "src": "/inspirations/inspirations-05/optimized/Feature-1.jpg",
           "label": "Feature 1",
-          "width": 2880,
-          "height": 1590
+          "width": 1800,
+          "height": 994
         },
         {
-          "src": "/inspirations/inspirations-05/Footer-image.png",
+          "src": "/inspirations/inspirations-05/optimized/Footer-image.jpg",
           "label": "Footer Image",
-          "width": 2880,
-          "height": 2535
+          "width": 1800,
+          "height": 1584
         },
         {
-          "src": "/inspirations/inspirations-05/pricing-part.png",
+          "src": "/inspirations/inspirations-05/optimized/pricing-part.jpg",
           "label": "Pricing Part",
-          "width": 2880,
-          "height": 1800
+          "width": 1800,
+          "height": 1125
         }
       ]
     },
@@ -262,44 +272,46 @@
       ],
       "description": "Website inspiration assets from the inspirations-06 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-06/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-06/power-data-full.png",
+      "thumbnail": "/inspirations/inspirations-06/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-06/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-06/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-06/optimized/power-data-full.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-06/power-data-full.png",
+          "src": "/inspirations/inspirations-06/optimized/power-data-full.jpg",
           "label": "Power Data Full",
-          "width": 2880,
-          "height": 13724
+          "width": 1800,
+          "height": 8578
         },
         {
-          "src": "/inspirations/inspirations-06/Cover-image.png",
+          "src": "/inspirations/inspirations-06/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2880,
-          "height": 3366
+          "width": 1800,
+          "height": 2104
         },
         {
-          "src": "/inspirations/inspirations-06/Faqs.png",
+          "src": "/inspirations/inspirations-06/optimized/Faqs.jpg",
           "label": "Faqs",
-          "width": 2880,
-          "height": 2454
+          "width": 1800,
+          "height": 1534
         },
         {
-          "src": "/inspirations/inspirations-06/Feature-section.png",
+          "src": "/inspirations/inspirations-06/optimized/Feature-section.jpg",
           "label": "Feature Section",
-          "width": 2880,
-          "height": 2494
+          "width": 1800,
+          "height": 1559
         },
         {
-          "src": "/inspirations/inspirations-06/Footer-section.png",
+          "src": "/inspirations/inspirations-06/optimized/Footer-section.jpg",
           "label": "Footer Section",
-          "width": 2880,
-          "height": 888
+          "width": 1800,
+          "height": 555
         },
         {
-          "src": "/inspirations/inspirations-06/Pricing-page.png",
+          "src": "/inspirations/inspirations-06/optimized/Pricing-page.jpg",
           "label": "Pricing Page",
-          "width": 2880,
-          "height": 2252
+          "width": 1800,
+          "height": 1408
         }
       ]
     },
@@ -317,38 +329,40 @@
       ],
       "description": "Website inspiration assets from the Inspirations-07 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/Inspirations-07/Cover'.png",
-      "fullPage": "/inspirations/Inspirations-07/Home.png",
+      "thumbnail": "/inspirations/Inspirations-07/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/Inspirations-07/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/Inspirations-07/optimized/Cover'.jpg",
+      "fullPage": "/inspirations/Inspirations-07/optimized/Home.jpg",
       "images": [
         {
-          "src": "/inspirations/Inspirations-07/Home.png",
+          "src": "/inspirations/Inspirations-07/optimized/Home.jpg",
           "label": "Home",
-          "width": 2880,
-          "height": 9670
+          "width": 1800,
+          "height": 6044
         },
         {
-          "src": "/inspirations/Inspirations-07/Cover'.png",
+          "src": "/inspirations/Inspirations-07/optimized/Cover'.jpg",
           "label": "Cover'",
-          "width": 2940,
-          "height": 1774
+          "width": 1800,
+          "height": 1086
         },
         {
-          "src": "/inspirations/Inspirations-07/Features.png",
+          "src": "/inspirations/Inspirations-07/optimized/Features.jpg",
           "label": "Features",
-          "width": 3670,
-          "height": 2830
+          "width": 1800,
+          "height": 1388
         },
         {
-          "src": "/inspirations/Inspirations-07/product%20page.png",
+          "src": "/inspirations/Inspirations-07/optimized/product%20page.jpg",
           "label": "Product Page",
-          "width": 3232,
-          "height": 2340
+          "width": 1800,
+          "height": 1303
         },
         {
-          "src": "/inspirations/Inspirations-07/products%20section.png",
+          "src": "/inspirations/Inspirations-07/optimized/products%20section.jpg",
           "label": "Products Section",
-          "width": 3098,
-          "height": 2328
+          "width": 1800,
+          "height": 1353
         }
       ]
     },
@@ -364,38 +378,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-08 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-08/Cover-iamge.png",
-      "fullPage": "/inspirations/inspirations-08/Porfolio%20home.png",
+      "thumbnail": "/inspirations/inspirations-08/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-08/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-08/optimized/Cover-iamge.jpg",
+      "fullPage": "/inspirations/inspirations-08/optimized/Porfolio%20home.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-08/Porfolio%20home.png",
+          "src": "/inspirations/inspirations-08/optimized/Porfolio%20home.jpg",
           "label": "Porfolio Home",
-          "width": 2880,
-          "height": 15690
+          "width": 1652,
+          "height": 9000
         },
         {
-          "src": "/inspirations/inspirations-08/Cover-iamge.png",
+          "src": "/inspirations/inspirations-08/optimized/Cover-iamge.jpg",
           "label": "Cover Iamge",
-          "width": 2870,
-          "height": 1956
+          "width": 1800,
+          "height": 1227
         },
         {
-          "src": "/inspirations/inspirations-08/features-section3.png",
+          "src": "/inspirations/inspirations-08/optimized/features-section3.jpg",
           "label": "Features Section3",
-          "width": 2890,
-          "height": 2276
+          "width": 1800,
+          "height": 1418
         },
         {
-          "src": "/inspirations/inspirations-08/Features.png",
+          "src": "/inspirations/inspirations-08/optimized/Features.jpg",
           "label": "Features",
-          "width": 2894,
-          "height": 1748
+          "width": 1800,
+          "height": 1087
         },
         {
-          "src": "/inspirations/inspirations-08/footer.png",
+          "src": "/inspirations/inspirations-08/optimized/footer.jpg",
           "label": "Footer",
-          "width": 2882,
-          "height": 2652
+          "width": 1800,
+          "height": 1656
         }
       ]
     },
@@ -412,38 +428,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-09 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-09/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-09/Sj%20portfolio.png",
+      "thumbnail": "/inspirations/inspirations-09/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-09/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-09/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-09/optimized/Sj%20portfolio.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-09/Sj%20portfolio.png",
+          "src": "/inspirations/inspirations-09/optimized/Sj%20portfolio.jpg",
           "label": "Sj Portfolio",
-          "width": 2880,
-          "height": 10731
+          "width": 1800,
+          "height": 6707
         },
         {
-          "src": "/inspirations/inspirations-09/Cover-image.png",
+          "src": "/inspirations/inspirations-09/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2882,
-          "height": 2162
+          "width": 1800,
+          "height": 1350
         },
         {
-          "src": "/inspirations/inspirations-09/design.png",
+          "src": "/inspirations/inspirations-09/optimized/design.jpg",
           "label": "Design",
-          "width": 2972,
-          "height": 1505
+          "width": 1800,
+          "height": 912
         },
         {
-          "src": "/inspirations/inspirations-09/feature-section.png",
+          "src": "/inspirations/inspirations-09/optimized/feature-section.jpg",
           "label": "Feature Section",
-          "width": 2877,
-          "height": 2040
+          "width": 1800,
+          "height": 1276
         },
         {
-          "src": "/inspirations/inspirations-09/skills.png",
+          "src": "/inspirations/inspirations-09/optimized/skills.jpg",
           "label": "Skills",
-          "width": 2888,
-          "height": 1860
+          "width": 1800,
+          "height": 1159
         }
       ]
     },
@@ -460,38 +478,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-10 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-10/Cover-image%201.png",
-      "fullPage": "/inspirations/inspirations-10/Landing%20Page.png",
+      "thumbnail": "/inspirations/inspirations-10/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-10/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-10/optimized/Cover-image%201.jpg",
+      "fullPage": "/inspirations/inspirations-10/optimized/Landing%20Page.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-10/Landing%20Page.png",
+          "src": "/inspirations/inspirations-10/optimized/Landing%20Page.jpg",
           "label": "Landing Page",
-          "width": 3840,
-          "height": 11200
+          "width": 1800,
+          "height": 5250
         },
         {
-          "src": "/inspirations/inspirations-10/Cover-image%201.png",
+          "src": "/inspirations/inspirations-10/optimized/Cover-image%201.jpg",
           "label": "Cover Image 1",
-          "width": 3834,
-          "height": 2000
+          "width": 1800,
+          "height": 939
         },
         {
-          "src": "/inspirations/inspirations-10/About%20me.png",
+          "src": "/inspirations/inspirations-10/optimized/About%20me.jpg",
           "label": "About Me",
-          "width": 3826,
-          "height": 1650
+          "width": 1800,
+          "height": 776
         },
         {
-          "src": "/inspirations/inspirations-10/My%20projects.png",
+          "src": "/inspirations/inspirations-10/optimized/My%20projects.jpg",
           "label": "My Projects",
-          "width": 3848,
-          "height": 2408
+          "width": 1800,
+          "height": 1126
         },
         {
-          "src": "/inspirations/inspirations-10/Services-port.png",
+          "src": "/inspirations/inspirations-10/optimized/Services-port.jpg",
           "label": "Services Port",
-          "width": 3838,
-          "height": 1568
+          "width": 1800,
+          "height": 735
         }
       ]
     },
@@ -508,38 +528,40 @@
       ],
       "description": "Website inspiration assets from the inspirations-11 folder.",
       "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
-      "galleryPreview": "/inspirations/inspirations-11/Cover-image.png",
-      "fullPage": "/inspirations/inspirations-11/full%20landing.png",
+      "thumbnail": "/inspirations/inspirations-11/optimized/thumbnail.jpg",
+      "galleryPreview": "/inspirations/inspirations-11/optimized/thumbnail.jpg",
+      "originalGalleryPreview": "/inspirations/inspirations-11/optimized/Cover-image.jpg",
+      "fullPage": "/inspirations/inspirations-11/optimized/full%20landing.jpg",
       "images": [
         {
-          "src": "/inspirations/inspirations-11/full%20landing.png",
+          "src": "/inspirations/inspirations-11/optimized/full%20landing.jpg",
           "label": "Full Landing",
-          "width": 2880,
-          "height": 12914
+          "width": 1800,
+          "height": 8071
         },
         {
-          "src": "/inspirations/inspirations-11/Cover-image.png",
+          "src": "/inspirations/inspirations-11/optimized/Cover-image.jpg",
           "label": "Cover Image",
-          "width": 2864,
-          "height": 2063
+          "width": 1800,
+          "height": 1297
         },
         {
-          "src": "/inspirations/inspirations-11/Contact%20Us.png",
+          "src": "/inspirations/inspirations-11/optimized/Contact%20Us.jpg",
           "label": "Contact Us",
-          "width": 2876,
-          "height": 2406
+          "width": 1800,
+          "height": 1506
         },
         {
-          "src": "/inspirations/inspirations-11/porfolio-section.png",
+          "src": "/inspirations/inspirations-11/optimized/porfolio-section.jpg",
           "label": "Porfolio Section",
-          "width": 2846,
-          "height": 2466
+          "width": 1800,
+          "height": 1560
         },
         {
-          "src": "/inspirations/inspirations-11/Services.png",
+          "src": "/inspirations/inspirations-11/optimized/Services.jpg",
           "label": "Services",
-          "width": 2883,
-          "height": 2012
+          "width": 1800,
+          "height": 1256
         }
       ]
     }

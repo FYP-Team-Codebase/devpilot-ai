@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../services/authService'
 import UserMenu from '../Dashboard/components/UserMenu'
+import { requirementsPageStyles } from './RequirementsPage.styles'
 
-const SIDEBAR_WIDTH = 'w-[228px]'
 const EASE = [0.16, 1, 0.3, 1]
 const buttonMotion = { duration: 0.2, ease: 'easeOut' }
 
@@ -298,28 +298,28 @@ export default function RequirementsPage() {
   }
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#FAFAF8] font-sans text-dp-near-black">
+    <div className={requirementsPageStyles.page}>
       <RequirementsSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="flex min-h-dvh min-w-0 flex-col md:ml-[228px]">
+      <div className={requirementsPageStyles.shell}>
         <RequirementsHeader user={user} onMenuToggle={() => setIsSidebarOpen(true)} />
 
-        <main className="min-h-[calc(100dvh-60px)] px-6 pb-24 pt-7 max-lg:px-5 max-md:px-4 max-sm:px-3.5">
-          <div className="mx-auto w-full max-w-[1180px]">
+        <main className={requirementsPageStyles.main}>
+          <div className={requirementsPageStyles.content}>
             <motion.div
               initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.36, ease: EASE }}
             >
-              <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className={requirementsPageStyles.introRow}>
                 <div>
-                  <h1 className="m-0 text-[clamp(2rem,3.4vw,2.5rem)] font-bold leading-tight tracking-[-0.045em] text-dp-black">
+                  <h1 className={requirementsPageStyles.heading}>
                     Project Requirements
                   </h1>
-                  <p className="m-0 mt-2 max-w-[620px] text-[15px] leading-6 text-dp-text">
+                  <p className={requirementsPageStyles.introText}>
                     Help DevPilot understand your project so it can generate a better website.
                   </p>
                 </div>
@@ -327,16 +327,16 @@ export default function RequirementsPage() {
               </div>
             </motion.div>
 
-            <div className="mt-6 grid grid-cols-[minmax(0,1fr)_320px] items-start gap-5 max-lg:grid-cols-1">
-              <div className="grid min-w-0 gap-5">
+            <div className={requirementsPageStyles.bodyGrid}>
+              <div className={requirementsPageStyles.formStack}>
                 <SectionCard title="Project Information" sectionRef={projectInfoSectionRef} delay={0.04} shouldReduceMotion={shouldReduceMotion}>
                   {initialPrompt && (
-                    <div className="mb-4 rounded-xl border border-dp-border bg-[#FAFAF8] px-4 py-3">
-                      <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-dp-muted">Initial Prompt</p>
-                      <p className="m-0 mt-1 line-clamp-2 text-[13px] leading-5 text-dp-text">{initialPrompt}</p>
+                    <div className={requirementsPageStyles.initialPrompt}>
+                      <p className={requirementsPageStyles.initialPromptLabel}>Initial Prompt</p>
+                      <p className={requirementsPageStyles.initialPromptText}>{initialPrompt}</p>
                     </div>
                   )}
-                  <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+                  <div className={requirementsPageStyles.twoColumn}>
                     <Field label="Project Name" error={errors.projectName} errorId="project-name-error">
                       <input
                         ref={projectNameRef}
@@ -366,7 +366,7 @@ export default function RequirementsPage() {
                     </Field>
                   </div>
 
-                  <div className="mt-4">
+                  <div className={requirementsPageStyles.fieldSpacing}>
                     <Field label="Target Audience" error={errors.targetAudience} errorId="target-audience-error">
                       <input
                         ref={targetAudienceRef}
@@ -398,7 +398,7 @@ export default function RequirementsPage() {
                   </TileGrid>
                   <ValidationError id="design-style-error">{errors.style}</ValidationError>
 
-                  <div className="mt-5 grid grid-cols-2 gap-5 max-md:grid-cols-1">
+                  <div className={requirementsPageStyles.twoColumnLoose}>
                     <ColorPicker
                       label="Primary Color"
                       value={requirements.primaryColor}
@@ -475,19 +475,19 @@ export default function RequirementsPage() {
                 </SectionCard>
 
                 <SectionCard title="Upload Assets" sectionRef={assetsSectionRef} description="Helps the AI match your existing brand." delay={0.24} shouldReduceMotion={shouldReduceMotion}>
-                  <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+                  <div className={requirementsPageStyles.assetGrid}>
                     {ASSET_TYPES.map((asset) => (
-                      <div key={asset.title} className="rounded-xl border border-dashed border-dp-border bg-[#FAFAF8] p-4">
-                        <span className="grid h-9 w-9 place-items-center rounded-lg border border-dp-border bg-white text-dp-black" aria-hidden="true">
+                      <div key={asset.title} className={requirementsPageStyles.assetCard}>
+                        <span className={requirementsPageStyles.assetIcon} aria-hidden="true">
                           <RequirementsIcon name="upload" />
                         </span>
-                        <p className="m-0 mt-3 text-[13.5px] font-semibold text-dp-black">{asset.title}</p>
-                        <p className="m-0 mt-1 text-[12.5px] leading-5 text-dp-muted">{asset.description}</p>
-                        <p className="m-0 mt-3 text-[11.5px] font-medium text-dp-muted">Upload not configured</p>
+                        <p className={requirementsPageStyles.assetTitle}>{asset.title}</p>
+                        <p className={requirementsPageStyles.assetDescription}>{asset.description}</p>
+                        <p className={requirementsPageStyles.assetStatus}>Upload not configured</p>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-3">
+                  <div className={requirementsPageStyles.tileSpacing}>
                     <SelectTile
                       buttonRef={assetsRef}
                       label="Skip assets"
@@ -508,13 +508,13 @@ export default function RequirementsPage() {
                     value={requirements.notes}
                     onChange={(e) => updateField('notes', e.target.value)}
                     placeholder="Anything else you'd like DevPilot AI to know before generating your website?"
-                    className={`min-h-[132px] w-full resize-none rounded-xl border bg-white px-3.5 py-3 font-sans text-sm leading-6 text-dp-black outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-dp-muted focus:border-neutral-500 focus:shadow-[0_0_0_3px_rgba(0,0,0,0.035)] ${
-                      errors.notes ? 'border-red-700' : 'border-dp-border'
+                    className={`${requirementsPageStyles.notesTextareaBase} ${
+                      errors.notes ? requirementsPageStyles.errorBorder : requirementsPageStyles.defaultBorder
                     }`}
                     aria-invalid={Boolean(errors.notes)}
                     aria-describedby={errors.notes ? 'notes-error' : undefined}
                   />
-                  <div className="mt-3">
+                  <div className={requirementsPageStyles.tileSpacing}>
                     <SelectTile
                       label="No additional notes"
                       selected={requirements.noAdditionalNotes}
@@ -527,7 +527,7 @@ export default function RequirementsPage() {
                 </SectionCard>
               </div>
 
-              <aside className="sticky top-24 grid gap-5 max-lg:static">
+              <aside className={requirementsPageStyles.sideRail}>
                 <SummaryPanel
                   summary={summary}
                   shouldReduceMotion={shouldReduceMotion}
@@ -537,12 +537,12 @@ export default function RequirementsPage() {
           </div>
         </main>
 
-        <div className="sticky bottom-0 z-20 border-t border-dp-border bg-[#FAFAF8]/92 px-6 py-3 backdrop-blur-sm max-md:px-4 max-sm:px-3.5">
-          <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-3">
+        <div className={requirementsPageStyles.bottomBar}>
+          <div className={requirementsPageStyles.bottomInner}>
             <motion.button
               type="button"
               onClick={() => navigate('/prompt')}
-              className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-sm font-medium text-dp-black no-underline transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+              className={requirementsPageStyles.backButton}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
@@ -553,13 +553,13 @@ export default function RequirementsPage() {
             <motion.button
               type="button"
               onClick={handleContinue}
-              className="group inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+              className={requirementsPageStyles.continueButton}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
             >
               Continue to Inspiration
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={requirementsPageStyles.continueIcon} aria-hidden="true">
                 <path d="M3 7h8M8 4l3 3-3 3" />
               </svg>
             </motion.button>
@@ -574,48 +574,48 @@ function RequirementsHeader({ user, onMenuToggle }) {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <header className="sticky top-0 z-30 border-b border-dp-border bg-[#FAFAF8]/95 backdrop-blur-xl">
-      <div className="flex min-h-[60px] items-center justify-between gap-4 px-6 max-md:px-4">
-        <div className="flex min-w-0 items-center gap-3">
+    <header className={requirementsPageStyles.header}>
+      <div className={requirementsPageStyles.headerInner}>
+        <div className={requirementsPageStyles.headerLeft}>
           <motion.button
             type="button"
-            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-dp-border bg-white text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] md:hidden"
+            className={requirementsPageStyles.menuButton}
             aria-label="Open navigation"
             onClick={onMenuToggle}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
           >
-            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={requirementsPageStyles.icon} aria-hidden="true">
               <path d="M3 5h12M3 9h12M3 13h12" />
             </svg>
           </motion.button>
 
-          <div className="min-w-0">
-            <p className="m-0 text-[15px] font-semibold tracking-[-0.02em] text-dp-black">Project Requirements</p>
-            <p className="m-0 mt-0.5 truncate text-[12.5px] leading-5 text-dp-muted">Refine the build brief.</p>
+          <div className={requirementsPageStyles.headerText}>
+            <p className={requirementsPageStyles.headerTitle}>Project Requirements</p>
+            <p className={requirementsPageStyles.headerSubtitle}>Refine the build brief.</p>
           </div>
         </div>
 
-        <div className="flex min-w-0 items-center justify-end gap-2.5">
+        <div className={requirementsPageStyles.headerActions}>
           <a
             href="/dashboard/pricing"
-            className="hidden h-8 shrink-0 cursor-pointer items-center rounded-full border border-dp-border bg-white px-3 text-[12px] font-semibold text-dp-black no-underline transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] sm:inline-flex"
+            className={requirementsPageStyles.pricingLink}
           >
             Pricing
           </a>
-          <span className="inline-flex h-8 shrink-0 items-center rounded-full border border-dp-border bg-white px-3 text-[12px] font-semibold text-dp-black">
+          <span className={requirementsPageStyles.planPill}>
             Free Plan
           </span>
           <motion.button
             type="button"
-            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-dp-border bg-white text-dp-text transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={requirementsPageStyles.notificationButton}
             aria-label="Notifications"
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
           >
-            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={requirementsPageStyles.icon} aria-hidden="true">
               <path d="M5.5 7.5a3.5 3.5 0 1 1 7 0c0 4 1.5 4.5 1.5 4.5H4s1.5-.5 1.5-4.5Z" />
               <path d="M7.8 14a1.4 1.4 0 0 0 2.4 0" />
             </svg>
@@ -633,40 +633,40 @@ function RequirementsSidebar({ isOpen, onClose }) {
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-black/20 transition-opacity duration-200 md:hidden ${
-          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        className={`${requirementsPageStyles.mobileOverlay} ${
+          isOpen ? requirementsPageStyles.mobileOverlayOpen : requirementsPageStyles.mobileOverlayClosed
         }`}
         aria-hidden="true"
         onClick={onClose}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen ${SIDEBAR_WIDTH} flex-col overflow-hidden border-r border-dp-border bg-white px-3 py-4 transition-transform duration-200 md:top-0 md:z-40 md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`${requirementsPageStyles.sidebarBase} ${
+          isOpen ? requirementsPageStyles.sidebarOpen : requirementsPageStyles.sidebarClosed
         }`}
         aria-label="Requirements navigation"
       >
-        <div className="flex h-9 items-center justify-between px-2">
+        <div className={requirementsPageStyles.sidebarTop}>
           <a
             href="/dashboard"
-            className="flex items-center gap-2 rounded-lg text-dp-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className={requirementsPageStyles.brand}
           >
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-dp-black text-white" aria-hidden="true">
-              <svg viewBox="0 0 36 36" fill="none" className="h-4.5 w-4.5">
+            <span className={requirementsPageStyles.brandMark} aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" className={requirementsPageStyles.brandIcon}>
                 <rect x="4" y="10" width="22" height="22" rx="7" fill="currentColor" />
                 <rect x="20" y="2" width="14" height="14" rx="5" fill="currentColor" />
               </svg>
             </span>
-            <span className="text-[14px] font-semibold tracking-[-0.02em]">DevPilot AI</span>
+            <span className={requirementsPageStyles.brandText}>DevPilot AI</span>
           </a>
 
           <button
             type="button"
-            className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border-0 bg-transparent text-dp-muted transition-colors duration-150 hover:bg-dp-surface hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white md:hidden"
+            className={requirementsPageStyles.closeButton}
             aria-label="Close navigation"
             onClick={onClose}
           >
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={requirementsPageStyles.icon} aria-hidden="true">
               <path d="M4 4l8 8M12 4l-8 8" />
             </svg>
           </button>
@@ -674,20 +674,20 @@ function RequirementsSidebar({ isOpen, onClose }) {
 
         <a
           href="/prompt"
-          className="mt-5 inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-4 text-[13px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className={requirementsPageStyles.newProjectLink}
         >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={requirementsPageStyles.icon} aria-hidden="true">
             <path d="M8 3v10M3 8h10" />
           </svg>
           New Project
         </a>
 
-        <nav className="mt-5 flex flex-col gap-1" aria-label="Sidebar">
+        <nav className={requirementsPageStyles.nav} aria-label="Sidebar">
           {NAV_ITEMS.map((item) => (
             <motion.a
               key={item.id}
               href={item.href}
-              className="flex h-10 cursor-pointer items-center gap-2.5 rounded-lg px-3 text-[13px] font-medium text-dp-text no-underline transition-colors duration-150 hover:bg-dp-surface hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              className={requirementsPageStyles.navItem}
               whileHover={shouldReduceMotion ? undefined : { x: 2 }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
             >
@@ -697,17 +697,17 @@ function RequirementsSidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        <div className="mt-6 rounded-xl border border-dp-border bg-[#FAFAF8] p-3">
-          <p className="m-0 text-[13px] font-semibold text-dp-black">Requirements</p>
-          <p className="m-0 mt-1 text-[11.5px] leading-5 text-dp-muted">Current build step</p>
+        <div className={requirementsPageStyles.sidebarStatus}>
+          <p className={requirementsPageStyles.sidebarTitle}>Requirements</p>
+          <p className={requirementsPageStyles.sidebarText}>Current build step</p>
         </div>
 
-        <div className="mt-auto rounded-xl border border-dp-border bg-[#FAFAF8] p-3">
-          <p className="m-0 text-[13px] font-semibold text-dp-black">Free Plan</p>
-          <p className="m-0 mt-0.5 text-[11.5px] leading-5 text-dp-muted">Starter workspace</p>
+        <div className={requirementsPageStyles.sidebarPlan}>
+          <p className={requirementsPageStyles.sidebarTitle}>Free Plan</p>
+          <p className={requirementsPageStyles.sidebarPlanText}>Starter workspace</p>
           <a
             href="/dashboard/pricing"
-            className="mt-3 inline-flex h-9 w-full cursor-pointer items-center justify-center rounded-xl border border-dp-black bg-dp-black px-3 text-[12.5px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={requirementsPageStyles.upgradeLink}
           >
             Upgrade
           </a>
@@ -719,18 +719,18 @@ function RequirementsSidebar({ isOpen, onClose }) {
 
 function ProgressSteps() {
   return (
-    <ol className="flex flex-wrap items-center gap-2 p-0">
+    <ol className={requirementsPageStyles.progressList}>
       {FLOW_STEPS.map((step, index) => {
         const isActive = step === 'Requirements'
         const isComplete = index === 0
         return (
-          <li key={step} className="flex items-center gap-2">
-            <span className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[12px] font-semibold ${
+          <li key={step} className={requirementsPageStyles.progressItem}>
+            <span className={`${requirementsPageStyles.progressPillBase} ${
               isActive
-                ? 'border-dp-black bg-dp-black text-white'
+                ? requirementsPageStyles.progressActive
                 : isComplete
-                  ? 'border-dp-border bg-white text-dp-black'
-                  : 'border-dp-border bg-white text-dp-muted'
+                  ? requirementsPageStyles.progressComplete
+                  : requirementsPageStyles.progressDefault
             }`}>
               {isComplete && <RequirementsIcon name="check" />}
               {step}
@@ -746,20 +746,20 @@ function SectionCard({ title, description, optional, children, delay, sectionRef
   return (
     <motion.section
       ref={sectionRef}
-      className="rounded-xl border border-dp-border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] max-sm:p-4"
+      className={requirementsPageStyles.sectionCard}
       aria-labelledby={`${title.replace(/\s+/g, '-').toLowerCase()}-heading`}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.34, delay: shouldReduceMotion ? 0 : delay, ease: EASE }}
     >
-      <div className="mb-4">
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 id={`${title.replace(/\s+/g, '-').toLowerCase()}-heading`} className="m-0 text-[18px] font-bold leading-tight tracking-[-0.03em] text-dp-black">
+      <div className={requirementsPageStyles.sectionHeader}>
+        <div className={requirementsPageStyles.sectionTitleRow}>
+          <h2 id={`${title.replace(/\s+/g, '-').toLowerCase()}-heading`} className={requirementsPageStyles.sectionTitle}>
             {title}
           </h2>
-          {optional && <span className="shrink-0 text-[11.5px] font-medium text-dp-muted">Optional</span>}
+          {optional && <span className={requirementsPageStyles.optional}>Optional</span>}
         </div>
-        {description && <p className="m-0 mt-1 text-[13px] leading-5 text-dp-muted">{description}</p>}
+        {description && <p className={requirementsPageStyles.sectionDescription}>{description}</p>}
       </div>
       {children}
     </motion.section>
@@ -768,7 +768,7 @@ function SectionCard({ title, description, optional, children, delay, sectionRef
 
 function Field({ label, meta, error, errorId, children }) {
   return (
-    <label className="block">
+    <label className={requirementsPageStyles.field}>
       <FieldLabel meta={meta}>{label}</FieldLabel>
       {children}
       <ValidationError id={errorId}>{error}</ValidationError>
@@ -782,7 +782,7 @@ function ValidationError({ id, children }) {
   return (
     <motion.p
       id={id}
-      className="m-0 mt-1.5 text-[12px] font-medium text-red-700"
+      className={requirementsPageStyles.validationError}
       initial={{ opacity: 0, y: -2 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.16, ease: 'easeOut' }}
@@ -794,21 +794,21 @@ function ValidationError({ id, children }) {
 
 function FieldLabel({ children, meta }) {
   return (
-    <span className="mb-2 flex items-baseline justify-between gap-2 text-[12.5px] font-semibold text-dp-black">
+    <span className={requirementsPageStyles.fieldLabel}>
       <span>{children}</span>
-      {meta && <span className="text-[11.5px] font-medium text-dp-muted">{meta}</span>}
+      {meta && <span className={requirementsPageStyles.fieldMeta}>{meta}</span>}
     </span>
   )
 }
 
 function inputClass(hasError) {
-  return `h-10 w-full rounded-xl border bg-white px-3.5 font-sans text-sm text-dp-black outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-dp-muted focus:border-neutral-500 focus:shadow-[0_0_0_3px_rgba(0,0,0,0.035)] ${
-    hasError ? 'border-red-700' : 'border-dp-border'
+  return `${requirementsPageStyles.inputBase} ${
+    hasError ? requirementsPageStyles.errorBorder : requirementsPageStyles.defaultBorder
   }`
 }
 
 function TileGrid({ children }) {
-  return <div className="grid grid-cols-3 gap-3 max-md:grid-cols-2 max-sm:grid-cols-1">{children}</div>
+  return <div className={requirementsPageStyles.tileGrid}>{children}</div>
 }
 
 function SelectTile({ label, selected, onClick, icon, buttonRef, shouldReduceMotion }) {
@@ -816,10 +816,10 @@ function SelectTile({ label, selected, onClick, icon, buttonRef, shouldReduceMot
     <motion.button
       ref={buttonRef}
       type="button"
-      className={`flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left text-[13px] font-semibold transition-[background-color,border-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+      className={`${requirementsPageStyles.tileBase} ${
         selected
-          ? 'border-dp-black bg-dp-black text-white'
-          : 'border-neutral-200 bg-white text-dp-black hover:border-neutral-400 hover:bg-neutral-50 hover:text-dp-black'
+          ? requirementsPageStyles.tileSelected
+          : requirementsPageStyles.tileDefault
       }`}
       onClick={onClick}
       aria-pressed={selected}
@@ -837,7 +837,7 @@ function ColorPicker({ label, value, onChange, error, errorId, firstButtonRef, s
   return (
     <div>
       <FieldLabel>{label}</FieldLabel>
-      <div className="grid grid-cols-2 gap-2">
+      <div className={requirementsPageStyles.colorGrid}>
         {COLORS.map((color, index) => {
           const selected = value === color.name
           return (
@@ -845,8 +845,8 @@ function ColorPicker({ label, value, onChange, error, errorId, firstButtonRef, s
               key={color.name}
               ref={index === 0 ? firstButtonRef : undefined}
               type="button"
-              className={`flex h-10 cursor-pointer items-center gap-2 rounded-xl border bg-white px-3 text-left text-[12.5px] font-semibold text-dp-black transition-[border-color,box-shadow] duration-200 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                selected ? 'border-dp-black shadow-[0_0_0_1px_rgba(0,0,0,0.08)]' : error ? 'border-red-700' : 'border-neutral-200'
+              className={`${requirementsPageStyles.colorButtonBase} ${
+                selected ? requirementsPageStyles.colorSelected : error ? requirementsPageStyles.errorBorder : requirementsPageStyles.defaultBorder
               }`}
               onClick={() => onChange(color.name)}
               aria-pressed={selected}
@@ -854,9 +854,9 @@ function ColorPicker({ label, value, onChange, error, errorId, firstButtonRef, s
               whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
               transition={buttonMotion}
             >
-              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full border border-black/10" style={{ backgroundColor: color.value }}>
+              <span className={requirementsPageStyles.colorSwatch} style={{ backgroundColor: color.value }}>
                 {selected && (
-                  <svg viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={requirementsPageStyles.colorCheck} aria-hidden="true">
                     <path d="M2.5 6.2l2.1 2.1 4.9-5" />
                   </svg>
                 )}
@@ -882,37 +882,37 @@ function SummaryPanel({ summary, shouldReduceMotion }) {
 
   return (
     <motion.section
-      className="rounded-xl border border-dp-border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+      className={requirementsPageStyles.summary}
       aria-label="Project requirements summary"
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.34, delay: shouldReduceMotion ? 0 : 0.1, ease: EASE }}
     >
-      <div className="rounded-xl border border-dp-border bg-[#FAFAF8] p-4">
-        <h2 className="m-0 text-[16px] font-bold tracking-[-0.03em] text-dp-black">What happens next?</h2>
-        <ul className="m-0 mt-4 grid gap-2 p-0">
+      <div className={requirementsPageStyles.summaryPanel}>
+        <h2 className={requirementsPageStyles.summaryHeading}>What happens next?</h2>
+        <ul className={requirementsPageStyles.summaryList}>
           {nextSteps.map((step) => (
-            <li key={step} className="flex items-start gap-2 text-[13px] leading-5 text-dp-text">
-              <span className="mt-0.5 text-dp-black" aria-hidden="true"><RequirementsIcon name="check" /></span>
+            <li key={step} className={requirementsPageStyles.summaryStep}>
+              <span className={requirementsPageStyles.summaryStepIcon} aria-hidden="true"><RequirementsIcon name="check" /></span>
               <span>{step}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="mt-5">
-        <h2 className="m-0 text-[16px] font-bold tracking-[-0.03em] text-dp-black">Project Summary</h2>
-        <dl className="m-0 mt-3 grid gap-3">
+      <div className={requirementsPageStyles.summaryBlock}>
+        <h2 className={requirementsPageStyles.summaryHeading}>Project Summary</h2>
+        <dl className={requirementsPageStyles.summaryDefinitionList}>
           {Object.entries(summary).map(([label, value]) => (
             <motion.div
               key={label}
-              className="border-t border-dp-border pt-3 first:border-t-0 first:pt-0"
+              className={requirementsPageStyles.summaryItem}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.18, ease: 'easeOut' }}
             >
-              <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-dp-muted">{label}</dt>
-              <dd className="m-0 mt-1 line-clamp-2 text-[13px] font-medium leading-5 text-dp-black">{value}</dd>
+              <dt className={requirementsPageStyles.summaryTerm}>{label}</dt>
+              <dd className={requirementsPageStyles.summaryValue}>{value}</dd>
             </motion.div>
           ))}
         </dl>

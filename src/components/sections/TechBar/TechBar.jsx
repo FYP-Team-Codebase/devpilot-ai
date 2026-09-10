@@ -10,7 +10,7 @@ import mongodbIcon from '../../../assets/tech/mongodb.svg'
 import claudeIcon from '../../../assets/tech/claude.svg'
 import gitIcon from '../../../assets/tech/git.svg'
 import githubIcon from '../../../assets/tech/github.svg'
-import styles from './TechBar.module.css'
+import { techBarStyles } from './TechBar.styles'
 
 const TECHNOLOGIES = [
   { name: 'HTML', icon: htmlIcon },
@@ -36,9 +36,21 @@ const SPEED_SMOOTHING = 0.06
 
 function TechItem({ tech }) {
   return (
-    <motion.div className={styles.techItem} whileHover={{ scale: 1.07 }} transition={{ duration: 0.2 }}>
-      <img className={styles.techIcon} src={tech.icon} alt="" width="18" height="18" />
-      <span className={styles.techName}>{tech.name}</span>
+    <motion.div
+      className={techBarStyles.item}
+      whileHover={{ scale: 1.07 }}
+      transition={{ duration: 0.2 }}
+    >
+      <img
+        className={techBarStyles.icon}
+        src={tech.icon}
+        alt=""
+        width="18"
+        height="18"
+      />
+      <span className={techBarStyles.label}>
+        {tech.name}
+      </span>
     </motion.div>
   )
 }
@@ -67,11 +79,11 @@ export default function TechBar() {
 
   return (
     <section
-      className={styles.techBar}
+      className={techBarStyles.section}
       aria-label="Built with HTML, CSS, JavaScript, React, Express.js, Node.js, MongoDB, Claude, Git and GitHub"
     >
       <div
-        className={styles.viewport}
+        className={techBarStyles.viewport}
         onMouseEnter={() => {
           targetSpeed.current = HOVER_SPEED
         }}
@@ -79,11 +91,15 @@ export default function TechBar() {
           targetSpeed.current = NORMAL_SPEED
         }}
       >
-        <motion.div ref={trackRef} className={styles.track} style={{ x }}>
+        <motion.div
+          ref={trackRef}
+          className={techBarStyles.track}
+          style={{ x }}
+        >
           {[...SEQUENCE, ...SEQUENCE].map((tech, index) => (
-            <div className={styles.techGroup} key={`${tech.name}-${index}`}>
+            <div className={techBarStyles.sequenceItem} key={`${tech.name}-${index}`}>
               <TechItem tech={tech} />
-              <span className={styles.separator} aria-hidden="true">
+              <span className={techBarStyles.separator} aria-hidden="true">
                 ·
               </span>
             </div>

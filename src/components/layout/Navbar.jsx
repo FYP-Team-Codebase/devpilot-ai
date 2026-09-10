@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import codenovaMark from '../../assets/branding/codenova-mark.svg'
 import useLandingNavigation from '../../hooks/useLandingNavigation'
+import { navbarStyles } from './Navbar.styles'
 import { useScrollDirection } from './useScrollDirection'
-import styles from './Navbar.module.css'
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -50,35 +50,45 @@ export default function Navbar() {
 
   return (
     <>
-      <div className={styles.staticControls}>
-        <div className={styles.staticBar}>
-          <Link to="/" className={styles.brand} aria-label="Go to Code Nova home" onClick={handleHomeClick}>
-            <img src={codenovaMark} alt="" className={styles.mark} width="34" height="34" />
-            <span className={styles.wordmark}>Code Nova</span>
+      <div className={navbarStyles.logoBarShell}>
+        <div className={navbarStyles.logoBarInner}>
+          <Link
+            to="/"
+            className={`${navbarStyles.logoLink} ${navbarStyles.focusDark}`}
+            aria-label="Go to Code Nova home"
+            onClick={handleHomeClick}
+          >
+            <img src={codenovaMark} alt="" className="block" width="34" height="34" />
+            <span className={navbarStyles.logoText}>
+              Code Nova
+            </span>
           </Link>
 
-          <div className={styles.actions}>
-            <Link to="/login" className={styles.login}>
+          <div className={navbarStyles.actionGroup}>
+            <Link to="/login" className={`${navbarStyles.login} ${navbarStyles.focusDark}`}>
               Login
             </Link>
-            <a href="/prompt" className={styles.cta} onClick={handleStartBuilding}>
+            <a href="/prompt" className={`${navbarStyles.cta} ${navbarStyles.focusDark}`} onClick={handleStartBuilding}>
               Try DevPilot AI
             </a>
           </div>
         </div>
       </div>
 
-      <header className={styles.header}>
-        <nav className={styles.bar} aria-label="Primary">
-          <div className={styles.headerSpacer} aria-hidden="true" />
+      <header className={navbarStyles.header}>
+        <nav
+          className={navbarStyles.nav}
+          aria-label="Primary"
+        >
+          <div aria-hidden="true" />
 
-          <div className={`${styles.pill} ${isSolid ? styles.solid : styles.transparent}`}>
-            <ul className={styles.links}>
+          <div className={`${navbarStyles.pillBase} ${isSolid ? navbarStyles.pillSolid : navbarStyles.pillTransparent}`}>
+            <ul className={navbarStyles.desktopList}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className={styles.link}
+                    className={`${navbarStyles.desktopLink} ${navbarStyles.focusDark}`}
                     onClick={(event) => handleSectionClick(event, link.href.slice(1))}
                   >
                     {link.label}
@@ -88,31 +98,31 @@ export default function Navbar() {
             </ul>
           </div>
 
-          <div className={styles.headerSpacer} aria-hidden="true" />
+          <div aria-hidden="true" />
 
           <button
             type="button"
-            className={styles.menuToggle}
+            className={`${navbarStyles.mobileToggle} ${navbarStyles.focusDark}`}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setIsMenuOpen((open) => !open)}
           >
-            <span className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ''}`} aria-hidden="true" />
+            <span className={`${navbarStyles.menuIcon} ${isMenuOpen ? navbarStyles.menuIconOpen : ''}`} aria-hidden="true" />
           </button>
 
           <div
             id="mobile-menu"
-            className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}
+            className={`${navbarStyles.mobileMenu} ${isMenuOpen ? navbarStyles.mobileMenuOpen : ''}`}
             aria-hidden={!isMenuOpen}
             inert={!isMenuOpen}
           >
-            <ul className={styles.mobileLinks}>
+            <ul className={navbarStyles.mobileList}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className={styles.mobileLink}
+                    className={navbarStyles.mobileLink}
                     onClick={(event) => handleMobileSectionClick(event, link.href.slice(1))}
                   >
                     {link.label}
@@ -120,11 +130,11 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <div className={styles.mobileActions}>
-              <Link to="/login" className={styles.mobileLogin} onClick={closeMenu}>
+            <div className={navbarStyles.mobileActions}>
+              <Link to="/login" className={`${navbarStyles.mobileLogin} ${navbarStyles.focusDark}`} onClick={closeMenu}>
                 Login
               </Link>
-              <a href="/prompt" className={styles.mobileCta} onClick={handleMobileStartBuilding}>
+              <a href="/prompt" className={`${navbarStyles.mobileCta} ${navbarStyles.focusDark}`} onClick={handleMobileStartBuilding}>
                 Try DevPilot AI
               </a>
             </div>

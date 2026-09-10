@@ -9,13 +9,40 @@ import {
   verifyEmail,
 } from '../../services/authService'
 import { getSafeRedirectPath } from '../../utils/routeRedirect'
-
-import styles from './VerifyEmailPage.module.css'
+import { verifyEmailPageStyles } from './VerifyEmailPage.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 const CODE_LENGTH = 6
 const DEFAULT_EXPIRES_IN_SECONDS = 600
 const DEFAULT_RESEND_COOLDOWN_SECONDS = 60
+const {
+  page: pageClass,
+  topbar: topbarClass,
+  logoLink: logoLinkClass,
+  logoImage: logoImageClass,
+  backLink: backLinkClass,
+  layout: layoutClass,
+  formIntro: formIntroClass,
+  eyebrow: eyebrowClass,
+  heading: headingClass,
+  introText: introTextClass,
+  form: formClass,
+  field: fieldClass,
+  label: labelClass,
+  emailInput: emailInputClass,
+  otpGroup: otpGroupClass,
+  otpInput: otpInputClass,
+  error: errorClass,
+  authError: authErrorClass,
+  notice: noticeClass,
+  submit: submitClass,
+  emailBadge: emailBadgeClass,
+  timerBase: timerBaseClass,
+  timerExpired: timerExpiredClass,
+  successState: successStateClass,
+  resend: resendClass,
+  resendButton: resendButtonClass,
+} = verifyEmailPageStyles
 
 function getInitialEmail() {
   const params = new URLSearchParams(window.location.search)
@@ -324,40 +351,41 @@ export default function VerifyEmailPage() {
   })
 
   return (
-    <main className={styles.page}>
-      <div className={styles.topbar}>
+    <main className={pageClass}>
+      <div className={topbarClass}>
         <Link
           to="/"
-          className={styles.logoLink}
+          className={logoLinkClass}
           aria-label="Go to Code Nova home"
         >
           <img
             src={codenovaLogo}
             alt="Code Nova"
+            className={logoImageClass}
             width="190"
             height="36"
           />
         </Link>
 
-        <Link className={styles.backLink} to="/login" state={{ from: redirectPath }}>
+        <Link className={backLinkClass} to="/login" state={{ from: redirectPath }}>
           Back to login <span aria-hidden="true">-&gt;</span>
         </Link>
       </div>
 
-      <div className={styles.layout}>
+      <div className={layoutClass}>
         <motion.section
-          className={styles.formPanel}
+          className="w-full"
           {...reveal()}
           aria-labelledby="verify-heading"
         >
-          <div className={styles.formIntro}>
-            <p className={styles.eyebrow}>DevPilot AI</p>
+          <div className={formIntroClass}>
+            <p className={eyebrowClass}>DevPilot AI</p>
 
-            <h1 id="verify-heading">
+            <h1 id="verify-heading" className={headingClass}>
               {isVerified ? 'Email verified' : 'Verify your email'}
             </h1>
 
-            <p>
+            <p className={introTextClass}>
               {isVerified
                 ? 'Your account is ready. Welcome to DevPilot AI.'
                 : description}
@@ -365,24 +393,24 @@ export default function VerifyEmailPage() {
           </div>
 
           {isVerified ? (
-            <div className={styles.successState} role="status">
-              <p>{notice || 'Email verified successfully.'}</p>
-              <span>Redirecting to your dashboard...</span>
+            <div className={successStateClass} role="status">
+              <p className="m-0 text-base font-bold text-dp-success-strong">{notice || 'Email verified successfully.'}</p>
+              <span className="mt-2 block text-[13px] text-dp-success">Redirecting to your dashboard...</span>
             </div>
           ) : (
             <form
-              className={styles.form}
+              className={formClass}
               onSubmit={handleSubmit}
               noValidate
             >
               {email ? (
-                <div className={styles.emailBadge}>
-                  <span>Email address</span>
-                  <strong>{email}</strong>
+                <div className={emailBadgeClass}>
+                  <span className="text-[12px] leading-[1.2] text-dp-text">Email address</span>
+                  <strong className="min-w-0 [overflow-wrap:anywhere] text-[15px] font-semibold leading-[1.35] text-dp-black">{email}</strong>
                 </div>
               ) : (
-                <div className={styles.field}>
-                  <label htmlFor="verify-email">
+                <div className={fieldClass}>
+                  <label htmlFor="verify-email" className={labelClass}>
                     Email address
                   </label>
 
@@ -400,11 +428,12 @@ export default function VerifyEmailPage() {
                         ? 'verify-email-error'
                         : undefined
                     }
+                    className={emailInputClass}
                   />
 
                   <span
                     id="verify-email-error"
-                    className={styles.error}
+                    className={errorClass}
                     role="alert"
                   >
                     {emailError}
@@ -413,18 +442,18 @@ export default function VerifyEmailPage() {
               )}
 
               {emailError && email && (
-                <span className={styles.error} role="alert">
+                <span className={errorClass} role="alert">
                   {emailError}
                 </span>
               )}
 
-              <div className={styles.field}>
-                <label htmlFor="verification-code-0">
+              <div className={fieldClass}>
+                <label htmlFor="verification-code-0" className={labelClass}>
                   Verification code
                 </label>
 
                 <div
-                  className={styles.otpGroup}
+                  className={otpGroupClass}
                   onPaste={handleCodePaste}
                 >
                   {codeDigits.map((digit, index) => (
@@ -455,18 +484,19 @@ export default function VerifyEmailPage() {
                         index + 1
                       }`}
                       aria-invalid={Boolean(codeError)}
+                      className={otpInputClass}
                     />
                   ))}
                 </div>
 
-                <span className={styles.error} role="alert">
+                <span className={errorClass} role="alert">
                   {codeError}
                 </span>
               </div>
 
               <div
-                className={`${styles.timer} ${
-                  secondsRemaining === 0 ? styles.timerExpired : ''
+                className={`${timerBaseClass} ${
+                  secondsRemaining === 0 ? timerExpiredClass : ''
                 }`}
                 role="status"
               >
@@ -475,24 +505,24 @@ export default function VerifyEmailPage() {
                     ? 'Verification code expired'
                     : 'Code expires in'}
                 </span>
-                <strong>{formatCountdown(secondsRemaining)}</strong>
+                <strong className={`font-mono text-[14px] font-bold ${secondsRemaining === 0 ? 'text-dp-error-text' : 'text-dp-black'}`}>{formatCountdown(secondsRemaining)}</strong>
               </div>
 
               {authError && (
-                <p className={styles.authError} role="alert">
+                <p className={authErrorClass} role="alert">
                   {authError}
                 </p>
               )}
 
               {notice && (
-                <p className={styles.notice} role="status">
+                <p className={noticeClass} role="status">
                   {notice}
                 </p>
               )}
 
               <button
                 type="submit"
-                className={styles.submit}
+                className={submitClass}
                 disabled={status === 'loading'}
               >
                 {status === 'loading'
@@ -500,12 +530,13 @@ export default function VerifyEmailPage() {
                   : 'Verify Email'}
               </button>
 
-              <div className={styles.resend}>
+              <div className={resendClass}>
                 <span>Didn't receive the code?</span>
 
                 <button
                   type="button"
                   onClick={handleResend}
+                  className={resendButtonClass}
                   disabled={
                     resendStatus === 'loading' ||
                     resendSecondsRemaining > 0

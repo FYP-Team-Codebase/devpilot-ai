@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import codenovaLogo from '../../../assets/branding/codenova-logo.svg'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
-import styles from './FooterSection.module.css'
+import { footerStyles } from './FooterSection.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -43,7 +43,11 @@ const FOOTER_GROUPS = [
 
 function FooterLink({ link }) {
   return (
-    <a className={styles.link} href={link.href} {...(link.external ? { target: '_blank', rel: 'noreferrer' } : {})}>
+    <a
+      className={footerStyles.link}
+      href={link.href}
+      {...(link.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+    >
       {link.label}
     </a>
   )
@@ -62,24 +66,33 @@ export default function FooterSection() {
   })
 
   return (
-    <footer id="contact" ref={footerRef} className={`${styles.footer} landing-scroll-target`}>
-      <div className={styles.container}>
-        <div className={styles.top}>
-          <motion.div className={styles.brand} {...reveal()}>
-            <a href="/" className={styles.logoLink} aria-label="Go to Code Nova home" onClick={handleHomeClick}>
-              <img className={styles.logo} src={codenovaLogo} alt="Code Nova" width="190" height="36" />
+    <footer
+      id="contact"
+      ref={footerRef}
+      className={footerStyles.section}
+    >
+      <div className={footerStyles.container}>
+        <div className={footerStyles.mainGrid}>
+          <motion.div className={footerStyles.brandBlock} {...reveal()}>
+            <a
+              href="/"
+              className={footerStyles.logoLink}
+              aria-label="Go to Code Nova home"
+              onClick={handleHomeClick}
+            >
+              <img className={footerStyles.logo} src={codenovaLogo} alt="Code Nova" width="190" height="36" />
             </a>
-            <p className={styles.tagline}>Build software from a single prompt.</p>
-            <p className={styles.description}>
+            <p className={footerStyles.tagline}>Build software from a single prompt.</p>
+            <p className={footerStyles.description}>
               DevPilot AI helps you turn ideas into production-ready web experiences with AI-powered generation, editing, and code.
             </p>
           </motion.div>
 
-          <div className={styles.navigation}>
+          <div className={footerStyles.groupGrid}>
             {FOOTER_GROUPS.map((group, index) => (
-              <motion.nav key={group.title} className={styles.group} aria-label={group.title} {...reveal(0.08 + index * 0.07)}>
-                <h2 className={styles.groupTitle}>{group.title}</h2>
-                <ul className={styles.links}>
+              <motion.nav key={group.title} aria-label={group.title} {...reveal(0.08 + index * 0.07)}>
+                <h2 className={footerStyles.groupTitle}>{group.title}</h2>
+                <ul className={footerStyles.groupList}>
                   {group.links.map((link) => (
                     <li key={link.label}>
                       <FooterLink link={link} />
@@ -91,12 +104,15 @@ export default function FooterSection() {
           </div>
         </div>
 
-        <motion.div className={styles.bottom} {...reveal(0.4)}>
-          <p className={styles.copyright}>© 2026 CodeNova. All rights reserved.</p>
-          <nav className={styles.bottomLinks} aria-label="Legal and social links">
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
-            <a href="https://github.com/FYP-Team-Codebase/devpilot-ai" target="_blank" rel="noreferrer">
+        <motion.div
+          className={footerStyles.bottom}
+          {...reveal(0.4)}
+        >
+          <p className={footerStyles.copyright}>© 2026 CodeNova. All rights reserved.</p>
+          <nav className={footerStyles.legalNav} aria-label="Legal and social links">
+            <a className={footerStyles.legalLink} href="#privacy">Privacy</a>
+            <a className={footerStyles.legalLink} href="#terms">Terms</a>
+            <a className={footerStyles.legalLink} href="https://github.com/FYP-Team-Codebase/devpilot-ai" target="_blank" rel="noreferrer">
               GitHub
             </a>
           </nav>

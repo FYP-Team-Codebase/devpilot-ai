@@ -7,10 +7,36 @@ import LoginVisualCarousel from '../../components/auth/LoginVisualCarousel'
 
 import { login } from '../../services/authService'
 import { getSafeRedirectPath } from '../../utils/routeRedirect'
-
-import styles from './LoginPage.module.css'
+import { loginPageStyles } from './LoginPage.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
+const {
+  page: pageClass,
+  topbar: topbarClass,
+  logoLink: logoLinkClass,
+  logoImage: logoImageClass,
+  backLink: backLinkClass,
+  layout: layoutClass,
+  formIntro: formIntroClass,
+  eyebrow: eyebrowClass,
+  heading: headingClass,
+  introText: introTextClass,
+  form: formClass,
+  field: fieldClass,
+  label: labelClass,
+  input: inputClass,
+  passwordInput: passwordInputClass,
+  labelRow: labelRowClass,
+  forgot: forgotClass,
+  passwordWrap: passwordWrapClass,
+  passwordToggle: passwordToggleClass,
+  error: errorClass,
+  authError: authErrorClass,
+  submit: submitClass,
+  signup: signupClass,
+  legal: legalClass,
+  inlineLink: inlineLinkClass,
+} = loginPageStyles
 
 function validate(values) {
   const errors = {}
@@ -135,23 +161,24 @@ export default function LoginPage() {
   })
 
   return (
-    <main className={styles.page}>
-      <div className={styles.topbar}>
+    <main className={pageClass}>
+      <div className={topbarClass}>
         <Link
           to="/"
-          className={styles.logoLink}
+          className={logoLinkClass}
           aria-label="Go to Code Nova home"
         >
           <img
             src={codenovaLogo}
             alt="Code Nova"
+            className={logoImageClass}
             width="190"
             height="36"
           />
         </Link>
 
         <Link
-          className={styles.backLink}
+          className={backLinkClass}
           to="/"
         >
           Back to CodeNova{' '}
@@ -159,35 +186,35 @@ export default function LoginPage() {
         </Link>
       </div>
 
-      <div className={styles.layout}>
+      <div className={layoutClass}>
         <motion.section
-          className={styles.formPanel}
+          className="w-full"
           {...reveal()}
           aria-labelledby="login-heading"
         >
-          <div className={styles.formIntro}>
-            <p className={styles.eyebrow}>
+          <div className={formIntroClass}>
+            <p className={eyebrowClass}>
               DevPilot AI
             </p>
 
-            <h1 id="login-heading">
+            <h1 id="login-heading" className={headingClass}>
               Welcome back
             </h1>
 
-            <p>
+            <p className={introTextClass}>
               Log in to continue building with DevPilot AI.
             </p>
           </div>
 
           <form
-            className={styles.form}
+            className={formClass}
             onSubmit={handleSubmit}
             noValidate
           >
             {/* EMAIL */}
 
-            <div className={styles.field}>
-              <label htmlFor="email">
+            <div className={fieldClass}>
+              <label htmlFor="email" className={labelClass}>
                 Email address
               </label>
 
@@ -205,11 +232,12 @@ export default function LoginPage() {
                     ? 'email-error'
                     : undefined
                 }
+                className={inputClass}
               />
 
               <span
                 id="email-error"
-                className={styles.error}
+                className={errorClass}
                 role="alert"
               >
                 {errors.email}
@@ -218,21 +246,21 @@ export default function LoginPage() {
 
             {/* PASSWORD */}
 
-            <div className={styles.field}>
-              <div className={styles.labelRow}>
-                <label htmlFor="password">
+            <div className={fieldClass}>
+              <div className={labelRowClass}>
+                <label htmlFor="password" className={labelClass}>
                   Password
                 </label>
 
                 <a
                   href="/forgot-password"
-                  className={styles.forgot}
+                  className={forgotClass}
                 >
                   Forgot password?
                 </a>
               </div>
 
-              <div className={styles.passwordWrap}>
+              <div className={passwordWrapClass}>
                 <input
                   id="password"
                   name="password"
@@ -251,11 +279,12 @@ export default function LoginPage() {
                       ? 'password-error'
                       : undefined
                   }
+                  className={passwordInputClass}
                 />
 
                 <button
                   type="button"
-                  className={styles.passwordToggle}
+                  className={passwordToggleClass}
                   onClick={() =>
                     setShowPassword(
                       (visible) => !visible
@@ -276,7 +305,7 @@ export default function LoginPage() {
 
               <span
                 id="password-error"
-                className={styles.error}
+                className={errorClass}
                 role="alert"
               >
                 {errors.password}
@@ -287,7 +316,7 @@ export default function LoginPage() {
 
             {authError && (
               <p
-                className={styles.authError}
+                className={authErrorClass}
                 role="alert"
               >
                 {authError}
@@ -298,7 +327,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className={styles.submit}
+              className={submitClass}
               disabled={status === 'loading'}
             >
               {status === 'loading'
@@ -307,20 +336,20 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className={styles.signup}>
+          <p className={signupClass}>
             Don't have an account?{' '}
-            <Link to="/signup">
+            <Link to="/signup" className={inlineLinkClass}>
               Sign up
             </Link>
           </p>
 
-          <p className={styles.legal}>
+          <p className={legalClass}>
             By continuing, you agree to CodeNova's{' '}
-            <a href="/terms">
+            <a href="/terms" className={inlineLinkClass}>
               Terms
             </a>{' '}
             and{' '}
-            <a href="/privacy">
+            <a href="/privacy" className={inlineLinkClass}>
               Privacy Policy
             </a>
             .

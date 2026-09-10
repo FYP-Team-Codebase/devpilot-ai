@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../services/authService'
 import { getRecentProjects } from '../../services/projectService'
 import UserMenu from '../Dashboard/components/UserMenu'
+import { promptPageStyles } from './PromptPage.styles'
 
-const SIDEBAR_WIDTH = 'w-[228px]'
 const EASE = [0.16, 1, 0.3, 1]
 const buttonMotion = { duration: 0.2, ease: 'easeOut' }
 const MAX_PROMPT_LENGTH = 3000
@@ -204,7 +204,7 @@ export default function PromptPage() {
   }
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#FAFAF8] font-sans text-dp-near-black">
+    <div className={promptPageStyles.page}>
       <PromptSidebar
         isOpen={isSidebarOpen}
         recentProjects={recentProjects}
@@ -215,7 +215,7 @@ export default function PromptPage() {
       <AnimatePresence>
         {isComposerExpanded && (
           <motion.div
-            className="fixed inset-0 z-[55] bg-[#FAFAF8]/45 backdrop-blur-[3px]"
+            className={promptPageStyles.overlay}
             aria-hidden="true"
             onClick={closeComposer}
             initial={{ opacity: 0 }}
@@ -226,28 +226,28 @@ export default function PromptPage() {
         )}
       </AnimatePresence>
 
-      <div className="flex min-h-dvh min-w-0 flex-col md:ml-[228px]">
+      <div className={promptPageStyles.shell}>
         <PromptHeader user={user} onMenuToggle={() => setIsSidebarOpen(true)} />
 
-        <main className="min-h-[calc(100dvh-60px)] px-6 py-8 max-lg:px-5 max-md:px-4 max-sm:px-3.5">
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-center">
+        <main className={promptPageStyles.main}>
+          <div className={promptPageStyles.content}>
             <motion.div
-              className="w-full text-center"
+              className={promptPageStyles.intro}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.38, ease: EASE }}
             >
-              <h1 className="m-0 text-[clamp(2.1rem,4.2vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.045em] text-dp-black">
+              <h1 className={promptPageStyles.heading}>
                 What would you like to build today?
               </h1>
-              <p className="mx-auto mt-3 max-w-[680px] text-[15.5px] leading-7 text-dp-text">
+              <p className={promptPageStyles.introText}>
                 Describe your idea and DevPilot AI will generate a complete, production-ready website.
               </p>
             </motion.div>
 
             <motion.form
-              className={`relative z-[60] mt-8 w-full overflow-hidden rounded-xl border bg-white text-left transition-[border-color] duration-200 ${
-                isComposerExpanded || isFocused ? 'border-neutral-500' : 'border-dp-border'
+              className={`${promptPageStyles.formBase} ${
+                isComposerExpanded || isFocused ? promptPageStyles.formFocused : promptPageStyles.formDefault
               }`}
               onSubmit={handleSubmit}
               aria-label="Describe what you want to build"
@@ -256,7 +256,7 @@ export default function PromptPage() {
                 opacity: 1,
                 y: isComposerExpanded && !shouldReduceMotion ? -2 : 0,
                 height: isComposerExpanded ? 'auto' : 68,
-                boxShadow: isComposerExpanded ? '0 20px 60px rgba(0,0,0,0.08)' : '0 1px 2px rgba(0,0,0,0.02)',
+                boxShadow: isComposerExpanded ? '0 20px 60px rgba(0,0,0,0.08)' : 'var(--shadow-dp-card)',
               }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.36, delay: shouldReduceMotion ? 0 : 0.06, ease: [0.22, 1, 0.36, 1] }}
             >
@@ -265,7 +265,7 @@ export default function PromptPage() {
                   <motion.button
                     key="collapsed"
                     type="button"
-                    className="flex h-[68px] w-full cursor-pointer items-center gap-3 border-0 bg-white px-5 text-left text-dp-black outline-none transition-colors duration-200 hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-inset max-sm:px-4"
+                    className={promptPageStyles.collapsedButton}
                     onClick={openComposer}
                     onFocus={openComposer}
                     initial={shouldReduceMotion ? false : { opacity: 0 }}
@@ -273,19 +273,19 @@ export default function PromptPage() {
                     exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
                     transition={{ duration: shouldReduceMotion ? 0 : 0.18, ease: 'easeOut' }}
                   >
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-dp-border bg-[#FAFAF8] text-dp-black" aria-hidden="true">
+                    <span className={promptPageStyles.collapsedIcon} aria-hidden="true">
                       <PromptIcon name="spark" />
                     </span>
-                    <span className={`min-w-0 flex-1 truncate text-[15px] font-medium ${value.trim() ? 'text-dp-black' : 'text-dp-muted'}`}>
+                    <span className={`${promptPageStyles.collapsedPreviewBase} ${value.trim() ? promptPageStyles.collapsedPreviewFilled : promptPageStyles.collapsedPreviewEmpty}`}>
                       {promptPreview}
                     </span>
                     <motion.span
-                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-dp-border bg-white text-dp-muted"
+                      className={promptPageStyles.chevronButton}
                       aria-hidden="true"
                       animate={{ rotate: 0 }}
                       transition={buttonMotion}
                     >
-                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={promptPageStyles.chevronIcon}>
                         <path d="M3 4.5l3 3 3-3" />
                       </svg>
                     </motion.span>
@@ -298,10 +298,10 @@ export default function PromptPage() {
                     exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
                     transition={{ duration: shouldReduceMotion ? 0 : 0.22, ease: 'easeOut' }}
                   >
-                    <div className="relative px-5 pb-8 pt-5 max-sm:px-4">
+                    <div className={promptPageStyles.expandedBody}>
                       <button
                         type="button"
-                        className="absolute right-4 top-4 grid h-8 w-8 cursor-pointer place-items-center rounded-lg border border-dp-border bg-white text-dp-muted transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        className={promptPageStyles.collapseButton}
                         aria-label="Collapse prompt composer"
                         onClick={closeComposer}
                         disabled={isSubmitting}
@@ -313,7 +313,7 @@ export default function PromptPage() {
                           strokeWidth="1.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="h-3 w-3"
+                          className={promptPageStyles.chevronIcon}
                           aria-hidden="true"
                           animate={{ rotate: 180 }}
                           transition={buttonMotion}
@@ -325,7 +325,7 @@ export default function PromptPage() {
                       <textarea
                         id="prompt-input"
                         ref={textareaRef}
-                        className="min-h-[170px] w-full resize-none border-0 bg-transparent p-0 pr-10 font-sans text-base font-medium leading-7 text-dp-black outline-none placeholder:text-dp-muted disabled:cursor-not-allowed disabled:opacity-60 max-sm:min-h-[150px]"
+                        className={promptPageStyles.textarea}
                         value={value}
                         maxLength={MAX_PROMPT_LENGTH}
                         onChange={(e) => setValue(e.target.value)}
@@ -336,18 +336,18 @@ export default function PromptPage() {
                         aria-describedby="prompt-count"
                         disabled={isSubmitting}
                       />
-                      <span id="prompt-count" className="absolute bottom-3 right-5 text-[12px] font-medium text-dp-muted max-sm:right-4">
+                      <span id="prompt-count" className={promptPageStyles.count}>
                         {value.length}/{MAX_PROMPT_LENGTH}
                       </span>
                     </div>
 
                     <motion.div
-                      className="flex items-center justify-between gap-3 border-t border-dp-border bg-[#FCFCFB] px-4 py-3 max-md:flex-wrap"
+                      className={promptPageStyles.controlsBar}
                       initial={shouldReduceMotion ? false : { opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: shouldReduceMotion ? 0 : 0.2, delay: shouldReduceMotion ? 0 : 0.08, ease: 'easeOut' }}
                     >
-                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                      <div className={promptPageStyles.controlsLeft}>
                         <SelectControl
                           label="User type"
                           value={userType}
@@ -381,7 +381,7 @@ export default function PromptPage() {
             <FeatureStrip shouldReduceMotion={shouldReduceMotion} />
 
             <motion.p
-              className="mt-7 text-center text-[14px] leading-6 text-dp-muted"
+              className={promptPageStyles.footerNote}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.32, delay: shouldReduceMotion ? 0 : 0.18, ease: EASE }}
@@ -389,10 +389,10 @@ export default function PromptPage() {
               Not sure what to build?{' '}
               <a
                 href="/dashboard/inspiration"
-                className="group inline-flex items-center gap-1 font-semibold text-dp-black underline decoration-dp-border underline-offset-4 transition-colors duration-200 hover:text-dp-black hover:decoration-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+                className={promptPageStyles.inspirationLink}
               >
                 Explore inspiration
-                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={promptPageStyles.inspirationIcon} aria-hidden="true">
                   <path d="M2.5 6h7M6.5 2.5L10 6 6.5 9.5" />
                 </svg>
               </a>
@@ -408,48 +408,48 @@ function PromptHeader({ user, onMenuToggle }) {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <header className="sticky top-0 z-30 border-b border-dp-border bg-[#FAFAF8]/95 backdrop-blur-xl">
-      <div className="flex min-h-[60px] items-center justify-between gap-4 px-6 max-md:px-4">
-        <div className="flex min-w-0 items-center gap-3">
+    <header className={promptPageStyles.header}>
+      <div className={promptPageStyles.headerInner}>
+        <div className={promptPageStyles.headerLeft}>
           <motion.button
             type="button"
-            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-dp-border bg-white text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] md:hidden"
+            className={promptPageStyles.menuButton}
             aria-label="Open navigation"
             onClick={onMenuToggle}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
           >
-            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={promptPageStyles.icon} aria-hidden="true">
               <path d="M3 5h12M3 9h12M3 13h12" />
             </svg>
           </motion.button>
 
-          <div className="min-w-0">
-            <p className="m-0 text-[15px] font-semibold tracking-[-0.02em] text-dp-black">Prompt Builder</p>
-            <p className="m-0 mt-0.5 truncate text-[12.5px] leading-5 text-dp-muted">Start with a clear brief.</p>
+          <div className={promptPageStyles.headerText}>
+            <p className={promptPageStyles.headerTitle}>Prompt Builder</p>
+            <p className={promptPageStyles.headerSubtitle}>Start with a clear brief.</p>
           </div>
         </div>
 
-        <div className="flex min-w-0 items-center justify-end gap-2.5">
+        <div className={promptPageStyles.headerActions}>
           <a
             href="/dashboard/pricing"
-            className="hidden h-8 shrink-0 cursor-pointer items-center rounded-full border border-dp-border bg-white px-3 text-[12px] font-semibold text-dp-black no-underline transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] sm:inline-flex"
+            className={promptPageStyles.pricingLink}
           >
             Pricing
           </a>
-          <span className="inline-flex h-8 shrink-0 items-center rounded-full border border-dp-border bg-white px-3 text-[12px] font-semibold text-dp-black">
+          <span className={promptPageStyles.planPill}>
             Free Plan
           </span>
           <motion.button
             type="button"
-            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-dp-border bg-white text-dp-text transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={promptPageStyles.notificationButton}
             aria-label="Notifications"
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
           >
-            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={promptPageStyles.icon} aria-hidden="true">
               <path d="M5.5 7.5a3.5 3.5 0 1 1 7 0c0 4 1.5 4.5 1.5 4.5H4s1.5-.5 1.5-4.5Z" />
               <path d="M7.8 14a1.4 1.4 0 0 0 2.4 0" />
             </svg>
@@ -467,40 +467,40 @@ function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-black/20 transition-opacity duration-200 md:hidden ${
-          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        className={`${promptPageStyles.mobileOverlay} ${
+          isOpen ? promptPageStyles.mobileOverlayOpen : promptPageStyles.mobileOverlayClosed
         }`}
         aria-hidden="true"
         onClick={onClose}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen ${SIDEBAR_WIDTH} flex-col overflow-hidden border-r border-dp-border bg-white px-3 py-4 transition-transform duration-200 md:top-0 md:z-40 md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`${promptPageStyles.sidebarBase} ${
+          isOpen ? promptPageStyles.sidebarOpen : promptPageStyles.sidebarClosed
         }`}
         aria-label="Prompt Builder navigation"
       >
-        <div className="flex h-9 items-center justify-between px-2">
+        <div className={promptPageStyles.sidebarTop}>
           <a
             href="/dashboard"
-            className="flex items-center gap-2 rounded-lg text-dp-black no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className={promptPageStyles.brand}
           >
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-dp-black text-white" aria-hidden="true">
-              <svg viewBox="0 0 36 36" fill="none" className="h-4.5 w-4.5">
+            <span className={promptPageStyles.brandMark} aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" className={promptPageStyles.brandIcon}>
                 <rect x="4" y="10" width="22" height="22" rx="7" fill="currentColor" />
                 <rect x="20" y="2" width="14" height="14" rx="5" fill="currentColor" />
               </svg>
             </span>
-            <span className="text-[14px] font-semibold tracking-[-0.02em]">DevPilot AI</span>
+            <span className={promptPageStyles.brandText}>DevPilot AI</span>
           </a>
 
           <button
             type="button"
-            className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border-0 bg-transparent text-dp-muted transition-colors duration-150 hover:bg-dp-surface hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white md:hidden"
+            className={promptPageStyles.closeButton}
             aria-label="Close navigation"
             onClick={onClose}
           >
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={promptPageStyles.icon} aria-hidden="true">
               <path d="M4 4l8 8M12 4l-8 8" />
             </svg>
           </button>
@@ -508,29 +508,29 @@ function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
 
         <motion.button
           type="button"
-          className="mt-5 inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-4 text-[13px] font-semibold text-white transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className={promptPageStyles.newProjectButton}
           onClick={onNewProject}
           whileHover={shouldReduceMotion ? undefined : { y: -1 }}
           whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
           transition={buttonMotion}
         >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className={promptPageStyles.icon} aria-hidden="true">
             <path d="M8 3v10M3 8h10" />
           </svg>
           New Project
         </motion.button>
 
-        <nav className="mt-5 flex flex-col gap-1" aria-label="Sidebar">
+        <nav className={promptPageStyles.nav} aria-label="Sidebar">
           {NAV_ITEMS.map((item) => {
             const isActive = item.id === 'prompt'
             return (
               <motion.a
                 key={item.id}
                 href={item.href}
-                className={`flex h-10 cursor-pointer items-center gap-2.5 rounded-lg px-3 text-[13px] font-medium no-underline transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                className={`${promptPageStyles.navItemBase} ${
                   isActive
-                    ? 'bg-dp-black text-white'
-                    : 'text-dp-text hover:bg-dp-surface hover:text-dp-black'
+                    ? promptPageStyles.navItemActive
+                    : promptPageStyles.navItemDefault
                 }`}
                 whileHover={!isActive && !shouldReduceMotion ? { x: 2 } : undefined}
                 transition={{ duration: 0.18, ease: 'easeOut' }}
@@ -542,42 +542,42 @@ function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
           })}
         </nav>
 
-        <div className="mt-6 min-h-0 flex-1">
-          <p className="mb-2 px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-dp-muted">Recent Projects</p>
+        <div className={promptPageStyles.sidebarProjects}>
+          <p className={promptPageStyles.sidebarSectionLabel}>Recent Projects</p>
           {recentProjects.length > 0 ? (
-            <div className="grid gap-1.5">
+            <div className={promptPageStyles.recentGrid}>
               {recentProjects.map((project) => (
                 <a
                   key={project.id}
                   href={project.href || '#'}
-                  className="block rounded-lg px-3 py-2 text-dp-black no-underline transition-colors duration-150 hover:bg-dp-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                  className={promptPageStyles.recentProject}
                 >
-                  <span className="block truncate text-[12.5px] font-semibold">{project.name}</span>
-                  <span className="mt-0.5 block truncate text-[11.5px] text-dp-muted">
+                  <span className={promptPageStyles.recentName}>{project.name}</span>
+                  <span className={promptPageStyles.recentMeta}>
                     {[project.status, formatRelative(project.updatedAt)].filter(Boolean).join(' ')}
                   </span>
                 </a>
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-dp-border bg-[#FAFAF8] px-3 py-4 text-center">
-              <span className="mx-auto grid h-9 w-9 place-items-center rounded-lg border border-dp-border bg-white text-dp-black" aria-hidden="true">
+            <div className={promptPageStyles.sidebarEmpty}>
+              <span className={promptPageStyles.sidebarEmptyIcon} aria-hidden="true">
                 <PromptIcon name="projects" />
               </span>
-              <p className="m-0 mt-3 text-[12.5px] font-semibold text-dp-black">No recent projects yet</p>
-              <p className="m-0 mt-1 text-[11.5px] leading-5 text-dp-muted">Your generated websites will appear here.</p>
+              <p className={promptPageStyles.sidebarEmptyTitle}>No recent projects yet</p>
+              <p className={promptPageStyles.sidebarEmptyText}>Your generated websites will appear here.</p>
             </div>
           )}
         </div>
 
-        <div className="mt-4 rounded-xl border border-dp-border bg-[#FAFAF8] p-3">
+        <div className={promptPageStyles.sidebarPlan}>
           <div>
-            <p className="m-0 text-[13px] font-semibold text-dp-black">Free Plan</p>
-            <p className="m-0 mt-0.5 text-[11.5px] leading-5 text-dp-muted">Starter workspace</p>
+            <p className={promptPageStyles.sidebarPlanTitle}>Free Plan</p>
+            <p className={promptPageStyles.sidebarPlanText}>Starter workspace</p>
           </div>
           <a
             href="/dashboard/pricing"
-            className="mt-3 inline-flex h-9 w-full cursor-pointer items-center justify-center rounded-xl border border-dp-black bg-dp-black px-3 text-[12.5px] font-semibold text-white no-underline transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={promptPageStyles.upgradeLink}
           >
             Upgrade
           </a>
@@ -589,10 +589,10 @@ function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
 
 function SelectControl({ label, value, options, onChange, disabled }) {
   return (
-    <label className="relative inline-flex h-10 min-w-[150px] cursor-pointer items-center rounded-xl border border-neutral-200 bg-white text-sm font-medium text-dp-black transition-colors duration-200 hover:border-neutral-300 hover:bg-neutral-50 focus-within:border-dp-black focus-within:ring-2 focus-within:ring-dp-black focus-within:ring-offset-2 focus-within:ring-offset-[#FCFCFB] has-disabled:cursor-not-allowed has-disabled:opacity-60 max-sm:min-w-full">
+    <label className={promptPageStyles.selectLabel}>
       <span className="sr-only">{label}</span>
       <select
-        className="h-full w-full cursor-pointer appearance-none rounded-xl border-0 bg-transparent px-3 pr-8 text-dp-black outline-none disabled:cursor-not-allowed"
+        className={promptPageStyles.select}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
@@ -602,7 +602,7 @@ function SelectControl({ label, value, options, onChange, disabled }) {
           <option key={option.value} value={option.value}>{option.label}</option>
         ))}
       </select>
-      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute right-3 h-3 w-3 text-dp-muted" aria-hidden="true">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={promptPageStyles.selectIcon} aria-hidden="true">
         <path d="M3 4.5l3 3 3-3" />
       </svg>
     </label>
@@ -613,7 +613,7 @@ function GenerateButton({ isFilled, isSubmitting, shouldReduceMotion }) {
   return (
     <motion.button
       type="submit"
-      className="group inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dp-black bg-dp-black px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FCFCFB] disabled:cursor-not-allowed disabled:opacity-40 max-md:ml-auto max-sm:w-full"
+      className={promptPageStyles.generateButton}
       disabled={!isFilled || isSubmitting}
       whileHover={isFilled && !isSubmitting && !shouldReduceMotion ? { y: -1 } : undefined}
       whileTap={isFilled && !isSubmitting && !shouldReduceMotion ? { scale: 0.98 } : undefined}
@@ -621,13 +621,13 @@ function GenerateButton({ isFilled, isSubmitting, shouldReduceMotion }) {
     >
       {isSubmitting ? (
         <>
-          <span className="h-2 w-2 rounded-full bg-white motion-safe:animate-pulse" aria-hidden="true" />
+          <span className={promptPageStyles.pulseDot} aria-hidden="true" />
           Generating...
         </>
       ) : (
         <>
           Generate
-          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={promptPageStyles.generateIcon} aria-hidden="true">
             <path d="M3 7h8M8 4l3 3-3 3" />
           </svg>
         </>
@@ -639,7 +639,7 @@ function GenerateButton({ isFilled, isSubmitting, shouldReduceMotion }) {
 function PromptSuggestions({ suggestions, onSelect, disabled, shouldReduceMotion }) {
   return (
     <motion.div
-      className="mt-5 flex w-full flex-wrap justify-center gap-2"
+      className={promptPageStyles.suggestions}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.34, delay: shouldReduceMotion ? 0 : 0.12, ease: EASE }}
@@ -648,7 +648,7 @@ function PromptSuggestions({ suggestions, onSelect, disabled, shouldReduceMotion
         <motion.button
           key={suggestion.label}
           type="button"
-          className="cursor-pointer rounded-xl border border-neutral-200 bg-white px-3.5 py-2 text-[12.5px] font-semibold text-dp-black transition-colors duration-200 hover:border-dp-black hover:bg-dp-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8] disabled:cursor-not-allowed disabled:opacity-50"
+          className={promptPageStyles.suggestionButton}
           onClick={() => onSelect(suggestion.prompt)}
           disabled={disabled}
           initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
@@ -667,19 +667,19 @@ function PromptSuggestions({ suggestions, onSelect, disabled, shouldReduceMotion
 function FeatureStrip({ shouldReduceMotion }) {
   return (
     <motion.section
-      className="mt-8 grid w-full grid-cols-4 gap-px overflow-hidden rounded-xl border border-dp-border bg-dp-border max-lg:grid-cols-2 max-sm:grid-cols-1"
+      className={promptPageStyles.featureStrip}
       aria-label="Prompt Builder features"
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.36, delay: shouldReduceMotion ? 0 : 0.16, ease: EASE }}
     >
       {FEATURES.map((feature) => (
-        <div key={feature.title} className="bg-white p-4">
-          <span className="grid h-9 w-9 place-items-center rounded-lg border border-dp-border bg-[#FAFAF8] text-dp-black" aria-hidden="true">
+        <div key={feature.title} className={promptPageStyles.featureCard}>
+          <span className={promptPageStyles.featureIconWrap} aria-hidden="true">
             <PromptIcon name={feature.icon} />
           </span>
-          <h2 className="m-0 mt-3 text-[13.5px] font-bold tracking-[-0.02em] text-dp-black">{feature.title}</h2>
-          <p className="m-0 mt-1 text-[12.5px] leading-5 text-dp-muted">{feature.description}</p>
+          <h2 className={promptPageStyles.featureTitle}>{feature.title}</h2>
+          <p className={promptPageStyles.featureText}>{feature.description}</p>
         </div>
       ))}
     </motion.section>

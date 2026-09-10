@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './FinalCtaSection.module.css'
+import { finalCtaStyles } from './FinalCtaSection.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -10,6 +11,7 @@ export default function FinalCtaSection() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.35 })
   const shouldReduceMotion = useReducedMotion()
   const { handleStartBuilding } = useLandingNavigation()
+  const shouldAnimatePreview = isInView && !shouldReduceMotion
 
   const reveal = (delay = 0) => ({
     initial: shouldReduceMotion ? false : { opacity: 0, y: 18 },
@@ -18,51 +20,83 @@ export default function FinalCtaSection() {
   })
 
   return (
-    <section id="try" ref={sectionRef} className={`${styles.cta} landing-scroll-target`} aria-labelledby="final-cta-heading">
-      <div className={styles.container}>
-        <motion.div className={styles.promptMotif} aria-hidden="true" {...reveal(0.04)}>
-          <span className={styles.promptMark}>&gt;</span>
+    <section id="try" ref={sectionRef} className={finalCtaStyles.section} aria-labelledby="final-cta-heading">
+      <div className={finalCtaStyles.content}>
+        <motion.div
+          className={finalCtaStyles.promptChip}
+          aria-hidden="true"
+          {...reveal(0.04)}
+        >
+          <span className={finalCtaStyles.promptChevron}>&gt;</span>
           <span>describe your idea</span>
-          <span className={styles.cursor} />
+          <span className={`${finalCtaStyles.chipCursor} ${styles.blink}`} />
         </motion.div>
 
-        <motion.h2 id="final-cta-heading" className={styles.heading} {...reveal(0.1)}>
+        <motion.h2
+          id="final-cta-heading"
+          className={finalCtaStyles.heading}
+          {...reveal(0.1)}
+        >
           <span>Your next project</span>
           <span>starts with a prompt.</span>
         </motion.h2>
 
-        <motion.p className={styles.description} {...reveal(0.18)}>
+        <motion.p
+          className={finalCtaStyles.description}
+          {...reveal(0.18)}
+        >
           Describe what you want to build. DevPilot AI turns your idea into a working web application.
         </motion.p>
 
-        <motion.div className={styles.actions} {...reveal(0.26)}>
-          <a className={styles.primaryCta} href="/prompt" onClick={handleStartBuilding}>
+        <motion.div
+          className={finalCtaStyles.actions}
+          {...reveal(0.26)}
+        >
+          <a className={finalCtaStyles.primaryCta} href="/prompt" onClick={handleStartBuilding}>
             Start Building
-            <span aria-hidden="true">→</span>
+            <span
+              className={finalCtaStyles.ctaArrow}
+              aria-hidden="true"
+            >
+              &rarr;
+            </span>
           </a>
-          <a className={styles.secondaryCta} href="#top">
+          <a className={finalCtaStyles.secondaryCta} href="#top">
             Explore DevPilot AI
           </a>
         </motion.div>
 
         <motion.div
-          className={`${styles.promptPreview} ${isInView && !shouldReduceMotion ? styles.promptPreviewReady : ''}`}
+          className={finalCtaStyles.preview}
           aria-hidden="true"
           {...reveal(0.34)}
         >
-          <div className={styles.previewHeader}>
-            <span className={styles.previewLabel}>&gt; prompt</span>
-            <span className={styles.previewStatus}>
-              <span className={styles.statusDot} />
+          <div className={finalCtaStyles.previewHeader}>
+            <span className={finalCtaStyles.previewPrompt}>&gt; prompt</span>
+            <span
+              className={`${finalCtaStyles.previewStatus} ${
+                shouldAnimatePreview ? styles.previewStatusReveal : ''
+              }`}
+            >
+              <span className={finalCtaStyles.previewStatusDot} />
               Generating
             </span>
           </div>
-          <p className={styles.previewText}>
-            Build a modern ecommerce website with a clean editorial interface<span className={styles.previewCursor} />
+          <p
+            className={`${finalCtaStyles.previewText} ${
+              shouldAnimatePreview ? styles.previewTextReveal : ''
+            }`}
+          >
+            Build a modern ecommerce website with a clean editorial interface
+            <span
+              className={`${finalCtaStyles.previewCursor} ${
+                shouldAnimatePreview ? styles.previewCursorReady : ''
+              }`}
+            />
           </p>
-          <div className={styles.previewFooter}>
+          <div className={finalCtaStyles.previewFooter}>
             <span>Natural language</span>
-            <span aria-hidden="true">→</span>
+            <span aria-hidden="true">&rarr;</span>
             <span>Working software</span>
           </div>
         </motion.div>

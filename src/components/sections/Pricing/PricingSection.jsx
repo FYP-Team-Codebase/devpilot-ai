@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
-import styles from './PricingSection.module.css'
+import { pricingStyles } from './PricingSection.styles'
 
 const PLANS = [
   {
@@ -48,30 +48,41 @@ function PricingCard({ plan, progress, index, shouldReduceMotion, onPlanAction }
 
   return (
     <motion.div
-      className={styles.cardReveal}
+      className={pricingStyles.motionShell}
       style={shouldReduceMotion ? undefined : { opacity, y, scale }}
       transition={{ duration: 0.5, ease: REVEAL_EASE }}
     >
-      <article className={`${styles.card} ${plan.featured ? styles.featuredCard : ''}`}>
-        {plan.featured && <span className={styles.badge}>Most popular</span>}
+      <article className={`${pricingStyles.card} ${plan.featured ? pricingStyles.featuredCard : ''}`}>
+        {plan.featured && (
+          <span className={pricingStyles.badge}>
+            Most popular
+          </span>
+        )}
 
-        <div className={styles.cardHeader}>
-          <p className={styles.planName}>{plan.name}</p>
-          <div className={styles.priceRow}>
-            <span className={styles.price}>{plan.price}</span>
-            {plan.period && <span className={styles.period}>{plan.period}</span>}
+        <div className={pricingStyles.intro}>
+          <p className={`${pricingStyles.eyebrow} ${pricingStyles.planName}`}>{plan.name}</p>
+          <div className={pricingStyles.priceRow}>
+            <span className={pricingStyles.price}>
+              {plan.price}
+            </span>
+            {plan.period && <span className={pricingStyles.period}>{plan.period}</span>}
           </div>
-          <p className={styles.planDescription}>{plan.description}</p>
+          <p className={pricingStyles.description}>{plan.description}</p>
         </div>
 
-        <ul className={styles.features}>
+        <ul className={pricingStyles.featureList}>
           {plan.features.map((feature) => (
-            <li key={feature}>{feature}</li>
+            <li
+              className={pricingStyles.featureItem}
+              key={feature}
+            >
+              {feature}
+            </li>
           ))}
         </ul>
 
         <a
-          className={`${styles.cardCta} ${plan.featured ? styles.featuredCta : ''}`}
+          className={`${pricingStyles.cardCta} ${plan.featured ? pricingStyles.featuredCta : ''}`}
           href={plan.href}
           onClick={(event) => onPlanAction(event, plan)}
         >
@@ -105,17 +116,30 @@ export default function PricingSection() {
   }
 
   return (
-    <section id="pricing" ref={sectionRef} className={`${styles.pricing} landing-scroll-target`} aria-labelledby="pricing-heading">
-      <div className={styles.container}>
-        <motion.div className={styles.header} style={shouldReduceMotion ? undefined : { opacity: headerOpacity, y: headerY }}>
-          <p className={styles.eyebrow}>Pricing</p>
-          <h2 id="pricing-heading" className={styles.heading}>
+    <section
+      id="pricing"
+      ref={sectionRef}
+      className={pricingStyles.section}
+      aria-labelledby="pricing-heading"
+    >
+      <div className={pricingStyles.container}>
+        <motion.div
+          className={pricingStyles.header}
+          style={shouldReduceMotion ? undefined : { opacity: headerOpacity, y: headerY }}
+        >
+          <p className={`${pricingStyles.eyebrow} ${pricingStyles.headerEyebrow}`}>Pricing</p>
+          <h2
+            id="pricing-heading"
+            className={pricingStyles.heading}
+          >
             Build more. Pay less.
           </h2>
-          <p className={styles.subheading}>Start free, then upgrade when your projects demand more.</p>
+          <p className={pricingStyles.subheading}>
+            Start free, then upgrade when your projects demand more.
+          </p>
         </motion.div>
 
-        <div className={styles.cards}>
+        <div className={pricingStyles.grid}>
           {PLANS.map((plan, index) => (
             <PricingCard
               key={plan.name}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
-import styles from './MobileShowcase.module.css'
+import { mobileShowcaseStyles } from './MobileShowcase.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 const AUTOPLAY_MS = 3200
@@ -11,37 +11,37 @@ const SWIPE_VELOCITY_THRESHOLD = 520
 const SCREENS = [
   {
     name: 'Fintech dashboard',
-    src: '/showcase/fintech.png',
+    src: '/showcase/optimized/fintech.jpg',
     desktop: { left: '3%', top: '198px', width: '190px', rotate: -8, zIndex: 2 },
     mobile: { left: '-2%', top: '224px', width: '104px' },
   },
   {
     name: 'Travel planning app',
-    src: '/showcase/travel.png',
+    src: '/showcase/optimized/travel.jpg',
     desktop: { left: '20%', top: '22px', width: '184px', rotate: -5, zIndex: 3 },
     mobile: { left: '3%', top: '8px', width: '112px' },
   },
   {
     name: 'Fitness tracking app',
-    src: '/showcase/fitness.png',
+    src: '/showcase/optimized/fitness.jpg',
     desktop: { left: '39%', top: '132px', width: '212px', rotate: -2, zIndex: 5 },
     mobile: { left: '29%', top: '100px', width: '140px' },
   },
   {
     name: 'Social community app',
-    src: '/showcase/social.png',
+    src: '/showcase/optimized/social.jpg',
     desktop: { left: '59%', top: '2px', width: '190px', rotate: 2, zIndex: 4 },
     mobile: { left: '62%', top: '18px', width: '112px' },
   },
   {
     name: 'Fashion shopping app',
-    src: '/showcase/fashion.png',
+    src: '/showcase/optimized/fashion.jpg',
     desktop: { left: '77%', top: '192px', width: '168px', rotate: 5, zIndex: 2 },
     mobile: { left: '35%', top: '264px', width: '94px' },
   },
   {
     name: 'Productivity workspace app',
-    src: '/showcase/productivity.png',
+    src: '/showcase/optimized/productivity.jpg',
     desktop: { left: '53%', top: '276px', width: '184px', rotate: 8, zIndex: 6 },
     mobile: { left: '62%', top: '230px', width: '108px' },
   },
@@ -212,23 +212,23 @@ export default function MobileShowcase() {
     <section
       id="products"
       ref={sectionRef}
-      className={`${styles.showcase} landing-scroll-target`}
+      className={mobileShowcaseStyles.section}
       aria-labelledby="showcase-heading"
     >
-      <div className={styles.container}>
+      <div className={mobileShowcaseStyles.container}>
         <motion.header
-          className={styles.header}
+          className={mobileShowcaseStyles.header}
           initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: shouldReduceMotion ? 0 : 0.55, ease: EASE }}
         >
-          <p className={styles.eyebrow}>Built with DevPilot</p>
-          <h2 id="showcase-heading">From a single prompt to a complete product.</h2>
-          <p>DevPilot turns natural-language ideas into polished interfaces, ready to become the product you imagined.</p>
+          <p className={mobileShowcaseStyles.eyebrow}>Built with DevPilot</p>
+          <h2 id="showcase-heading" className={mobileShowcaseStyles.heading}>From a single prompt to a complete product.</h2>
+          <p className={mobileShowcaseStyles.description}>DevPilot turns natural-language ideas into polished interfaces, ready to become the product you imagined.</p>
         </motion.header>
 
         <div
-          className={styles.reelWrap}
+          className={mobileShowcaseStyles.reelWrap}
           onMouseEnter={() => setIsInteracting(true)}
           onMouseLeave={() => {
             if (!document.hidden) setIsInteracting(false)
@@ -236,18 +236,18 @@ export default function MobileShowcase() {
         >
           <motion.button
             type="button"
-            className={`${styles.arrow} ${styles.arrowPrevious}`}
+            className={`${mobileShowcaseStyles.arrow} ${mobileShowcaseStyles.previousArrow}`}
             aria-label="Show previous product screen"
             onClick={showPrevious}
             whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.03 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.96 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
           >
-            <span aria-hidden="true">←</span>
+            <span className={mobileShowcaseStyles.arrowGlyph} aria-hidden="true">←</span>
           </motion.button>
 
           <motion.div
-            className={styles.reelStage}
+            className={mobileShowcaseStyles.reelStage}
             role="region"
             aria-roledescription="carousel"
             aria-label="DevPilot product screenshots"
@@ -259,7 +259,10 @@ export default function MobileShowcase() {
             onDragEnd={handleDragEnd}
             style={{ touchAction: 'pan-y' }}
           >
-            <div className={styles.reelBase} aria-hidden="true" />
+            <div
+              className={mobileShowcaseStyles.floorShadow}
+              aria-hidden="true"
+            />
             {visibleScreens.map((screen) => {
               const layout = getSlideLayout(screen.offset, reelMode)
               const isActive = screen.index === activeIndex
@@ -269,7 +272,7 @@ export default function MobileShowcase() {
                 <motion.button
                   key={screen.src}
                   type="button"
-                  className={`${styles.screenCard} ${isActive ? styles.activeScreen : ''}`}
+                  className={`${mobileShowcaseStyles.screenCard} ${isActive ? mobileShowcaseStyles.activeScreen : ''}`}
                   aria-label={`Show ${screen.name}`}
                   aria-current={isActive ? 'true' : undefined}
                   tabIndex={isVisible ? 0 : -1}
@@ -303,7 +306,13 @@ export default function MobileShowcase() {
                     pointerEvents: isVisible ? 'auto' : 'none',
                   }}
                 >
-                  <img src={screen.src} alt={`${screen.name} generated with DevPilot`} draggable="false" />
+                  <img
+                    src={screen.src}
+                    alt={`${screen.name} generated with DevPilot`}
+                    className={mobileShowcaseStyles.screenImage}
+                    loading="lazy"
+                    draggable="false"
+                  />
                 </motion.button>
               )
             })}
@@ -311,23 +320,23 @@ export default function MobileShowcase() {
 
           <motion.button
             type="button"
-            className={`${styles.arrow} ${styles.arrowNext}`}
+            className={`${mobileShowcaseStyles.arrow} ${mobileShowcaseStyles.nextArrow}`}
             aria-label="Show next product screen"
             onClick={showNext}
             whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.03 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.96 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
           >
-            <span aria-hidden="true">→</span>
+            <span className={mobileShowcaseStyles.arrowGlyph} aria-hidden="true">→</span>
           </motion.button>
         </div>
 
-        <div className={styles.dots} aria-label="Product screenshot selector">
+        <div className={mobileShowcaseStyles.dots} aria-label="Product screenshot selector">
           {SCREENS.map((screen, index) => (
             <button
               key={screen.src}
               type="button"
-              className={styles.dot}
+              className={mobileShowcaseStyles.dot}
               data-active={index === activeIndex}
               aria-label={`Show ${screen.name}`}
               aria-current={index === activeIndex ? 'true' : undefined}

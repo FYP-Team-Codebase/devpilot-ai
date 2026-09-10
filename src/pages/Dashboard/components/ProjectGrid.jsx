@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { getRecentProjects } from '../../../services/projectService'
 import ProjectCard from './ProjectCard'
+import { projectGridStyles } from './ProjectGrid.styles'
 
 const buttonMotion = { duration: 0.2, ease: 'easeOut' }
 
@@ -19,11 +20,11 @@ function normalizeProject(p) {
 
 function Skeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-dp-border bg-white">
-      <div className="aspect-[16/10] bg-[linear-gradient(90deg,var(--color-dp-off-white),var(--color-dp-border),var(--color-dp-off-white))] bg-[length:200%_100%] animate-[shimmer_1.3s_ease-in-out_infinite]" />
-      <div className="p-3">
-        <div className="h-2.5 w-2/3 rounded-[3px] bg-[linear-gradient(90deg,var(--color-dp-off-white),var(--color-dp-border),var(--color-dp-off-white))] bg-[length:200%_100%] animate-[shimmer_1.3s_ease-in-out_infinite]" />
-        <div className="mt-2 h-2.5 w-2/5 rounded-[3px] bg-[linear-gradient(90deg,var(--color-dp-off-white),var(--color-dp-border),var(--color-dp-off-white))] bg-[length:200%_100%] animate-[shimmer_1.3s_ease-in-out_infinite]" />
+    <div className={projectGridStyles.skeleton}>
+      <div className={`${projectGridStyles.skeletonPreview} ${projectGridStyles.shimmer}`} />
+      <div className={projectGridStyles.skeletonBody}>
+        <div className={`${projectGridStyles.skeletonLineLarge} ${projectGridStyles.shimmer}`} />
+        <div className={`${projectGridStyles.skeletonLineSmall} ${projectGridStyles.shimmer}`} />
       </div>
     </div>
   )
@@ -33,24 +34,24 @@ function EmptyState() {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed border-dp-border bg-[#FAFAF8] px-6 py-9 text-center">
-      <div className="grid h-12 w-12 place-items-center rounded-xl border border-dp-border bg-white text-dp-black" aria-hidden="true">
-        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+    <div className={projectGridStyles.empty}>
+      <div className={projectGridStyles.emptyIconWrap} aria-hidden="true">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={projectGridStyles.emptyIcon}>
           <path d="M3.5 6.5h5l1.4 2H18.5v6.7a2.3 2.3 0 0 1-2.3 2.3H5.8a2.3 2.3 0 0 1-2.3-2.3V6.5Z" />
           <path d="M3.5 8.5h15" />
         </svg>
       </div>
-      <p className="m-0 mt-4 text-[15px] font-semibold tracking-[-0.02em] text-dp-black">No projects yet</p>
-      <p className="mt-1.5 text-[13px] leading-6 text-dp-muted">Start your first AI website.</p>
+      <p className={projectGridStyles.emptyTitle}>No projects yet</p>
+      <p className={projectGridStyles.emptyCopy}>Start your first AI website.</p>
       <motion.a
         href="/prompt"
-        className="group mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-dp-black bg-dp-black px-5 py-2.5 text-sm font-medium text-white no-underline transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+        className={projectGridStyles.emptyButton}
         whileHover={shouldReduceMotion ? undefined : { y: -1, scale: 1.01 }}
         whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
         transition={buttonMotion}
       >
         Generate Website
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={projectGridStyles.emptyButtonIcon}>
           <path d="M2.5 6h7M6.5 2.5l3.5 3.5-3.5 3.5" />
         </svg>
       </motion.a>
@@ -98,18 +99,18 @@ export default function ProjectGrid({ searchQuery = '' }) {
 
   return (
     <motion.section
-      className="mb-5 rounded-xl border border-dp-border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] max-sm:p-4"
+      className={projectGridStyles.section}
       aria-labelledby="projects-heading"
       initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.36, delay: shouldReduceMotion ? 0 : 0.06, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 id="projects-heading" className="m-0 text-[18px] font-bold leading-tight tracking-[-0.03em] text-dp-black">Recent Projects</h2>
+      <div className={projectGridStyles.header}>
+        <h2 id="projects-heading" className={projectGridStyles.heading}>Recent Projects</h2>
         {hasProjects && (
-          <a href="/dashboard/projects" className="inline-flex cursor-pointer items-center gap-[3px] rounded-full px-2.5 py-1.5 text-[12.5px] font-medium text-dp-text no-underline transition-colors duration-150 hover:bg-dp-surface hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white">
+          <a href="/dashboard/projects" className={projectGridStyles.viewAll}>
             View all
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={projectGridStyles.viewAllIcon}>
               <path d="M4.5 2.5l4 4-4 4" />
             </svg>
           </a>
@@ -117,18 +118,18 @@ export default function ProjectGrid({ searchQuery = '' }) {
       </div>
 
       {state.status === 'loading' && (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3.5 max-sm:grid-cols-1">
+        <div className={projectGridStyles.grid}>
           {[0, 1, 2].map((i) => <Skeleton key={i} />)}
         </div>
       )}
 
       {state.status === 'error' && (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-dp-border bg-[#FAFAF8] px-4 py-3">
-          <p className="m-0 text-[13px] text-dp-text">Couldn't load projects.</p>
+        <div className={projectGridStyles.error}>
+          <p className={projectGridStyles.errorText}>Couldn't load projects.</p>
           <motion.button
             type="button"
             onClick={reload}
-            className="shrink-0 cursor-pointer rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-[12.5px] font-semibold text-dp-black transition-[background-color,border-color,color] duration-200 hover:border-neutral-300 hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]"
+            className={projectGridStyles.retryButton}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={buttonMotion}
@@ -141,7 +142,7 @@ export default function ProjectGrid({ searchQuery = '' }) {
       {state.status === 'success' && !hasProjects && <EmptyState />}
 
       {state.status === 'success' && hasProjects && (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3.5 max-sm:grid-cols-1">
+        <div className={projectGridStyles.grid}>
           {filtered.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} />
           ))}

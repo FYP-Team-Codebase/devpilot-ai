@@ -1,17 +1,31 @@
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import styles from './LoginVisualCarousel.module.css'
+import { loginVisualCarouselStyles } from './LoginVisualCarousel.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 const ROTATION_INTERVAL = 3400
+const {
+  carousel: carouselClass,
+  topline: toplineClass,
+  status: statusClass,
+  statusDot: statusDotClass,
+  stage: stageClass,
+  screen: screenClass,
+  screenImage: screenImageClass,
+  footer: footerClass,
+  footerLabel: footerLabelClass,
+  dots: dotsClass,
+  dot: dotClass,
+  dotActive: activeDotClass,
+} = loginVisualCarouselStyles
 
 const SCREENS = [
-  { name: 'Fintech dashboard', src: '/showcase/fintech.png' },
-  { name: 'Travel planning app', src: '/showcase/travel.png' },
-  { name: 'Fitness tracking app', src: '/showcase/fitness.png' },
-  { name: 'Social community app', src: '/showcase/social.png' },
-  { name: 'Fashion shopping app', src: '/showcase/fashion.png' },
-  { name: 'Productivity workspace app', src: '/showcase/productivity.png' },
+  { name: 'Fintech dashboard', src: '/showcase/optimized/fintech.jpg' },
+  { name: 'Travel planning app', src: '/showcase/optimized/travel.jpg' },
+  { name: 'Fitness tracking app', src: '/showcase/optimized/fitness.jpg' },
+  { name: 'Social community app', src: '/showcase/optimized/social.jpg' },
+  { name: 'Fashion shopping app', src: '/showcase/optimized/fashion.jpg' },
+  { name: 'Productivity workspace app', src: '/showcase/optimized/productivity.jpg' },
 ]
 
 function getLayer(index, activeIndex) {
@@ -41,7 +55,7 @@ export default function LoginVisualCarousel() {
 
   return (
     <motion.aside
-      className={styles.carousel}
+      className={carouselClass}
       initial={shouldReduceMotion ? false : { opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.65, ease: EASE, delay: shouldReduceMotion ? 0 : 0.14 }}
@@ -54,33 +68,38 @@ export default function LoginVisualCarousel() {
         if (!event.currentTarget.contains(event.relatedTarget)) setIsPaused(false)
       }}
     >
-      <div className={styles.topline}>
+      <div className={toplineClass}>
         <span>DevPilot AI</span>
-        <span className={styles.status}><i aria-hidden="true" /> Generating products</span>
+        <span className={statusClass}><i className={statusDotClass} aria-hidden="true" /> Generating products</span>
       </div>
 
-      <div className={styles.stage}>
+      <div className={stageClass}>
         {SCREENS.map((screen, index) => (
           <motion.figure
             key={screen.src}
-            className={styles.screen}
+            className={screenClass}
             animate={getLayer(index, activeIndex)}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: EASE }}
             aria-hidden={index !== activeIndex}
           >
-            <img src={screen.src} alt={index === activeIndex ? `${screen.name} created with DevPilot AI` : ''} />
+            <img
+              className={screenImageClass}
+              src={screen.src}
+              alt={index === activeIndex ? `${screen.name} created with DevPilot AI` : ''}
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
           </motion.figure>
         ))}
       </div>
 
-      <div className={styles.footer}>
-        <p aria-live="polite">{SCREENS[activeIndex].name}</p>
-        <div className={styles.controls} aria-label="Choose a product example">
+      <div className={footerClass}>
+        <p className={footerLabelClass} aria-live="polite">{SCREENS[activeIndex].name}</p>
+        <div className={dotsClass} aria-label="Choose a product example">
           {SCREENS.map((screen, index) => (
             <button
               key={screen.src}
               type="button"
-              className={index === activeIndex ? styles.activeDot : undefined}
+              className={`${dotClass} ${index === activeIndex ? activeDotClass : ''}`}
               aria-label={`Show ${screen.name}`}
               aria-current={index === activeIndex ? 'true' : undefined}
               onClick={() => setActiveIndex(index)}

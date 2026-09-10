@@ -6,6 +6,9 @@ import { inspirationMetadata } from './inspiration-metadata.mjs'
 
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp'])
 const IGNORED_FILES = new Set(['.ds_store', 'thumbs.db'])
+const OPTIMIZED_ASSET_DIR = 'optimized'
+const THUMBNAIL_FILE_NAME = 'thumbnail.jpg'
+const GENERATED_PREVIEW_FILES = new Set([THUMBNAIL_FILE_NAME])
 const FULL_PAGE_HINTS = ['full-page', 'fullpage', 'full page', 'complete', 'website', 'full', 'landing', 'cover']
 const PREVIEW_HINTS = ['homepage', 'home', 'hero', 'cover', 'landing', 'feature']
 const DEFAULT_TYPE = 'Website'
@@ -537,7 +540,7 @@ async function resolveMetadata({ folder, folderPath, images, galleryPreview, fin
       type: metadata.type,
       style: metadata.style,
       tags: metadata.tags,
-      classifiedFrom: galleryPreview.relativeToFolder,
+      classifiedFrom: normalizeSlashes(galleryPreview.relativeToFolder),
       assetFingerprint: fingerprint,
       classificationVersion: CLASSIFICATION_VERSION,
       generated: !['metadata.json', 'metadata-map'].includes(classificationSource),
@@ -629,22 +632,46 @@ function readImageDimensions(buffer, extension) {
   return null
 }
 
-async function walkImageFiles(directory, root = directory) {
+function isSupportedImageFile(fileName) {
+  return SUPPORTED_IMAGE_EXTENSIONS.has(path.extname(fileName).toLowerCase())
+}
+
+async function hasOptimizedContentImages(optimizedPath) {
+  try {
+    const entries = await fs.readdir(optimizedPath, { withFileTypes: true })
+    return entries.some((entry) => (
+      entry.isFile()
+      && isSupportedImageFile(entry.name)
+      && !GENERATED_PREVIEW_FILES.has(entry.name.toLowerCase())
+    ))
+  } catch (error) {
+    if (error.code === 'ENOENT') return false
+    throw error
+  }
+}
+
+async function walkImageFiles(directory, root = directory, options = {}) {
+  const {
+    skipOptimizedDirectory = true,
+    ignoredFileNames = new Set(),
+  } = options
   const entries = await fs.readdir(directory, { withFileTypes: true })
   const files = []
 
   for (const entry of entries) {
     const absolutePath = path.join(directory, entry.name)
     if (entry.isDirectory()) {
-      files.push(...await walkImageFiles(absolutePath, root))
+      if (skipOptimizedDirectory && entry.name.toLowerCase() === OPTIMIZED_ASSET_DIR) continue
+      files.push(...await walkImageFiles(absolutePath, root, options))
       continue
     }
 
     if (!entry.isFile()) continue
     if (IGNORED_FILES.has(entry.name.toLowerCase())) continue
+    if (ignoredFileNames.has(entry.name.toLowerCase())) continue
 
     const extension = path.extname(entry.name).toLowerCase()
-    if (!SUPPORTED_IMAGE_EXTENSIONS.has(extension)) continue
+    if (!isSupportedImageFile(entry.name)) continue
 
     const stats = await fs.stat(absolutePath)
     const buffer = await readFileWithRetry(absolutePath)
@@ -665,6 +692,19 @@ async function walkImageFiles(directory, root = directory) {
   }
 
   return files.sort((a, b) => naturalCompare(a.relativeToFolder, b.relativeToFolder))
+}
+
+async function discoverImageFiles(folderPath) {
+  const optimizedPath = path.join(folderPath, OPTIMIZED_ASSET_DIR)
+
+  if (await hasOptimizedContentImages(optimizedPath)) {
+    return walkImageFiles(optimizedPath, folderPath, {
+      skipOptimizedDirectory: false,
+      ignoredFileNames: GENERATED_PREVIEW_FILES,
+    })
+  }
+
+  return walkImageFiles(folderPath)
 }
 
 async function readFileWithRetry(filePath, attempt = 0) {
@@ -714,7 +754,7 @@ function orderImages(images, fullPage, galleryPreview) {
     return naturalCompare(a.relativeToFolder, b.relativeToFolder)
   })
 
-  return sorted.map((image) => toImageEntry(image))
+  return sorted.map((image) => toImageEntry(image.optimized || image))
 }
 
 function toImageEntry(image) {
@@ -742,7 +782,7 @@ async function discoverInspirations(projectRoot = defaultProjectRoot, options = 
 
   for (const folder of folders) {
     const folderPath = path.join(inspirationsRoot, folder)
-    const images = await walkImageFiles(folderPath)
+    const images = await discoverImageFiles(folderPath)
 
     if (!images.length) {
       skipped.push({ folder, reason: 'no supported image files' })
@@ -754,10 +794,12 @@ async function discoverInspirations(projectRoot = defaultProjectRoot, options = 
 
     for (const image of images) {
       image.publicUrl = toPublicUrl(path.join('inspirations', folder, image.relativeToFolder))
+      image.optimized = await getOptimizedImageVariant(folderPath, folder, image)
     }
 
     const fullPage = chooseFullPage(images)
     const galleryPreview = chooseGalleryPreview(images, fullPage)
+    const thumbnail = await getThumbnailVariant(folderPath, folder, galleryPreview)
     const fingerprint = makeAssetFingerprint(folder, images, await metadataFileSignature(folderPath))
     const resolvedMetadata = await resolveMetadata({
       folder,
@@ -786,8 +828,10 @@ async function discoverInspirations(projectRoot = defaultProjectRoot, options = 
       designDirection: metadata.designDirection || 'Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.',
       previewFit: metadata.previewFit || undefined,
       previewPosition: metadata.previewPosition || undefined,
-      galleryPreview: galleryPreview.publicUrl,
-      fullPage: fullPage.publicUrl,
+      thumbnail: thumbnail.publicUrl,
+      galleryPreview: thumbnail.publicUrl,
+      originalGalleryPreview: galleryPreview.publicUrl,
+      fullPage: (fullPage.optimized || fullPage).publicUrl,
       images: orderImages(images, fullPage, galleryPreview),
     })
   }
@@ -805,6 +849,47 @@ async function discoverInspirations(projectRoot = defaultProjectRoot, options = 
     count: inspirations.length,
     skipped,
     inspirations,
+  }
+}
+
+async function getOptimizedImageVariant(folderPath, folder, image) {
+  const optimizedRelativeToFolder = path.join(
+    OPTIMIZED_ASSET_DIR,
+    `${path.basename(image.name, path.extname(image.name))}.jpg`,
+  )
+  return readOptimizedAsset(folderPath, folder, optimizedRelativeToFolder)
+}
+
+async function getThumbnailVariant(folderPath, folder, fallbackImage) {
+  return (
+    await readOptimizedAsset(folderPath, folder, path.join(OPTIMIZED_ASSET_DIR, THUMBNAIL_FILE_NAME))
+  ) || fallbackImage
+}
+
+async function readOptimizedAsset(folderPath, folder, relativeToFolder) {
+  const absolutePath = path.join(folderPath, relativeToFolder)
+
+  try {
+    const stats = await fs.stat(absolutePath)
+    const buffer = await readFileWithRetry(absolutePath)
+    const extension = path.extname(relativeToFolder).toLowerCase()
+    const dimensions = readImageDimensions(buffer, extension)
+
+    return {
+      name: path.basename(relativeToFolder),
+      relativeToFolder,
+      absolutePath,
+      extension,
+      size: stats.size,
+      mtimeMs: stats.mtimeMs,
+      width: dimensions?.width || null,
+      height: dimensions?.height || null,
+      aspectRatio: dimensions?.width && dimensions?.height ? dimensions.height / dimensions.width : null,
+      publicUrl: toPublicUrl(path.join('inspirations', folder, relativeToFolder)),
+    }
+  } catch (error) {
+    if (error.code === 'ENOENT') return null
+    throw error
   }
 }
 

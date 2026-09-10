@@ -9,8 +9,8 @@
       "shop",
       "friendly"
     ],
-    "classifiedFrom": "pet cover.png",
-    "assetFingerprint": "b0309eb78cd124c3",
+    "classifiedFrom": "optimized\\pet cover.jpg",
+    "assetFingerprint": "27068fe36646ccbb",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -25,8 +25,8 @@
       "automation",
       "saas"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "0a01328f14e3dd33",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "ff6a218e36c245cc",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -41,8 +41,8 @@
       "ai",
       "business"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "e23ba9c7e09103cf",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "88c346bf6b5b3a84",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -57,8 +57,8 @@
       "dashboard",
       "tasks"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "1f66a70bcd4ce971",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "5118f991271c1429",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -73,8 +73,8 @@
       "expenses",
       "saas"
     ],
-    "classifiedFrom": "cover-image.png",
-    "assetFingerprint": "6ac3dcc4442b3796",
+    "classifiedFrom": "optimized\\cover-image.jpg",
+    "assetFingerprint": "71476eb91098a9f5",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -89,8 +89,8 @@
       "dashboard",
       "business"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "26e4d94be60d23ed",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "bfda23be342dfbb9",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -105,8 +105,8 @@
       "shop",
       "home"
     ],
-    "classifiedFrom": "Cover'.png",
-    "assetFingerprint": "ec091eb50829a70f",
+    "classifiedFrom": "optimized\\Cover'.jpg",
+    "assetFingerprint": "ca1d0674fd573b5d",
     "classificationVersion": 2,
     "generated": false,
     "source": "metadata-map"
@@ -119,8 +119,8 @@
     "tags": [
       "portfolio"
     ],
-    "classifiedFrom": "Cover-iamge.png",
-    "assetFingerprint": "55247fe53422841b",
+    "classifiedFrom": "optimized\\Cover-iamge.jpg",
+    "assetFingerprint": "f11ff41aa87293f5",
     "classificationVersion": 2,
     "generated": true,
     "source": "heuristic"
@@ -134,8 +134,8 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "f0e47c17d189757b",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "d53f876f48705c9e",
     "classificationVersion": 2,
     "generated": true,
     "source": "heuristic"
@@ -149,8 +149,8 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "Cover-image 1.png",
-    "assetFingerprint": "3d0d4f0698021afa",
+    "classifiedFrom": "optimized\\Cover-image 1.jpg",
+    "assetFingerprint": "7d1b31a10000b6bd",
     "classificationVersion": 2,
     "generated": true,
     "source": "heuristic"
@@ -164,8 +164,8 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "Cover-image.png",
-    "assetFingerprint": "41a875d8df5cba19",
+    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "assetFingerprint": "cc828ee306585b15",
     "classificationVersion": 2,
     "generated": true,
     "source": "heuristic"

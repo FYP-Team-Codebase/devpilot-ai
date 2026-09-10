@@ -11,9 +11,48 @@
   --color-dp-border-dark: #d4d4d4;
   --color-dp-text: #525252;
   --color-dp-muted: #737373;
+  --color-dp-page: #fafaf8;
+  --color-dp-panel: #fcfcfb;
+  --color-dp-error: #8b2d2d;
+  --color-dp-error-text: #7b2828;
+  --color-dp-error-border: #e6caca;
+  --color-dp-error-surface: #fff8f8;
+  --color-dp-success: #39704a;
+  --color-dp-success-strong: #245633;
+  --color-dp-success-text: #2f6b40;
+  --color-dp-success-border: #cfe4d4;
+  --color-dp-success-surface: #f6fbf7;
+
+  --spacing-dp-sidebar: 228px;
+  --spacing-dp-header: 60px;
+
+  --container-dp-content: 1180px;
+  --container-dp-wide: 1280px;
+
+  --radius-dp-control: 12px;
+  --radius-dp-card: 14px;
+  --radius-dp-panel: 18px;
+  --radius-dp-feature: 22px;
+
+  --shadow-dp-card: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-dp-popover: 0 12px 28px rgba(0, 0, 0, 0.08);
+  --shadow-dp-modal: 0 18px 50px rgba(0, 0, 0, 0.18);
 
   --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+}
+
+:root {
+  --color-black: var(--color-dp-black);
+  --color-near-black: var(--color-dp-near-black);
+  --color-charcoal: var(--color-dp-charcoal);
+  --color-white: var(--color-dp-white);
+  --color-light-gray: var(--color-dp-off-white);
+  --color-surface-gray: var(--color-dp-surface);
+  --color-border: var(--color-dp-border);
+  --color-border-dark: var(--color-dp-border-dark);
+  --color-text-gray: var(--color-dp-text);
+  --color-muted-gray: var(--color-dp-muted);
 }
 
 * {
@@ -46,6 +85,28 @@ a:not([class]) {
 
 button {
   font-family: inherit;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 880px) {

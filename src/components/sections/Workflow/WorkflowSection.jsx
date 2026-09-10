@@ -6,7 +6,7 @@ import DefineVisual from './visuals/DefineVisual'
 import BuildVisual from './visuals/BuildVisual'
 import PreviewEditVisual from './visuals/PreviewEditVisual'
 import CodeVisual from './visuals/CodeVisual'
-import styles from './WorkflowSection.module.css'
+import { workflowSectionStyles } from './WorkflowSection.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -63,12 +63,19 @@ export default function WorkflowSection() {
   const railScale = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
-    <section id="business" className={`${styles.workflow} landing-scroll-target`} aria-label="How DevPilot works">
+    <section
+      id="business"
+      className={workflowSectionStyles.section}
+      aria-label="How DevPilot works"
+    >
       <span id="workflow" className="landing-anchor" aria-hidden="true" />
-      <div className={styles.container}>
-        <div ref={headerRef} className={styles.header}>
+      <div className={workflowSectionStyles.container}>
+        <div
+          ref={headerRef}
+          className={workflowSectionStyles.header}
+        >
           <motion.h2
-            className={styles.heading}
+            className={workflowSectionStyles.heading}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
             animate={headerInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: EASE }}
@@ -78,7 +85,7 @@ export default function WorkflowSection() {
           </motion.h2>
 
           <motion.p
-            className={styles.subheading}
+            className={workflowSectionStyles.description}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
             animate={headerInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: EASE, delay: shouldReduceMotion ? 0 : 0.12 }}
@@ -88,10 +95,13 @@ export default function WorkflowSection() {
           </motion.p>
         </div>
 
-        <div ref={stepsRef} className={styles.steps}>
-          <div className={styles.railTrack} aria-hidden="true" />
+        <div
+          ref={stepsRef}
+          className={workflowSectionStyles.steps}
+        >
+          <div className={workflowSectionStyles.rail} aria-hidden="true" />
           <motion.div
-            className={styles.railProgress}
+            className={workflowSectionStyles.progressRail}
             style={{ scaleY: shouldReduceMotion ? 1 : railScale }}
             aria-hidden="true"
           />

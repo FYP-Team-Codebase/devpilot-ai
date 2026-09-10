@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './PromptBar.module.css'
+import { promptBarStyles } from './PromptBar.styles'
 
 const EXAMPLE_PROMPT = 'Build a modern SaaS dashboard with authentication and analytics'
 const SUBMIT_HOLD_MS = 1100
@@ -75,21 +76,21 @@ export default function PromptBar() {
 
   return (
     <motion.div
-      className={styles.wrap}
+      className={promptBarStyles.shell}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: EASE, delay: shouldReduceMotion ? 0 : 0.12 }}
     >
       <form
-        className={`${styles.card} ${isFocused ? styles.focused : ''} ${isSubmitting ? styles.submitting : ''}`}
+        className={`${promptBarStyles.cardBase} ${isFocused || isSubmitting ? promptBarStyles.cardActive : ''}`}
         onSubmit={handleSubmit}
         aria-label="Describe what you want to build"
       >
-        <div className={styles.inputRow}>
+        <div className={promptBarStyles.fieldRow}>
           <input
             ref={inputRef}
             type="text"
-            className={styles.input}
+            className={promptBarStyles.input}
             value={value}
             onChange={(event) => setValue(event.target.value)}
             onFocus={() => setIsFocused(true)}
@@ -101,7 +102,7 @@ export default function PromptBar() {
 
           <motion.button
             type="submit"
-            className={styles.send}
+            className={promptBarStyles.send}
             data-filled={isFilled}
             aria-label="Submit prompt"
             whileHover={{ scale: 1.05 }}
@@ -111,6 +112,7 @@ export default function PromptBar() {
             <motion.svg
               viewBox="0 0 24 24"
               fill="none"
+              className={promptBarStyles.sendIcon}
               aria-hidden="true"
               animate={{ rotate: isSubmitting ? 35 : 0, scale: isSubmitting ? 0.9 : 1 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -121,12 +123,12 @@ export default function PromptBar() {
           </motion.button>
         </div>
 
-        <div className={styles.metaRow}>
+        <div className={promptBarStyles.meta}>
           <AnimatePresence mode="wait" initial={false}>
             {isSubmitting ? (
               <motion.span
                 key="status"
-                className={styles.statusText}
+                className={promptBarStyles.status}
                 initial={{ opacity: 0, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
@@ -138,7 +140,7 @@ export default function PromptBar() {
               <motion.button
                 key="example"
                 type="button"
-                className={styles.example}
+                className={promptBarStyles.example}
                 onClick={useExample}
                 initial={{ opacity: 0, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -146,9 +148,14 @@ export default function PromptBar() {
                 transition={{ duration: 0.2 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className={styles.exampleLabel}>Try:</span>
+                <span className={promptBarStyles.exampleLabel}>Try:</span>
                 <span>{EXAMPLE_PROMPT.slice(0, typedCount)}</span>
-                {showCursor && <span className={styles.cursor} aria-hidden="true" />}
+                {showCursor && (
+                  <span
+                    className={`${promptBarStyles.cursor} ${styles.cursorBlink}`}
+                    aria-hidden="true"
+                  />
+                )}
               </motion.button>
             )}
           </AnimatePresence>

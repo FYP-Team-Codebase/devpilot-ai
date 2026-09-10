@@ -5,10 +5,44 @@ import codenovaLogo from '../../assets/branding/codenova-logo.svg'
 import LoginVisualCarousel from '../../components/auth/LoginVisualCarousel'
 
 import { signup } from '../../services/authService'
-
-import styles from './SignupPage.module.css'
+import { signupPageStyles } from './SignupPage.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
+const {
+  page: pageClass,
+  topbar: topbarClass,
+  logoLink: logoLinkClass,
+  logoImage: logoImageClass,
+  backLink: backLinkClass,
+  layout: layoutClass,
+  formIntro: formIntroClass,
+  eyebrow: eyebrowClass,
+  heading: headingClass,
+  introText: introTextClass,
+  form: formClass,
+  field: fieldClass,
+  label: labelClass,
+  input: inputClass,
+  passwordInput: passwordInputClass,
+  passwordFields: passwordFieldsClass,
+  passwordWrap: passwordWrapClass,
+  passwordToggle: passwordToggleClass,
+  error: errorClass,
+  authError: authErrorClass,
+  submit: submitClass,
+  login: loginClass,
+  inlineLink: inlineLinkClass,
+  userTypes: userTypesClass,
+  legend: legendClass,
+  typeGrid: typeGridClass,
+  typeCardBase: typeCardBaseClass,
+  typeCardSelected: typeCardSelectedClass,
+  typeIcon: typeIconClass,
+  typeIconSelected: typeIconSelectedClass,
+  typeTitle: typeTitleClass,
+  typeDescription: typeDescriptionClass,
+  check: checkClass,
+} = signupPageStyles
 
 const USER_TYPES = [
   {
@@ -74,6 +108,7 @@ function UserTypeIcon({ children }) {
     <svg
       viewBox="0 0 24 24"
       fill="none"
+      className="h-[17px] w-[17px]"
       stroke="currentColor"
       strokeWidth="1.7"
       strokeLinecap="round"
@@ -213,53 +248,54 @@ export default function SignupPage() {
   })
 
   return (
-    <main className={styles.page}>
-      <div className={styles.topbar}>
+    <main className={pageClass}>
+      <div className={topbarClass}>
         <a
           href="/"
-          className={styles.logoLink}
+          className={logoLinkClass}
           aria-label="Code Nova home"
         >
           <img
             src={codenovaLogo}
             alt="Code Nova"
+            className={logoImageClass}
             width="190"
             height="36"
           />
         </a>
 
-        <a className={styles.backLink} href="/">
+        <a className={backLinkClass} href="/">
           Back to CodeNova <span aria-hidden="true">↗</span>
         </a>
       </div>
 
-      <div className={styles.layout}>
+      <div className={layoutClass}>
         <motion.section
-          className={styles.formPanel}
+          className="w-full"
           {...reveal()}
           aria-labelledby="signup-heading"
         >
-          <div className={styles.formIntro}>
-            <p className={styles.eyebrow}>DevPilot AI</p>
+          <div className={formIntroClass}>
+            <p className={eyebrowClass}>DevPilot AI</p>
 
-            <h1 id="signup-heading">
+            <h1 id="signup-heading" className={headingClass}>
               Create your account
             </h1>
 
-            <p>
+            <p className={introTextClass}>
               Start building software with DevPilot AI.
             </p>
           </div>
 
           <form
-            className={styles.form}
+            className={formClass}
             onSubmit={handleSubmit}
             noValidate
           >
             {/* NAME */}
 
-            <div className={styles.field}>
-              <label htmlFor="name">
+            <div className={fieldClass}>
+              <label htmlFor="name" className={labelClass}>
                 Name
               </label>
 
@@ -275,11 +311,12 @@ export default function SignupPage() {
                 aria-describedby={
                   errors.name ? 'name-error' : undefined
                 }
+                className={inputClass}
               />
 
               <span
                 id="name-error"
-                className={styles.error}
+                className={errorClass}
                 role="alert"
               >
                 {errors.name}
@@ -288,8 +325,8 @@ export default function SignupPage() {
 
             {/* EMAIL */}
 
-            <div className={styles.field}>
-              <label htmlFor="signup-email">
+            <div className={fieldClass}>
+              <label htmlFor="signup-email" className={labelClass}>
                 Email address
               </label>
 
@@ -307,11 +344,12 @@ export default function SignupPage() {
                     ? 'signup-email-error'
                     : undefined
                 }
+                className={inputClass}
               />
 
               <span
                 id="signup-email-error"
-                className={styles.error}
+                className={errorClass}
                 role="alert"
               >
                 {errors.email}
@@ -320,13 +358,13 @@ export default function SignupPage() {
 
             {/* PASSWORDS */}
 
-            <div className={styles.passwordFields}>
-              <div className={styles.field}>
-                <label htmlFor="signup-password">
+            <div className={passwordFieldsClass}>
+              <div className={fieldClass}>
+                <label htmlFor="signup-password" className={labelClass}>
                   Password
                 </label>
 
-                <div className={styles.passwordWrap}>
+                <div className={passwordWrapClass}>
                   <input
                     id="signup-password"
                     name="password"
@@ -336,11 +374,12 @@ export default function SignupPage() {
                     placeholder="At least 8 characters"
                     autoComplete="new-password"
                     aria-invalid={Boolean(errors.password)}
+                    className={passwordInputClass}
                   />
 
                   <button
                     type="button"
-                    className={styles.passwordToggle}
+                    className={passwordToggleClass}
                     onClick={() =>
                       setShowPassword((visible) => !visible)
                     }
@@ -354,18 +393,18 @@ export default function SignupPage() {
                   </button>
                 </div>
 
-                <span className={styles.error}>
+                <span className={errorClass}>
                   {errors.password ||
                     'Use at least 8 characters.'}
                 </span>
               </div>
 
-              <div className={styles.field}>
-                <label htmlFor="confirm-password">
+              <div className={fieldClass}>
+                <label htmlFor="confirm-password" className={labelClass}>
                   Confirm password
                 </label>
 
-                <div className={styles.passwordWrap}>
+                <div className={passwordWrapClass}>
                   <input
                     id="confirm-password"
                     name="confirmPassword"
@@ -381,11 +420,12 @@ export default function SignupPage() {
                     aria-invalid={Boolean(
                       errors.confirmPassword
                     )}
+                    className={passwordInputClass}
                   />
 
                   <button
                     type="button"
-                    className={styles.passwordToggle}
+                    className={passwordToggleClass}
                     onClick={() =>
                       setShowConfirmPassword(
                         (visible) => !visible
@@ -403,7 +443,7 @@ export default function SignupPage() {
                   </button>
                 </div>
 
-                <span className={styles.error}>
+                <span className={errorClass}>
                   {errors.confirmPassword ||
                     (values.confirmPassword &&
                     values.password ===
@@ -417,18 +457,18 @@ export default function SignupPage() {
             {/* USER TYPE */}
 
             <fieldset
-              className={styles.userTypes}
+              className={userTypesClass}
               aria-describedby={
                 errors.userType
                   ? 'user-type-error'
                   : undefined
               }
             >
-              <legend>
+              <legend className={legendClass}>
                 What best describes you?
               </legend>
 
-              <div className={styles.typeGrid}>
+              <div className={typeGridClass}>
                 {USER_TYPES.map((type) => {
                   const isSelected =
                     userType === type.value
@@ -436,9 +476,9 @@ export default function SignupPage() {
                   return (
                     <motion.label
                       key={type.value}
-                      className={`${styles.typeCard} ${
+                      className={`${typeCardBaseClass} ${
                         isSelected
-                          ? styles.typeCardSelected
+                          ? typeCardSelectedClass
                           : ''
                       }`}
                       whileHover={
@@ -456,29 +496,28 @@ export default function SignupPage() {
                         value={type.value}
                         checked={isSelected}
                         onChange={selectUserType}
+                        className="sr-only"
                       />
 
-                      <span className={styles.typeIcon}>
+                      <span className={`${typeIconClass} ${isSelected ? typeIconSelectedClass : ''}`}>
                         <UserTypeIcon>
                           {type.icon}
                         </UserTypeIcon>
                       </span>
 
-                      <span className={styles.typeTitle}>
+                      <span className={typeTitleClass}>
                         {type.title}
                       </span>
 
                       <span
-                        className={
-                          styles.typeDescription
-                        }
+                        className={typeDescriptionClass}
                       >
                         {type.description}
                       </span>
 
                       {isSelected && (
                         <motion.span
-                          className={styles.check}
+                          className={checkClass}
                           initial={
                             shouldReduceMotion
                               ? false
@@ -509,7 +548,7 @@ export default function SignupPage() {
 
               <span
                 id="user-type-error"
-                className={styles.error}
+                className={errorClass}
                 role="alert"
               >
                 {errors.userType}
@@ -520,7 +559,7 @@ export default function SignupPage() {
 
             {authError && (
               <p
-                className={styles.authError}
+                className={authErrorClass}
                 role="alert"
               >
                 {authError}
@@ -531,7 +570,7 @@ export default function SignupPage() {
 
             <button
               type="submit"
-              className={styles.submit}
+              className={submitClass}
               disabled={status === 'loading'}
             >
               {status === 'loading'
@@ -540,9 +579,9 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p className={styles.login}>
+          <p className={loginClass}>
             Already have an account?{' '}
-            <a href="/login">
+            <a href="/login" className={inlineLinkClass}>
               Log in
             </a>
           </p>

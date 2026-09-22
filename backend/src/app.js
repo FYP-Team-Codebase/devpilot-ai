@@ -9,6 +9,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
@@ -57,5 +59,6 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", requireDatabase, authRoutes);
+app.use("/api/projects", requireDatabase, authMiddleware, projectRoutes);
 
 module.exports = app;

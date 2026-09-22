@@ -222,9 +222,9 @@ export default function MobileShowcase() {
           animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: shouldReduceMotion ? 0 : 0.55, ease: EASE }}
         >
-          <p className={mobileShowcaseStyles.eyebrow}>Built with DevPilot</p>
-          <h2 id="showcase-heading" className={mobileShowcaseStyles.heading}>From a single prompt to a complete product.</h2>
-          <p className={mobileShowcaseStyles.description}>DevPilot turns natural-language ideas into polished interfaces, ready to become the product you imagined.</p>
+          <p className={mobileShowcaseStyles.eyebrow}>DevPilot direction</p>
+          <h2 id="showcase-heading" className={mobileShowcaseStyles.heading}>From a single prompt to clearer product direction.</h2>
+          <p className={mobileShowcaseStyles.description}>DevPilot helps connect natural-language ideas with visual inspiration and structured requirements before generation begins.</p>
         </motion.header>
 
         <div
@@ -308,7 +308,7 @@ export default function MobileShowcase() {
                 >
                   <img
                     src={screen.src}
-                    alt={`${screen.name} generated with DevPilot`}
+                    alt={`${screen.name} interface reference for DevPilot project direction`}
                     className={mobileShowcaseStyles.screenImage}
                     loading="lazy"
                     draggable="false"

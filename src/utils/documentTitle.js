@@ -8,6 +8,7 @@ const DEV_APP_ROUTE_TITLES = {
   '/prompt': 'Prompt Builder',
   '/requirements': 'Requirements',
   '/inspiration': 'Inspiration',
+  '/generation': 'Generation',
   '/dashboard': 'Dashboard',
   '/dashboard/projects': 'My Projects',
   '/dashboard/assets': 'My Assets',
@@ -17,9 +18,18 @@ const DEV_APP_ROUTE_TITLES = {
   '/dashboard/profile': 'Profile',
 }
 
+const COMPANY_ROUTE_TITLES = {
+  '/about': 'About',
+  '/products': 'Products',
+  '/business': 'Business',
+  '/pricing': 'Pricing',
+  '/contact': 'Contact',
+}
+
 const PROJECT_TITLE_ROUTES = new Set([
   '/requirements',
   '/inspiration',
+  '/generation',
 ])
 
 const PLACEHOLDER_PROJECT_NAMES = new Set([
@@ -68,6 +78,12 @@ export function getDocumentTitle(pathname) {
   }
 
   const normalizedPath = pathname.replace(/\/+$/, '') || '/'
+  const companyRouteTitle = COMPANY_ROUTE_TITLES[normalizedPath]
+
+  if (companyRouteTitle) {
+    return formatCompanyTitle(companyRouteTitle)
+  }
+
   const routeTitle = DEV_APP_ROUTE_TITLES[normalizedPath]
 
   if (!routeTitle) {

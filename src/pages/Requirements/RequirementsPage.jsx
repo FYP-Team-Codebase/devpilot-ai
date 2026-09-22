@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../services/authService'
+import { updateProject } from '../../services/projectService'
 import UserMenu from '../Dashboard/components/UserMenu'
 import { requirementsPageStyles } from './RequirementsPage.styles'
 
@@ -183,6 +184,43 @@ const VALIDATION_ORDER = [
   'notes',
 ]
 
+function getColorLabel(colorName) {
+  const color = COLORS.find((item) => item.name === colorName)
+  return color ? `${color.name} (${color.value})` : colorName
+}
+
+function pushPreference(preferences, label, value) {
+  if (hasText(value)) {
+    preferences.push(`${label}: ${value.trim()}`)
+  }
+}
+
+function mapRequirementsToProjectPayload(value) {
+  const designPreferences = []
+  const projectName = value.projectName.trim()
+
+  pushPreference(designPreferences, 'Style', value.style)
+  pushPreference(designPreferences, 'Primary Color', getColorLabel(value.primaryColor))
+  pushPreference(designPreferences, 'Secondary Color', getColorLabel(value.secondaryColor))
+
+  const payload = {
+    requirements: {
+      projectType: value.industry,
+      designPreferences,
+      pages: value.pages,
+      features: value.features,
+      devices: value.devices,
+      notes: value.noAdditionalNotes ? '' : value.notes.trim(),
+    },
+  }
+
+  if (projectName) {
+    payload.projectName = projectName
+  }
+
+  return payload
+}
+
 export default function RequirementsPage() {
   const user = getCurrentUser()
   const navigate = useNavigate()
@@ -190,6 +228,8 @@ export default function RequirementsPage() {
   const [requirements, setRequirements] = useState(getStoredRequirements)
   const [initialPrompt] = useState(() => sessionStorage.getItem('devpilot-prompt') || '')
   const [errors, setErrors] = useState({})
+  const [continueError, setContinueError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
   const projectInfoSectionRef = useRef(null)
   const designSectionRef = useRef(null)
   const pagesSectionRef = useRef(null)
@@ -208,6 +248,7 @@ export default function RequirementsPage() {
   const devicesRef = useRef(null)
   const assetsRef = useRef(null)
   const notesRef = useRef(null)
+  const continueInFlightRef = useRef(false)
   const shouldReduceMotion = useReducedMotion()
 
   const summary = useMemo(() => ({
@@ -225,6 +266,7 @@ export default function RequirementsPage() {
   }, [requirements])
 
   function updateField(field, value) {
+    setContinueError('')
     setRequirements((current) => {
       const next = { ...current, [field]: value }
 
@@ -255,7 +297,9 @@ export default function RequirementsPage() {
     })
   }
 
-  function handleContinue() {
+  async function handleContinue() {
+    if (continueInFlightRef.current) return
+
     const validationErrors = getValidationErrors(requirements)
 
     if (Object.keys(validationErrors).length) {
@@ -288,13 +332,35 @@ export default function RequirementsPage() {
       }
 
       setErrors(validationErrors)
+      setContinueError('')
       sectionRefs[firstInvalidField]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       window.setTimeout(() => controlRefs[firstInvalidField]?.current?.focus(), 260)
       return
     }
 
-    sessionStorage.setItem('devpilot-requirements', JSON.stringify({ ...requirements, initialPrompt }))
-    navigate('/inspiration')
+    const requirementsDraft = { ...requirements, initialPrompt }
+    sessionStorage.setItem('devpilot-requirements', JSON.stringify(requirementsDraft))
+    window.dispatchEvent(new Event('devpilot-requirements-changed'))
+
+    const projectId = sessionStorage.getItem('devpilot-current-project-id')
+
+    if (!projectId) {
+      setContinueError('Current project session could not be found. Please start again from Prompt.')
+      return
+    }
+
+    continueInFlightRef.current = true
+    setIsSaving(true)
+    setContinueError('')
+
+    try {
+      await updateProject(projectId, mapRequirementsToProjectPayload(requirements))
+      navigate('/inspiration')
+    } catch (error) {
+      setContinueError(error?.message || 'Could not save requirements. Please try again.')
+      setIsSaving(false)
+      continueInFlightRef.current = false
+    }
   }
 
   return (
@@ -543,6 +609,7 @@ export default function RequirementsPage() {
               type="button"
               onClick={() => navigate('/prompt')}
               className={requirementsPageStyles.backButton}
+              disabled={isSaving}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
@@ -554,15 +621,17 @@ export default function RequirementsPage() {
               type="button"
               onClick={handleContinue}
               className={requirementsPageStyles.continueButton}
+              disabled={isSaving}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
             >
-              Continue to Inspiration
+              {isSaving ? 'Saving...' : 'Continue to Inspiration'}
               <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={requirementsPageStyles.continueIcon} aria-hidden="true">
                 <path d="M3 7h8M8 4l3 3-3 3" />
               </svg>
             </motion.button>
+            <ValidationError id="requirements-save-error">{continueError}</ValidationError>
           </div>
         </div>
       </div>

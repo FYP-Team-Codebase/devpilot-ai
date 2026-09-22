@@ -1,6 +1,6 @@
 export const projectCardStyles = {
   card:
-    'group flex flex-col overflow-hidden rounded-dp-control border border-dp-border bg-white text-inherit no-underline shadow-dp-card animate-[fadeUp_0.35s_ease_both] transition-[border-color,transform,box-shadow] duration-150 hover:-translate-y-px hover:border-dp-border-dark hover:shadow-[0_8px_22px_rgba(0,0,0,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+    'group flex cursor-pointer flex-col overflow-hidden rounded-dp-control border border-dp-border bg-white text-inherit no-underline shadow-dp-card animate-[fadeUp_0.35s_ease_both] transition-[border-color,transform,box-shadow] duration-150 hover:-translate-y-px hover:border-dp-border-dark hover:shadow-[0_8px_22px_rgba(0,0,0,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-white',
   preview:
     'aspect-[16/10] overflow-hidden bg-[linear-gradient(to_right,rgba(0,0,0,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px),var(--color-dp-off-white)] bg-[size:20px_20px]',
   thumbnail: 'w-full h-full object-cover',

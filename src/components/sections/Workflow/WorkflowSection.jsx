@@ -30,16 +30,16 @@ const STEPS = [
   {
     index: '03',
     label: 'BUILD',
-    heading: 'Build the stack.',
+    heading: 'Prepare the stack.',
     description:
-      'DevPilot turns your requirements into a working application by generating the frontend, backend, and database layer.',
+      'DevPilot is being built toward MERN generation from the saved prompt, requirements, and design direction.',
     visual: (isActive) => <BuildVisual isActive={isActive} />,
   },
   {
     index: '04',
     label: 'PREVIEW & EDIT',
-    heading: 'Change it.',
-    description: 'Preview your generated application, make visual changes, and refine the experience until it feels exactly right.',
+    heading: 'Preview what comes next.',
+    description: 'Live preview and editing are planned so generated applications can be reviewed and refined in the product.',
     visual: (isActive) => <PreviewEditVisual isActive={isActive} />,
     reverse: true,
   },
@@ -48,7 +48,7 @@ const STEPS = [
     label: 'OWN THE CODE',
     heading: 'Own the code.',
     description:
-      "Your application is yours. Inspect the generated code, make changes, and download the complete project whenever you're ready.",
+      'Code inspection, editing, and ZIP export are planned for the generation workflow as the engine comes online.',
     visual: (isActive) => <CodeVisual isActive={isActive} />,
   },
 ]
@@ -90,8 +90,8 @@ export default function WorkflowSection() {
             animate={headerInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: EASE, delay: shouldReduceMotion ? 0 : 0.12 }}
           >
-            From your first prompt to a complete working application, DevPilot guides the entire
-            development process.
+            From your first prompt to generation-ready project context, DevPilot guides the early
+            product planning process.
           </motion.p>
         </div>
 

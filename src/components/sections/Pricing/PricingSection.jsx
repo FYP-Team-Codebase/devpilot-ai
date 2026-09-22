@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { useNavigate } from 'react-router-dom'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import { pricingStyles } from './PricingSection.styles'
 
@@ -8,8 +9,8 @@ const PLANS = [
     name: 'Free',
     price: '$0',
     period: '',
-    description: 'For exploring DevPilot AI and turning your first ideas into working projects.',
-    features: ['3 projects', 'AI website generation', 'Live preview', 'Basic code export'],
+    description: 'For exploring DevPilot AI and turning your first ideas into structured projects.',
+    features: ['Starter project access', 'AI website generation - in development', 'Live preview - coming next', 'Basic code export - planned'],
     action: 'Try for Free',
     href: '/prompt',
     intent: 'start',
@@ -18,8 +19,8 @@ const PLANS = [
     name: 'Pro',
     price: '$19',
     period: '/ month',
-    description: 'For developers who want to build, iterate, and ship faster.',
-    features: ['Unlimited projects', 'Advanced AI generation', 'Live preview & editing', 'Full code export', 'Priority generation'],
+    description: 'For developers who want more room to shape and continue project context.',
+    features: ['Unlimited projects - planned', 'Advanced AI generation - in development', 'Live preview & editing - coming next', 'Full code export - planned', 'Priority generation - planned'],
     action: 'Go Pro',
     href: '/dashboard/pricing',
     intent: 'upgrade',
@@ -29,10 +30,10 @@ const PLANS = [
     name: 'Team',
     price: '$49',
     period: '/ month',
-    description: 'For teams building products together with DevPilot AI.',
-    features: ['Everything in Pro', 'Team collaboration', 'Shared projects', 'Higher generation limits', 'Team workspace'],
+    description: 'For teams evaluating a future professional DevPilot AI workflow.',
+    features: ['Everything in Pro - planned', 'Team collaboration - planned', 'Shared projects - planned', 'Higher generation limits - planned', 'Team workspace - planned'],
     action: 'Contact Us',
-    href: '#contact',
+    href: '/contact',
     intent: 'contact',
   },
 ]
@@ -93,13 +94,14 @@ function PricingCard({ plan, progress, index, shouldReduceMotion, onPlanAction }
   )
 }
 
-export default function PricingSection() {
+export default function PricingSection({ headingLevel: Heading = 'h2' }) {
   const sectionRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start 0.92', 'start 0.25'] })
   const headerOpacity = useTransform(scrollYProgress, [0, 0.32], [0, 1])
   const headerY = useTransform(scrollYProgress, [0, 0.32], [24, 0])
-  const { handleGoPro, handleSectionClick, handleStartBuilding } = useLandingNavigation()
+  const navigate = useNavigate()
+  const { handleGoPro, handleStartBuilding } = useLandingNavigation()
 
   function handlePlanAction(event, plan) {
     if (plan.intent === 'upgrade') {
@@ -108,7 +110,8 @@ export default function PricingSection() {
     }
 
     if (plan.intent === 'contact') {
-      handleSectionClick(event, 'contact')
+      event.preventDefault()
+      navigate('/contact')
       return
     }
 
@@ -128,14 +131,14 @@ export default function PricingSection() {
           style={shouldReduceMotion ? undefined : { opacity: headerOpacity, y: headerY }}
         >
           <p className={`${pricingStyles.eyebrow} ${pricingStyles.headerEyebrow}`}>Pricing</p>
-          <h2
+          <Heading
             id="pricing-heading"
             className={pricingStyles.heading}
           >
             Build more. Pay less.
-          </h2>
+          </Heading>
           <p className={pricingStyles.subheading}>
-            Start free, then upgrade when your projects demand more.
+            Start free, then explore paid tiers as DevPilot's generation and billing capabilities grow.
           </p>
         </motion.div>
 

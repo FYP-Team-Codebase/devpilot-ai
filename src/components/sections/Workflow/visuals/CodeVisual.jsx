@@ -16,7 +16,7 @@ export default function CodeVisual({ isActive }) {
       <img
         className={`${workflowVisualStyles.image} aspect-[1600/1280]`}
         src="/workflow/optimized/code.jpg"
-        alt="DevPilot AI code editor: the generated project's file explorer, source code for Home.jsx, the AI build status checklist, and Download Project, Copy, Preview and Export ZIP actions"
+        alt="DevPilot AI planned code inspection and export workspace"
         width={1600}
         height={1280}
         loading="lazy"

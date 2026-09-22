@@ -32,5 +32,6 @@ export const pricingStyles = {
     "relative pl-[22px] text-[14px] leading-[1.35] text-dp-near-black before:absolute before:left-0 before:top-[-1px] before:text-[14px] before:font-semibold before:text-dp-black before:content-['✓']",
   cardCta:
     'mt-auto flex min-h-[46px] items-center justify-center rounded-full border border-dp-border-dark bg-dp-white px-4 py-[11px] text-[14px] font-semibold text-dp-black no-underline [transition:background-color_0.2s_ease,color_0.2s_ease,border-color_0.2s_ease,transform_0.15s_ease] hover:border-dp-black hover:bg-dp-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-dp-black active:scale-[0.985] motion-reduce:transition-none',
-  featuredCta: 'border-dp-black bg-dp-black text-dp-white hover:bg-dp-near-black hover:text-dp-white',
+  featuredCta:
+    'border-dp-black !bg-dp-white !text-dp-black hover:!bg-dp-surface hover:!text-dp-black active:!text-dp-black disabled:!bg-dp-white disabled:!text-dp-near-black',
 }

@@ -15,7 +15,7 @@ export const footerStyles = {
     'm-0 mt-7 text-base font-semibold leading-[1.4] tracking-[-0.01em] max-[640px]:mt-6',
   description: 'm-0 mt-3 text-[14px] leading-[1.6] text-dp-text',
   groupGrid:
-    'grid grid-cols-4 gap-6 max-[900px]:grid-cols-2 max-[900px]:gap-y-10 max-[640px]:grid-cols-1 max-[640px]:gap-9',
+    'grid grid-cols-3 gap-6 max-[900px]:grid-cols-2 max-[900px]:gap-y-10 max-[640px]:grid-cols-1 max-[640px]:gap-9',
   groupTitle:
     'mb-[18px] mt-0.5 p-0 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-dp-near-black max-[640px]:mb-[14px]',
   groupList: 'm-0 flex list-none flex-col gap-3 p-0 max-[640px]:gap-[11px]',

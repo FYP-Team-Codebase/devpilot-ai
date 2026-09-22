@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { useNavigate } from 'react-router-dom'
 import { getRecentProjects } from '../../../services/projectService'
+import { restoreProjectSession } from '../../../utils/projectResume'
 import ProjectCard from './ProjectCard'
 import { projectGridStyles } from './ProjectGrid.styles'
 
@@ -8,12 +10,13 @@ const buttonMotion = { duration: 0.2, ease: 'easeOut' }
 
 function normalizeProject(p) {
   return {
+    ...p,
     id: p.id || p._id || p.slug || p.name,
-    name: p.name || p.title || 'Untitled website',
+    name: p.name || p.projectName || p.title || 'Untitled website',
     description: p.description || p.prompt || '',
     thumbnail: p.thumbnail || p.previewImage || p.previewUrl || p.screenshot || '',
     updatedAt: p.updatedAt || p.lastUpdated || p.createdAt,
-    status: p.status || '',
+    status: p.status || p.generationStatus || '',
     href: p.href || p.url || p.editUrl || '',
   }
 }
@@ -61,6 +64,8 @@ function EmptyState() {
 
 export default function ProjectGrid({ searchQuery = '' }) {
   const [state, setState] = useState({ status: 'loading', projects: [], isConfigured: true })
+  const [openError, setOpenError] = useState('')
+  const navigate = useNavigate()
   const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
@@ -97,6 +102,16 @@ export default function ProjectGrid({ searchQuery = '' }) {
 
   const hasProjects = filtered.length > 0
 
+  function handleProjectOpen(project) {
+    try {
+      const route = restoreProjectSession(project)
+      setOpenError('')
+      navigate(route)
+    } catch (error) {
+      setOpenError(error?.message || 'This project could not be opened.')
+    }
+  }
+
   return (
     <motion.section
       className={projectGridStyles.section}
@@ -116,6 +131,10 @@ export default function ProjectGrid({ searchQuery = '' }) {
           </a>
         )}
       </div>
+
+      {openError && (
+        <p className={projectGridStyles.openError} role="alert">{openError}</p>
+      )}
 
       {state.status === 'loading' && (
         <div className={projectGridStyles.grid}>
@@ -144,7 +163,7 @@ export default function ProjectGrid({ searchQuery = '' }) {
       {state.status === 'success' && hasProjects && (
         <div className={projectGridStyles.grid}>
           {filtered.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
+            <ProjectCard key={project.id} project={project} index={i} onOpen={handleProjectOpen} />
           ))}
         </div>
       )}

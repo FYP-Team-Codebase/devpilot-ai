@@ -16,13 +16,32 @@ function formatRelative(value) {
   return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(date)
 }
 
-export default function ProjectCard({ project, index = 0 }) {
+export default function ProjectCard({ project, index = 0, onOpen }) {
   const relative = formatRelative(project.updatedAt)
 
+  function handleOpen() {
+    onOpen?.(project)
+  }
+
+  function handleKeyDown(event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+
+    event.preventDefault()
+    handleOpen()
+  }
+
+  function stopCardOpen(event) {
+    event.stopPropagation()
+  }
+
   return (
-    <a
+    <article
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${project.name}`}
       className={projectCardStyles.card}
-      href={project.href || '#'}
+      onClick={handleOpen}
+      onKeyDown={handleKeyDown}
       style={{ animationDelay: `${index * 40}ms` }}
     >
       <div className={projectCardStyles.preview}>
@@ -43,7 +62,12 @@ export default function ProjectCard({ project, index = 0 }) {
       <div className={projectCardStyles.body}>
         <div className={projectCardStyles.header}>
           <h3 className={projectCardStyles.title}>{project.name}</h3>
-          <button type="button" className={projectCardStyles.menuButton} aria-label="More actions" onClick={(e) => e.preventDefault()}>
+          <button
+            type="button"
+            className={projectCardStyles.menuButton}
+            aria-label="More actions"
+            onClick={stopCardOpen}
+          >
             <svg viewBox="0 0 16 16" fill="currentColor" className={projectCardStyles.menuIcon}>
               <circle cx="8" cy="3" r="1.2" />
               <circle cx="8" cy="8" r="1.2" />
@@ -62,6 +86,6 @@ export default function ProjectCard({ project, index = 0 }) {
           </svg>
         </span>
       </div>
-    </a>
+    </article>
   )
 }

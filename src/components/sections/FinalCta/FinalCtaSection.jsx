@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import styles from './FinalCtaSection.module.css'
 import { finalCtaStyles } from './FinalCtaSection.styles'
@@ -45,7 +46,7 @@ export default function FinalCtaSection() {
           className={finalCtaStyles.description}
           {...reveal(0.18)}
         >
-          Describe what you want to build. DevPilot AI turns your idea into a working web application.
+          Describe what you want to build. DevPilot AI turns your idea into structured project context for the build process.
         </motion.p>
 
         <motion.div
@@ -61,9 +62,9 @@ export default function FinalCtaSection() {
               &rarr;
             </span>
           </a>
-          <a className={finalCtaStyles.secondaryCta} href="#top">
+          <Link className={finalCtaStyles.secondaryCta} to="/products">
             Explore DevPilot AI
-          </a>
+          </Link>
         </motion.div>
 
         <motion.div
@@ -79,7 +80,7 @@ export default function FinalCtaSection() {
               }`}
             >
               <span className={finalCtaStyles.previewStatusDot} />
-              Generating
+              Preparing
             </span>
           </div>
           <p
@@ -97,7 +98,7 @@ export default function FinalCtaSection() {
           <div className={finalCtaStyles.previewFooter}>
             <span>Natural language</span>
             <span aria-hidden="true">&rarr;</span>
-            <span>Working software</span>
+            <span>Generation-ready context</span>
           </div>
         </motion.div>
       </div>

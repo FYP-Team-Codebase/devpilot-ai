@@ -16,7 +16,7 @@ export default function BuildVisual({ isActive }) {
       <img
         className={`${workflowVisualStyles.image} aspect-[1920/1474]`}
         src="/workflow/optimized/buildthestack.jpg"
-        alt="DevPilot AI building your application: a generation pipeline showing the Frontend AI complete, Backend AI generating application logic, and Database AI queued, with overall progress and a live activity feed"
+        alt="DevPilot AI generation direction showing a planned frontend, backend, and database build pipeline"
         width={1920}
         height={1474}
         loading="lazy"

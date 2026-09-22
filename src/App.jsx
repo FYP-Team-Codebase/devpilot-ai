@@ -19,6 +19,12 @@ const SignupPage = lazy(() => import('./pages/Signup/SignupPage'))
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmail/VerifyEmailPage'))
 const PromptPage = lazy(() => import('./pages/Prompt/PromptPage'))
 const RequirementsPage = lazy(() => import('./pages/Requirements/RequirementsPage'))
+const GenerationPage = lazy(() => import('./pages/Generation/GenerationPage'))
+const AboutPage = lazy(() => import('./pages/About/AboutPage'))
+const ProductsPage = lazy(() => import('./pages/Products/ProductsPage'))
+const BusinessPage = lazy(() => import('./pages/Business/BusinessPage'))
+const PricingPage = lazy(() => import('./pages/Pricing/PricingPage'))
+const ContactPage = lazy(() => import('./pages/Contact/ContactPage'))
 
 const loadDashboardModule = () => import('./pages/Dashboard/DashboardPage')
 const DashboardPage = lazy(loadDashboardModule)
@@ -27,7 +33,7 @@ const ProjectsPage = lazy(() => loadDashboardModule().then((module) => ({ defaul
 const MyAssetsPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.MyAssetsPage })))
 const StandaloneInspirationPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.StandaloneInspirationPage })))
 const GenerationInspirationPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.GenerationInspirationPage })))
-const PricingPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.PricingPage })))
+const DashboardPricingPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.PricingPage })))
 const SettingsPage = lazy(() => loadDashboardModule().then((module) => ({ default: module.SettingsPage })))
 const ProfilePage = lazy(() => loadDashboardModule().then((module) => ({ default: module.ProfilePage })))
 
@@ -133,6 +139,11 @@ function App() {
       <Suspense fallback={<RouteLoader />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/business" element={<BusinessPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -161,6 +172,14 @@ function App() {
             }
           />
           <Route
+            path="/generation"
+            element={
+              <ProtectedRoute>
+                {(user) => <DashboardPage user={user} content={<GenerationPage />} />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
@@ -173,7 +192,7 @@ function App() {
             <Route path="assets" element={<MyAssetsPage />} />
             <Route path="inspiration" element={<StandaloneInspirationPage />} />
             <Route path="generate/inspiration" element={<Navigate to="/inspiration" replace />} />
-            <Route path="pricing" element={<PricingPage />} />
+            <Route path="pricing" element={<DashboardPricingPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="templates" element={<Navigate to="/dashboard/assets" replace />} />

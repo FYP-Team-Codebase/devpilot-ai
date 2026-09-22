@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../services/authService'
-import { getRecentProjects } from '../../services/projectService'
+import { createProject, getRecentProjects } from '../../services/projectService'
 import UserMenu from '../Dashboard/components/UserMenu'
 import { promptPageStyles } from './PromptPage.styles'
 
@@ -116,12 +116,14 @@ export default function PromptPage() {
   const [value, setValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [recentProjects, setRecentProjects] = useState([])
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isComposerExpanded, setIsComposerExpanded] = useState(false)
   const [userType, setUserType] = useState(() => getInitialUserType(user))
   const [model, setModel] = useState(MODELS[0].value)
   const textareaRef = useRef(null)
+  const submitInFlightRef = useRef(false)
   const shouldReduceMotion = useReducedMotion()
 
   const isFilled = value.trim().length > 0
@@ -134,15 +136,6 @@ export default function PromptPage() {
       })
       .catch(() => {})
   }, [])
-
-  useEffect(() => {
-    if (!isSubmitting) return
-    const id = window.setTimeout(() => {
-      sessionStorage.setItem('devpilot-prompt', value.trim())
-      navigate('/requirements')
-    }, 800)
-    return () => window.clearTimeout(id)
-  }, [isSubmitting, navigate, value])
 
   useEffect(() => {
     function onKeyDown(e) {
@@ -178,27 +171,62 @@ export default function PromptPage() {
     textareaRef.current?.blur()
   }
 
+  async function submitPrompt() {
+    const trimmedPrompt = value.trim()
+
+    if (!trimmedPrompt || submitInFlightRef.current) return
+
+    submitInFlightRef.current = true
+    setSubmitError('')
+    setIsSubmitting(true)
+    sessionStorage.setItem('devpilot-prompt', trimmedPrompt)
+    sessionStorage.removeItem('devpilot-current-project-id')
+
+    try {
+      const [data] = await Promise.all([
+        createProject({ prompt: trimmedPrompt }),
+        new Promise((resolve) => window.setTimeout(resolve, shouldReduceMotion ? 0 : 800)),
+      ])
+      const projectId = data?.project?._id
+
+      if (!projectId) {
+        throw new Error('Project was created, but the response did not include a project ID.')
+      }
+
+      sessionStorage.setItem('devpilot-current-project-id', projectId)
+      navigate('/requirements')
+    } catch (error) {
+      sessionStorage.removeItem('devpilot-current-project-id')
+      setSubmitError(error?.message || 'Could not create your project. Please try again.')
+      setIsSubmitting(false)
+      submitInFlightRef.current = false
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault()
     if (!isFilled || isSubmitting) return
-    setIsSubmitting(true)
+    submitPrompt()
   }
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (isFilled && !isSubmitting) setIsSubmitting(true)
+      if (isFilled && !isSubmitting) submitPrompt()
     }
   }
 
   function handleSuggestionClick(prompt) {
     setValue(prompt)
+    setSubmitError('')
     openComposer()
   }
 
   function handleNewProject() {
     setValue('')
     setIsSubmitting(false)
+    setSubmitError('')
+    submitInFlightRef.current = false
     setIsSidebarOpen(false)
     openComposer()
   }
@@ -333,7 +361,7 @@ export default function PromptPage() {
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder="Describe the website you want to build..."
-                        aria-describedby="prompt-count"
+                        aria-describedby={submitError ? 'prompt-count prompt-submit-error' : 'prompt-count'}
                         disabled={isSubmitting}
                       />
                       <span id="prompt-count" className={promptPageStyles.count}>
@@ -366,6 +394,22 @@ export default function PromptPage() {
 
                       <GenerateButton isFilled={isFilled} isSubmitting={isSubmitting} shouldReduceMotion={shouldReduceMotion} />
                     </motion.div>
+
+                    <AnimatePresence>
+                      {submitError && (
+                        <motion.p
+                          id="prompt-submit-error"
+                          role="alert"
+                          className="mt-3 text-sm font-medium text-red-600"
+                          initial={shouldReduceMotion ? false : { opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
+                          transition={{ duration: shouldReduceMotion ? 0 : 0.16, ease: 'easeOut' }}
+                        >
+                          {submitError}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { updateProject } from '../../../services/projectService'
 import { inspirationGalleryStyles } from './InspirationGallery.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -37,7 +38,10 @@ function getStoredSelected(availableInspirations) {
     const parsed = JSON.parse(stored)
     if (!Array.isArray(parsed)) return []
     return parsed
-      .map((item) => availableInspirations.find((inspiration) => inspiration.id === item.id))
+      .map((item) => {
+        const id = item?.id || item?.inspirationId
+        return availableInspirations.find((inspiration) => inspiration.id === id)
+      })
       .filter(Boolean)
   } catch {
     return []
@@ -88,6 +92,16 @@ function resolvePreviewPosition(item, fit) {
   return fit === 'contain' ? 'object-center' : 'object-top'
 }
 
+function mapSelectedInspirations(items) {
+  return items
+    .filter((item) => typeof item?.id === 'string' && item.id.trim())
+    .map((item) => ({
+      source: 'devpilot',
+      inspirationId: item.id.trim(),
+      imageUrl: item.galleryPreview || item.thumbnail || item.fullPage || '',
+    }))
+}
+
 export default function InspirationGallery({ mode = 'standalone' }) {
   const isGenerationMode = mode === 'generation'
   const [inspirations, setInspirations] = useState([])
@@ -98,9 +112,11 @@ export default function InspirationGallery({ mode = 'standalone' }) {
   const [activeItem, setActiveItem] = useState(null)
   const [activeCategory, setActiveCategory] = useState(ALL_CATEGORIES)
   const [validationError, setValidationError] = useState('')
+  const [isSavingSelection, setIsSavingSelection] = useState(false)
   const [isAddOpen, setIsAddOpen] = useState(false)
   const selectedPanelRef = useRef(null)
   const modalTitleRef = useRef(null)
+  const continueInFlightRef = useRef(false)
   const navigate = useNavigate()
   const shouldReduceMotion = useReducedMotion()
 
@@ -200,6 +216,8 @@ export default function InspirationGallery({ mode = 'standalone' }) {
   }, [isGenerationMode])
 
   function handleBack() {
+    if (isSavingSelection) return
+
     if (activeItem) {
       setActiveItem(null)
       return
@@ -208,7 +226,9 @@ export default function InspirationGallery({ mode = 'standalone' }) {
     navigate('/requirements')
   }
 
-  function handleContinue() {
+  async function handleContinue() {
+    if (continueInFlightRef.current) return
+
     if (!selectedInspirations.length) {
       setValidationError('Select at least one inspiration to continue.')
       selectedPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -228,7 +248,42 @@ export default function InspirationGallery({ mode = 'standalone' }) {
     }
 
     sessionStorage.setItem('devpilot-inspirations', JSON.stringify(selectedInspirations))
-    navigate('/#try')
+
+    const projectId = sessionStorage.getItem('devpilot-current-project-id')
+
+    if (!projectId) {
+      setValidationError('Current project session could not be found. Please start again from Prompt.')
+      selectedPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      window.setTimeout(() => selectedPanelRef.current?.focus(), 240)
+      return
+    }
+
+    const mappedInspirations = mapSelectedInspirations(selectedInspirations)
+
+    if (!mappedInspirations.length) {
+      setValidationError('Selected inspirations could not be saved. Please choose another inspiration.')
+      selectedPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      window.setTimeout(() => selectedPanelRef.current?.focus(), 240)
+      return
+    }
+
+    continueInFlightRef.current = true
+    setIsSavingSelection(true)
+    setValidationError('')
+
+    try {
+      await updateProject(projectId, {
+        inspirations: mappedInspirations,
+        generationStatus: 'ready',
+      })
+      navigate('/generation')
+    } catch (error) {
+      setValidationError(error?.message || 'Could not save inspirations. Please try again.')
+      setIsSavingSelection(false)
+      continueInFlightRef.current = false
+      selectedPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      window.setTimeout(() => selectedPanelRef.current?.focus(), 240)
+    }
   }
 
   return (
@@ -313,6 +368,7 @@ export default function InspirationGallery({ mode = 'standalone' }) {
               type="button"
               onClick={handleBack}
               className={inspirationGalleryStyles.secondaryButton}
+              disabled={isSavingSelection}
               whileHover={shouldReduceMotion ? undefined : { y: -1 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               transition={buttonMotion}
@@ -326,11 +382,12 @@ export default function InspirationGallery({ mode = 'standalone' }) {
                 type="button"
                 onClick={handleContinue}
                 className={inspirationGalleryStyles.primaryButton}
+                disabled={isSavingSelection}
                 whileHover={shouldReduceMotion ? undefined : { y: -1 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                 transition={buttonMotion}
               >
-                Continue to Generation
+                {isSavingSelection ? 'Saving...' : 'Continue to Generation'}
                 <InspirationIcon name="arrow-right" />
               </motion.button>
             </div>

@@ -31,6 +31,8 @@ export const projectGridStyles = {
   error:
     'flex items-center justify-between gap-3 rounded-dp-control border border-dp-border bg-dp-page px-4 py-3',
   errorText: 'm-0 text-[13px] text-dp-text',
+  openError:
+    'mb-4 rounded-dp-control border border-dp-error-border bg-dp-error-surface px-4 py-3 text-[13px] font-medium text-dp-error-text',
   retryButton:
     'shrink-0 cursor-pointer rounded-dp-control border border-dp-border bg-white px-3 py-1.5 text-[12.5px] font-semibold text-dp-black transition-[background-color,border-color,color] duration-200 hover:border-dp-border-dark hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-dp-page',
 }

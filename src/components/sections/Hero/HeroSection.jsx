@@ -4,7 +4,7 @@ import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import PromptBar from './PromptBar'
 import { heroStyles } from './HeroSection.styles'
 
-const WORKFLOW_STEPS = ['Prompt', 'Generate', 'Preview', 'Own']
+const WORKFLOW_STEPS = ['Prompt', 'Define', 'Inspire', 'Prepare']
 const EASE = [0.16, 1, 0.3, 1]
 
 export default function HeroSection() {
@@ -42,8 +42,7 @@ export default function HeroSection() {
           </h1>
 
           <p className={heroStyles.description}>
-            DevPilot AI turns natural-language ideas into production-ready MERN
-            applications — from interface to backend and database.
+            DevPilot AI turns natural-language ideas into structured project context with prompts, requirements, inspiration, and generation preparation.
           </p>
 
           <PromptBar />

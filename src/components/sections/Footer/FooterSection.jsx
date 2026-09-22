@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import codenovaLogo from '../../../assets/branding/codenova-logo.svg'
 import useLandingNavigation from '../../../hooks/useLandingNavigation'
 import { footerStyles } from './FooterSection.styles'
@@ -10,38 +11,36 @@ const FOOTER_GROUPS = [
   {
     title: 'Product',
     links: [
-      { label: 'DevPilot AI', href: '#top' },
-      { label: 'Features', href: '#features' },
-      { label: 'Workflow', href: '#workflow' },
-      { label: 'Pricing', href: '#pricing' },
+      { label: 'Home', href: '/', route: true },
+      { label: 'Products', href: '/products', route: true },
+      { label: 'Pricing', href: '/pricing', route: true },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About', href: '#about' },
-      { label: 'Business', href: '#business' },
-      { label: 'Contact', href: '#contact' },
+      { label: 'About', href: '/about', route: true },
+      { label: 'Business', href: '/business', route: true },
+      { label: 'Contact', href: '/contact', route: true },
     ],
   },
   {
     title: 'Resources',
     links: [
-      { label: 'Documentation', href: '#documentation' },
       { label: 'GitHub', href: 'https://github.com/FYP-Team-Codebase/devpilot-ai', external: true },
-      { label: 'Help Center', href: '#help' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Privacy', href: '#privacy' },
-      { label: 'Terms', href: '#terms' },
     ],
   },
 ]
 
 function FooterLink({ link }) {
+  if (link.route) {
+    return (
+      <Link className={footerStyles.link} to={link.href}>
+        {link.label}
+      </Link>
+    )
+  }
+
   return (
     <a
       className={footerStyles.link}
@@ -53,16 +52,16 @@ function FooterLink({ link }) {
   )
 }
 
-export default function FooterSection() {
+export default function FooterSection({ revealContent = true }) {
   const footerRef = useRef(null)
   const isInView = useInView(footerRef, { once: true, amount: 0.18 })
   const shouldReduceMotion = useReducedMotion()
   const { handleHomeClick } = useLandingNavigation()
 
   const reveal = (delay = 0) => ({
-    initial: shouldReduceMotion ? false : { opacity: 0, y: 14 },
-    animate: isInView ? { opacity: 1, y: 0 } : undefined,
-    transition: { duration: shouldReduceMotion ? 0 : 0.5, ease: EASE, delay: shouldReduceMotion ? 0 : delay },
+    initial: !revealContent || shouldReduceMotion ? false : { opacity: 0, y: 14 },
+    animate: revealContent ? (isInView ? { opacity: 1, y: 0 } : undefined) : undefined,
+    transition: { duration: !revealContent || shouldReduceMotion ? 0 : 0.5, ease: EASE, delay: !revealContent || shouldReduceMotion ? 0 : delay },
   })
 
   return (
@@ -82,9 +81,9 @@ export default function FooterSection() {
             >
               <img className={footerStyles.logo} src={codenovaLogo} alt="Code Nova" width="190" height="36" />
             </a>
-            <p className={footerStyles.tagline}>Build software from a single prompt.</p>
+            <p className={footerStyles.tagline}>Structure software from a single prompt.</p>
             <p className={footerStyles.description}>
-              DevPilot AI helps you turn ideas into production-ready web experiences with AI-powered generation, editing, and code.
+              DevPilot AI helps you structure ideas, requirements, and design direction while AI-assisted MERN generation is in development.
             </p>
           </motion.div>
 
@@ -110,8 +109,6 @@ export default function FooterSection() {
         >
           <p className={footerStyles.copyright}>© 2026 CodeNova. All rights reserved.</p>
           <nav className={footerStyles.legalNav} aria-label="Legal and social links">
-            <a className={footerStyles.legalLink} href="#privacy">Privacy</a>
-            <a className={footerStyles.legalLink} href="#terms">Terms</a>
             <a className={footerStyles.legalLink} href="https://github.com/FYP-Team-Codebase/devpilot-ai" target="_blank" rel="noreferrer">
               GitHub
             </a>

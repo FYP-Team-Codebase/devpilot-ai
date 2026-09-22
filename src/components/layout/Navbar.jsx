@@ -6,11 +6,11 @@ import { navbarStyles } from './Navbar.styles'
 import { useScrollDirection } from './useScrollDirection'
 
 const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Products', href: '#products' },
-  { label: 'Business', href: '#business' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Contact Us', href: '#contact' },
+  { label: 'About', href: '/about', route: true },
+  { label: 'Products', href: '/products', route: true },
+  { label: 'Business', href: '/business', route: true },
+  { label: 'Pricing', href: '/pricing', route: true },
+  { label: 'Contact Us', href: '/contact', route: true },
 ]
 
 export default function Navbar() {
@@ -86,13 +86,22 @@ export default function Navbar() {
             <ul className={navbarStyles.desktopList}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className={`${navbarStyles.desktopLink} ${navbarStyles.focusDark}`}
-                    onClick={(event) => handleSectionClick(event, link.href.slice(1))}
-                  >
-                    {link.label}
-                  </a>
+                  {link.route ? (
+                    <Link
+                      to={link.href}
+                      className={`${navbarStyles.desktopLink} ${navbarStyles.focusDark}`}
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className={`${navbarStyles.desktopLink} ${navbarStyles.focusDark}`}
+                      onClick={(event) => handleSectionClick(event, link.href.slice(1))}
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -120,13 +129,23 @@ export default function Navbar() {
             <ul className={navbarStyles.mobileList}>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className={navbarStyles.mobileLink}
-                    onClick={(event) => handleMobileSectionClick(event, link.href.slice(1))}
-                  >
-                    {link.label}
-                  </a>
+                  {link.route ? (
+                    <Link
+                      to={link.href}
+                      className={navbarStyles.mobileLink}
+                      onClick={closeMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className={navbarStyles.mobileLink}
+                      onClick={(event) => handleMobileSectionClick(event, link.href.slice(1))}
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

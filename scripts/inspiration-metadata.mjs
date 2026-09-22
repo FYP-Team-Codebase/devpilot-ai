@@ -70,6 +70,20 @@ const inspirationMetadata = {
     previewFit: 'contain',
     previewPosition: 'center',
   },
+  'fitness inspiration-1': {
+    title: 'Fitness Website',
+    category: 'Fitness',
+    type: 'Website',
+    style: 'Clean',
+    tags: ['fitness', 'trainer', 'nutrition'],
+  },
+  'portfoilo inspiration-1': {
+    title: 'UI/UX Portfolio',
+    category: 'Portfolio',
+    type: 'Website',
+    style: 'Creative',
+    tags: ['portfolio', 'design'],
+  },
 }
 
 export { inspirationMetadata }

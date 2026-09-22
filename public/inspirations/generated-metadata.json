@@ -1,4 +1,63 @@
 {
+  "Agency Inspiration-1": {
+    "title": "Creative Agency",
+    "category": "Agency",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "agency"
+    ],
+    "classifiedFrom": "Slice 2.png",
+    "assetFingerprint": "f1ca0059c47a2d2c",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Agency Inspiration-2": {
+    "title": "Creative Agency",
+    "category": "Agency",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "agency"
+    ],
+    "classifiedFrom": "Slice 3.png",
+    "assetFingerprint": "18bdd346c98de951",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Fitness Inspiration-1": {
+    "title": "Fitness Website",
+    "category": "Fitness",
+    "type": "Website",
+    "style": "Clean",
+    "tags": [
+      "fitness",
+      "trainer",
+      "nutrition"
+    ],
+    "classifiedFrom": "4.png",
+    "assetFingerprint": "c6218469e5b30575",
+    "classificationVersion": 3,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "Fitness Inspiration-2": {
+    "title": "AI SaaS",
+    "category": "SaaS",
+    "type": "Website",
+    "style": "Clean",
+    "tags": [
+      "ai",
+      "saas"
+    ],
+    "classifiedFrom": "Slice 3.png",
+    "assetFingerprint": "a2548d0f4faee91d",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
   "inspirations-01": {
     "title": "Pet Ecommerce",
     "category": "Ecommerce",
@@ -9,9 +68,9 @@
       "shop",
       "friendly"
     ],
-    "classifiedFrom": "optimized\\pet cover.jpg",
+    "classifiedFrom": "optimized/pet cover.jpg",
     "assetFingerprint": "27068fe36646ccbb",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -25,9 +84,9 @@
       "automation",
       "saas"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "ff6a218e36c245cc",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -41,9 +100,9 @@
       "ai",
       "business"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "88c346bf6b5b3a84",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -57,9 +116,9 @@
       "dashboard",
       "tasks"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "5118f991271c1429",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -73,9 +132,9 @@
       "expenses",
       "saas"
     ],
-    "classifiedFrom": "optimized\\cover-image.jpg",
+    "classifiedFrom": "optimized/cover-image.jpg",
     "assetFingerprint": "71476eb91098a9f5",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -89,9 +148,9 @@
       "dashboard",
       "business"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "bfda23be342dfbb9",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -105,9 +164,9 @@
       "shop",
       "home"
     ],
-    "classifiedFrom": "optimized\\Cover'.jpg",
+    "classifiedFrom": "optimized/Cover'.jpg",
     "assetFingerprint": "ca1d0674fd573b5d",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": false,
     "source": "metadata-map"
   },
@@ -119,9 +178,9 @@
     "tags": [
       "portfolio"
     ],
-    "classifiedFrom": "optimized\\Cover-iamge.jpg",
+    "classifiedFrom": "optimized/Cover-iamge.jpg",
     "assetFingerprint": "f11ff41aa87293f5",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": true,
     "source": "heuristic"
   },
@@ -134,9 +193,9 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "d53f876f48705c9e",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": true,
     "source": "heuristic"
   },
@@ -149,9 +208,9 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "optimized\\Cover-image 1.jpg",
+    "classifiedFrom": "optimized/Cover-image 1.jpg",
     "assetFingerprint": "7d1b31a10000b6bd",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
     "generated": true,
     "source": "heuristic"
   },
@@ -164,9 +223,80 @@
       "portfolio",
       "design"
     ],
-    "classifiedFrom": "optimized\\Cover-image.jpg",
+    "classifiedFrom": "optimized/Cover-image.jpg",
     "assetFingerprint": "cc828ee306585b15",
-    "classificationVersion": 2,
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Portfoilo Inspiration-1": {
+    "title": "UI/UX Portfolio",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio",
+      "design"
+    ],
+    "classifiedFrom": "2.png",
+    "assetFingerprint": "b0cc8de67da14ae7",
+    "classificationVersion": 3,
+    "generated": false,
+    "source": "metadata-map"
+  },
+  "Portfolio Inspiration-2": {
+    "title": "Portfolio Website",
+    "category": "Portfolio",
+    "type": "Website",
+    "style": "Creative",
+    "tags": [
+      "portfolio"
+    ],
+    "classifiedFrom": "2.png",
+    "assetFingerprint": "de69e0ae53ed8086",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Travel Inspiration-1": {
+    "title": "Travel Website",
+    "category": "Travel",
+    "type": "Website",
+    "style": "Editorial",
+    "tags": [
+      "travel"
+    ],
+    "classifiedFrom": "Slice 2.png",
+    "assetFingerprint": "01a6934e93e80052",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Travel Inspiration-2": {
+    "title": "Travel Website",
+    "category": "Travel",
+    "type": "Website",
+    "style": "Editorial",
+    "tags": [
+      "travel"
+    ],
+    "classifiedFrom": "1.png",
+    "assetFingerprint": "2b03991f7934a1a1",
+    "classificationVersion": 3,
+    "generated": true,
+    "source": "heuristic"
+  },
+  "Travel Inspiration-3": {
+    "title": "Travel Website",
+    "category": "Travel",
+    "type": "Website",
+    "style": "Editorial",
+    "tags": [
+      "travel"
+    ],
+    "classifiedFrom": "Slice 1.png",
+    "assetFingerprint": "7610e15dabd9e309",
+    "classificationVersion": 3,
     "generated": true,
     "source": "heuristic"
   }

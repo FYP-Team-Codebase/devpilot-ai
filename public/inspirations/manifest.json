@@ -1,8 +1,183 @@
 {
   "root": "/inspirations",
-  "count": 11,
+  "count": 20,
   "skipped": [],
   "inspirations": [
+    {
+      "id": "Agency Inspiration-1",
+      "folder": "Agency Inspiration-1",
+      "title": "Creative Agency",
+      "category": "Agency",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "agency"
+      ],
+      "description": "Website inspiration assets from the Agency Inspiration-1 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Agency%20Inspiration-1/Slice%202.png",
+      "galleryPreview": "/inspirations/Agency%20Inspiration-1/Slice%202.png",
+      "originalGalleryPreview": "/inspirations/Agency%20Inspiration-1/Slice%202.png",
+      "fullPage": "/inspirations/Agency%20Inspiration-1/Slice%201.png",
+      "images": [
+        {
+          "src": "/inspirations/Agency%20Inspiration-1/Slice%201.png",
+          "label": "Slice 1",
+          "width": 2764,
+          "height": 1502
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-1/Slice%202.png",
+          "label": "Slice 2",
+          "width": 2540,
+          "height": 1324
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-1/Slice%203.png",
+          "label": "Slice 3",
+          "width": 2464,
+          "height": 1066
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-1/Slice%204.png",
+          "label": "Slice 4",
+          "width": 2736,
+          "height": 694
+        }
+      ]
+    },
+    {
+      "id": "Agency Inspiration-2",
+      "folder": "Agency Inspiration-2",
+      "title": "Creative Agency",
+      "category": "Agency",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "agency"
+      ],
+      "description": "Website inspiration assets from the Agency Inspiration-2 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Agency%20Inspiration-2/Slice%203.png",
+      "galleryPreview": "/inspirations/Agency%20Inspiration-2/Slice%203.png",
+      "originalGalleryPreview": "/inspirations/Agency%20Inspiration-2/Slice%203.png",
+      "fullPage": "/inspirations/Agency%20Inspiration-2/Slice%201.png",
+      "images": [
+        {
+          "src": "/inspirations/Agency%20Inspiration-2/Slice%201.png",
+          "label": "Slice 1",
+          "width": 2692,
+          "height": 1482
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-2/Slice%203.png",
+          "label": "Slice 3",
+          "width": 2688,
+          "height": 1256
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-2/Slice%202.png",
+          "label": "Slice 2",
+          "width": 2718,
+          "height": 1250
+        },
+        {
+          "src": "/inspirations/Agency%20Inspiration-2/Slice%204.png",
+          "label": "Slice 4",
+          "width": 2880,
+          "height": 1216
+        }
+      ]
+    },
+    {
+      "id": "Fitness Inspiration-1",
+      "folder": "Fitness Inspiration-1",
+      "title": "Fitness Website",
+      "category": "Fitness",
+      "type": "Website",
+      "style": "Clean",
+      "tags": [
+        "fitness",
+        "trainer",
+        "nutrition"
+      ],
+      "description": "Website inspiration assets from the Fitness Inspiration-1 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Fitness%20Inspiration-1/4.png",
+      "galleryPreview": "/inspirations/Fitness%20Inspiration-1/4.png",
+      "originalGalleryPreview": "/inspirations/Fitness%20Inspiration-1/4.png",
+      "fullPage": "/inspirations/Fitness%20Inspiration-1/1.png",
+      "images": [
+        {
+          "src": "/inspirations/Fitness%20Inspiration-1/1.png",
+          "label": "1",
+          "width": 1866,
+          "height": 1182
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-1/4.png",
+          "label": "4",
+          "width": 1820,
+          "height": 648
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-1/2.png",
+          "label": "2",
+          "width": 652,
+          "height": 954
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-1/3.png",
+          "label": "3",
+          "width": 654,
+          "height": 922
+        }
+      ]
+    },
+    {
+      "id": "Fitness Inspiration-2",
+      "folder": "Fitness Inspiration-2",
+      "title": "AI SaaS",
+      "category": "SaaS",
+      "type": "Website",
+      "style": "Clean",
+      "tags": [
+        "ai",
+        "saas"
+      ],
+      "description": "Website inspiration assets from the Fitness Inspiration-2 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Fitness%20Inspiration-2/Slice%203.png",
+      "galleryPreview": "/inspirations/Fitness%20Inspiration-2/Slice%203.png",
+      "originalGalleryPreview": "/inspirations/Fitness%20Inspiration-2/Slice%203.png",
+      "fullPage": "/inspirations/Fitness%20Inspiration-2/Slice%202.png",
+      "images": [
+        {
+          "src": "/inspirations/Fitness%20Inspiration-2/Slice%202.png",
+          "label": "Slice 2",
+          "width": 2590,
+          "height": 2452
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-2/Slice%203.png",
+          "label": "Slice 3",
+          "width": 2722,
+          "height": 1748
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-2/main.png",
+          "label": "Main",
+          "width": 2738,
+          "height": 1544
+        },
+        {
+          "src": "/inspirations/Fitness%20Inspiration-2/Slice%204.png",
+          "label": "Slice 4",
+          "width": 2746,
+          "height": 1214
+        }
+      ]
+    },
     {
       "id": "inspirations-01",
       "folder": "inspirations-01",
@@ -562,6 +737,228 @@
           "label": "Services",
           "width": 1800,
           "height": 1256
+        }
+      ]
+    },
+    {
+      "id": "Portfoilo Inspiration-1",
+      "folder": "Portfoilo Inspiration-1",
+      "title": "UI/UX Portfolio",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio",
+        "design"
+      ],
+      "description": "Website inspiration assets from the Portfoilo Inspiration-1 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Portfoilo%20Inspiration-1/2.png",
+      "galleryPreview": "/inspirations/Portfoilo%20Inspiration-1/2.png",
+      "originalGalleryPreview": "/inspirations/Portfoilo%20Inspiration-1/2.png",
+      "fullPage": "/inspirations/Portfoilo%20Inspiration-1/1.png",
+      "images": [
+        {
+          "src": "/inspirations/Portfoilo%20Inspiration-1/1.png",
+          "label": "1",
+          "width": 2880,
+          "height": 2858
+        },
+        {
+          "src": "/inspirations/Portfoilo%20Inspiration-1/2.png",
+          "label": "2",
+          "width": 2578,
+          "height": 1880
+        },
+        {
+          "src": "/inspirations/Portfoilo%20Inspiration-1/3.png",
+          "label": "3",
+          "width": 2662,
+          "height": 1284
+        },
+        {
+          "src": "/inspirations/Portfoilo%20Inspiration-1/4.png",
+          "label": "4",
+          "width": 2200,
+          "height": 1426
+        }
+      ]
+    },
+    {
+      "id": "Portfolio Inspiration-2",
+      "folder": "Portfolio Inspiration-2",
+      "title": "Portfolio Website",
+      "category": "Portfolio",
+      "type": "Website",
+      "style": "Creative",
+      "tags": [
+        "portfolio"
+      ],
+      "description": "Website inspiration assets from the Portfolio Inspiration-2 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Portfolio%20Inspiration-2/2.png",
+      "galleryPreview": "/inspirations/Portfolio%20Inspiration-2/2.png",
+      "originalGalleryPreview": "/inspirations/Portfolio%20Inspiration-2/2.png",
+      "fullPage": "/inspirations/Portfolio%20Inspiration-2/4.png",
+      "images": [
+        {
+          "src": "/inspirations/Portfolio%20Inspiration-2/4.png",
+          "label": "4",
+          "width": 2654,
+          "height": 2458
+        },
+        {
+          "src": "/inspirations/Portfolio%20Inspiration-2/2.png",
+          "label": "2",
+          "width": 3694,
+          "height": 2188
+        },
+        {
+          "src": "/inspirations/Portfolio%20Inspiration-2/1.png",
+          "label": "1",
+          "width": 3702,
+          "height": 2072
+        },
+        {
+          "src": "/inspirations/Portfolio%20Inspiration-2/3.png",
+          "label": "3",
+          "width": 3682,
+          "height": 1524
+        }
+      ]
+    },
+    {
+      "id": "Travel Inspiration-1",
+      "folder": "Travel Inspiration-1",
+      "title": "Travel Website",
+      "category": "Travel",
+      "type": "Website",
+      "style": "Editorial",
+      "tags": [
+        "travel"
+      ],
+      "description": "Website inspiration assets from the Travel Inspiration-1 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Travel%20Inspiration-1/Slice%202.png",
+      "galleryPreview": "/inspirations/Travel%20Inspiration-1/Slice%202.png",
+      "originalGalleryPreview": "/inspirations/Travel%20Inspiration-1/Slice%202.png",
+      "fullPage": "/inspirations/Travel%20Inspiration-1/Slice%201.png",
+      "images": [
+        {
+          "src": "/inspirations/Travel%20Inspiration-1/Slice%201.png",
+          "label": "Slice 1",
+          "width": 2608,
+          "height": 1854
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-1/Slice%202.png",
+          "label": "Slice 2",
+          "width": 2632,
+          "height": 1756
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-1/Slice%203.png",
+          "label": "Slice 3",
+          "width": 2622,
+          "height": 1734
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-1/Slice%204.png",
+          "label": "Slice 4",
+          "width": 2614,
+          "height": 1562
+        }
+      ]
+    },
+    {
+      "id": "Travel Inspiration-2",
+      "folder": "Travel Inspiration-2",
+      "title": "Travel Website",
+      "category": "Travel",
+      "type": "Website",
+      "style": "Editorial",
+      "tags": [
+        "travel"
+      ],
+      "description": "Website inspiration assets from the Travel Inspiration-2 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Travel%20Inspiration-2/1.png",
+      "galleryPreview": "/inspirations/Travel%20Inspiration-2/1.png",
+      "originalGalleryPreview": "/inspirations/Travel%20Inspiration-2/1.png",
+      "fullPage": "/inspirations/Travel%20Inspiration-2/2.png",
+      "images": [
+        {
+          "src": "/inspirations/Travel%20Inspiration-2/2.png",
+          "label": "2",
+          "width": 2486,
+          "height": 1818
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-2/1.png",
+          "label": "1",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-2/3.png",
+          "label": "3",
+          "width": 2560,
+          "height": 1100
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-2/4.png",
+          "label": "4",
+          "width": 2472,
+          "height": 1264
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-2/5.png",
+          "label": "5",
+          "width": 2434,
+          "height": 980
+        }
+      ]
+    },
+    {
+      "id": "Travel Inspiration-3",
+      "folder": "Travel Inspiration-3",
+      "title": "Travel Website",
+      "category": "Travel",
+      "type": "Website",
+      "style": "Editorial",
+      "tags": [
+        "travel"
+      ],
+      "description": "Website inspiration assets from the Travel Inspiration-3 folder.",
+      "designDirection": "Use the layout, imagery, spacing, color, and section rhythm shown in this asset set.",
+      "thumbnail": "/inspirations/Travel%20Inspiration-3/Slice%201.png",
+      "galleryPreview": "/inspirations/Travel%20Inspiration-3/Slice%201.png",
+      "originalGalleryPreview": "/inspirations/Travel%20Inspiration-3/Slice%201.png",
+      "fullPage": "/inspirations/Travel%20Inspiration-3/Slice%204.png",
+      "images": [
+        {
+          "src": "/inspirations/Travel%20Inspiration-3/Slice%204.png",
+          "label": "Slice 4",
+          "width": 2480,
+          "height": 1586
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-3/Slice%201.png",
+          "label": "Slice 1",
+          "width": 2664,
+          "height": 1522
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-3/Slice%202.png",
+          "label": "Slice 2",
+          "width": 2380,
+          "height": 882
+        },
+        {
+          "src": "/inspirations/Travel%20Inspiration-3/Slice%203.png",
+          "label": "Slice 3",
+          "width": 2740,
+          "height": 1138
         }
       ]
     }

@@ -13,7 +13,7 @@ const FULL_PAGE_HINTS = ['full-page', 'fullpage', 'full page', 'complete', 'webs
 const PREVIEW_HINTS = ['homepage', 'home', 'hero', 'cover', 'landing', 'feature']
 const DEFAULT_TYPE = 'Website'
 const DEFAULT_CATEGORY = 'Other'
-const CLASSIFICATION_VERSION = 2
+const CLASSIFICATION_VERSION = 3
 const PREVIEW_FITS = new Set(['cover', 'contain'])
 const PREVIEW_POSITIONS = new Set(['top', 'center'])
 const ALLOWED_CATEGORIES = new Set([
@@ -28,6 +28,7 @@ const ALLOWED_CATEGORIES = new Set([
   'Finance',
   'Restaurant',
   'Travel',
+  'Fitness',
   'Real Estate',
   'Other',
 ])
@@ -81,6 +82,7 @@ const CATEGORY_ALIASES = new Map([
   ['restaurant', 'Restaurant'],
   ['hotel', 'Travel'],
   ['travel', 'Travel'],
+  ['fitness', 'Fitness'],
   ['property', 'Real Estate'],
   ['real estate', 'Real Estate'],
 ])
@@ -112,6 +114,12 @@ function titleFromFolder(folder) {
     .replace(/\b\w/g, (char) => char.toUpperCase())
 
   return title
+}
+
+function fallbackTitle(category) {
+  return category && category !== DEFAULT_CATEGORY
+    ? `${category} Inspiration`
+    : 'Website Inspiration'
 }
 
 function normalizeCategory(category) {
@@ -168,10 +176,26 @@ function finalizeMetadata(metadata, folder) {
   const cleaned = cleanMetadata(metadata)
   return {
     ...cleaned,
-    title: cleaned.title || titleFromFolder(folder),
+    title: cleaned.title || fallbackTitle(cleaned.category),
     category: cleaned.category || DEFAULT_CATEGORY,
     type: cleaned.type || DEFAULT_TYPE,
   }
+}
+
+function metadataNeedsReview(metadata, folder) {
+  const title = String(metadata.title || '').trim().toLowerCase()
+  const folderTitle = titleFromFolder(folder).trim().toLowerCase()
+  const hasNumberedInspirationSuffix = /\b(inspiration|website|image)[\s_-]*\d+\b/i.test(metadata.title || '')
+  const hasRawSlugArtifact = /[_-]/.test(String(metadata.title || ''))
+
+  return (
+    metadata.category === DEFAULT_CATEGORY
+    || !metadata.style
+    || !metadata.tags.length
+    || title === folderTitle
+    || hasNumberedInspirationSuffix
+    || hasRawSlugArtifact
+  )
 }
 
 async function metadataFileSignature(folderPath) {
@@ -263,6 +287,7 @@ function hasAny(text, terms) {
 function classifyWithHeuristics(folder, images) {
   const text = wordsForClassification(folder, images)
   const hasPortfolio = hasAny(text, ['portfolio', 'about me', 'my projects', 'services port', 'designer', 'ui ux', 'ux designer'])
+  const hasFitness = hasAny(text, ['fitness', 'trainer', 'workout', 'gym', 'nutrition', 'diet'])
   const hasEcommerce = hasAny(text, ['ecommerce', 'shop', 'store', 'shopping', 'product page', 'products section', 'products'])
   const hasSaas = hasAny(text, ['saas', 'pricing', 'feature', 'features', 'dashboard', 'landing', 'app', 'platform', 'automation'])
   const tags = []
@@ -284,6 +309,17 @@ function classifyWithHeuristics(folder, images) {
       category: 'Ecommerce',
       style: 'Minimal',
       tags: ['furniture', 'shop'],
+      generated: true,
+      source: 'heuristic',
+    }
+  }
+
+  if (hasFitness) {
+    return {
+      title: 'Fitness Website',
+      category: 'Fitness',
+      style: 'Clean',
+      tags: ['fitness', 'workout'],
       generated: true,
       source: 'heuristic',
     }
@@ -468,7 +504,7 @@ function classifyWithHeuristics(folder, images) {
   }
 
   return {
-    title: titleFromFolder(folder),
+    title: '',
     category: DEFAULT_CATEGORY,
     style: '',
     tags: [],
@@ -810,6 +846,10 @@ async function discoverInspirations(projectRoot = defaultProjectRoot, options = 
       generatedMetadataCache,
     })
     const metadata = resolvedMetadata.metadata
+
+    if (metadataNeedsReview(metadata, folder)) {
+      console.warn(`[Inspirations] Metadata review recommended for "${folder}". Add or refine its entry in scripts/inspiration-metadata.mjs.`)
+    }
 
     nextGeneratedMetadataCache[folder] = resolvedMetadata.cacheEntry
     if (JSON.stringify(generatedMetadataCache[folder]) !== JSON.stringify(resolvedMetadata.cacheEntry)) {

@@ -17,7 +17,15 @@ const app = express();
 const getAllowedOrigins = () => {
   const configuredOrigins = process.env.CLIENT_URL
     ? process.env.CLIENT_URL.split(",")
-    : ["http://localhost:5173"];
+    : [];
+
+  const isLocalDevelopment =
+    (!process.env.NODE_ENV || process.env.NODE_ENV === "development") &&
+    !process.env.VERCEL;
+
+  if (isLocalDevelopment) {
+    configuredOrigins.push("http://localhost:5173", "http://localhost:5174");
+  }
 
   return configuredOrigins.map((origin) => origin.trim()).filter(Boolean);
 };
@@ -48,7 +56,17 @@ const requireDatabase = async (req, res, next) => {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use((req, res, next) => {
+  express.json()(req, res, (error) => {
+    if (error && /^\/api\/auth\/(forgot-password|verify-password-reset-otp|reset-password)\/?$/.test(req.path)) {
+      return res.status(error.status === 413 ? 413 : 400).json({
+        success: false,
+        message: "Invalid request body.",
+      });
+    }
+    return next(error);
+  });
+});
 app.use(cookieParser());
 
 app.get("/api/health", (req, res) => {

@@ -3,6 +3,7 @@ const APP_TITLE = 'DevPilot AI'
 
 const DEV_APP_ROUTE_TITLES = {
   '/login': 'Login',
+  '/forgot-password': 'Reset Password',
   '/signup': 'Sign Up',
   '/verify-email': 'Verify Email',
   '/prompt': 'Prompt Builder',

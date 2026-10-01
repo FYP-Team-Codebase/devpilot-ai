@@ -15,6 +15,7 @@ import useDocumentTitle from './hooks/useDocumentTitle'
 import { getDocumentTitle } from './utils/documentTitle'
 
 const LoginPage = lazy(() => import('./pages/Login/LoginPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPassword/ForgotPasswordPage'))
 const SignupPage = lazy(() => import('./pages/Signup/SignupPage'))
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmail/VerifyEmailPage'))
 const PromptPage = lazy(() => import('./pages/Prompt/PromptPage'))
@@ -145,6 +146,7 @@ function App() {
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route

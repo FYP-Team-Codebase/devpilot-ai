@@ -8,6 +8,11 @@ const {
 } = require("../controllers/authController");
 
 const router = express.Router();
+const { requestPasswordReset, verifyPasswordResetOtp, resetPassword } = require("../controllers/passwordResetController");
+
+router.post("/forgot-password", requestPasswordReset);
+router.post("/verify-password-reset-otp", verifyPasswordResetOtp);
+router.post("/reset-password", resetPassword);
 
 // Signup
 router.post("/signup", signup);

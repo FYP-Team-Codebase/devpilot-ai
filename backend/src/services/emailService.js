@@ -2,6 +2,27 @@ const nodemailer = require("nodemailer");
 
 const isTrue = (value) => ["true", "1", "yes"].includes(String(value).toLowerCase());
 
+// Never log raw SMTP errors: they can contain recipients, server details or credentials.
+const getSafeEmailError = (error) => {
+  const reasons = {
+    EAUTH: "SMTP authentication failed",
+    ECONNECTION: "SMTP connection failed",
+    ECONNREFUSED: "SMTP connection refused",
+    ETIMEDOUT: "SMTP connection timed out",
+    EDNS: "SMTP hostname lookup failed",
+    ESOCKET: "SMTP socket or TLS failure",
+    EENVELOPE: "SMTP sender or recipient rejected",
+    EMESSAGE: "SMTP message rejected",
+    ECONFIG: "Email configuration missing or invalid",
+  };
+  const code = Object.hasOwn(reasons, error?.code) ? error.code : "UNKNOWN";
+  return {
+    code,
+    reason: reasons[code] || "Email delivery failed",
+    ...(Number.isInteger(error?.responseCode) ? { smtpCode: error.responseCode } : {}),
+  };
+};
+
 const createTransport = () => {
   const port = Number(process.env.EMAIL_PORT || 587);
   const secure =
@@ -14,7 +35,9 @@ const createTransport = () => {
     !process.env.EMAIL_PASSWORD ||
     !process.env.EMAIL_FROM
   ) {
-    throw new Error("Email service is not configured");
+    const error = new Error("Email service is not configured");
+    error.code = "ECONFIG";
+    throw error;
   }
 
   return nodemailer.createTransport({
@@ -114,6 +137,20 @@ const sendVerificationEmail = async ({
   });
 };
 
+const sendPasswordResetEmail = async ({ recipient, name, otp, expiresInMinutes }) => {
+  const text = `Hello ${name || "there"},\n\nYour DevPilot AI password reset code is: ${otp}\n\nThis code expires in ${expiresInMinutes} minutes. Enter it on the password reset page.\n\nIf you did not request a password reset, ignore this email. Your password has not changed.`;
+  const result = await createTransport().sendMail({
+    from: process.env.EMAIL_FROM,
+    to: recipient,
+    subject: "Reset your DevPilot AI password",
+    text,
+    html: `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;max-width:560px;padding:30px"><h1>DevPilot AI password reset</h1><p>Hello ${escapeHtml(name || "there")},</p><p>Your password reset code is:</p><p style="font-size:30px;letter-spacing:6px;font-weight:bold">${escapeHtml(otp)}</p><p>This code expires in ${escapeHtml(expiresInMinutes)} minutes. Enter it on the password reset page.</p><p>If you did not request a password reset, ignore this email. Your password has not changed.</p></div>`,
+  });
+  return { accepted: Array.isArray(result.accepted) && result.accepted.length > 0 };
+};
+
 module.exports = {
   sendVerificationEmail,
+  sendPasswordResetEmail,
+  getSafeEmailError,
 };

@@ -8,6 +8,7 @@ import LoginVisualCarousel from '../../components/auth/LoginVisualCarousel'
 import { login } from '../../services/authService'
 import { getSafeRedirectPath } from '../../utils/routeRedirect'
 import { loginPageStyles } from './LoginPage.styles'
+import { verifyEmailPageStyles } from '../VerifyEmail/VerifyEmailPage.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
 const {
@@ -89,9 +90,6 @@ export default function LoginPage() {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    console.log('LOGIN BUTTON CLICKED')
-    console.log('LOGIN VALUES:', values)
-
     const nextErrors = validate(values)
 
     setErrors(nextErrors)
@@ -104,18 +102,12 @@ export default function LoginPage() {
     setAuthError('')
 
     try {
-      console.log('Sending login request to backend...')
-
-      const data = await login(values)
-
-      console.log('LOGIN SUCCESS:', data)
+      await login(values)
 
       setStatus('success')
 
       navigate(redirectPath, { replace: true })
     } catch (error) {
-      console.error('LOGIN ERROR:', error)
-
       setStatus('error')
 
       if (
@@ -252,12 +244,12 @@ export default function LoginPage() {
                   Password
                 </label>
 
-                <a
-                  href="/forgot-password"
+                <Link
+                  to="/forgot-password"
                   className={forgotClass}
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
 
               <div className={passwordWrapClass}>
@@ -324,6 +316,12 @@ export default function LoginPage() {
             )}
 
             {/* LOGIN BUTTON */}
+
+            {location.state?.passwordReset && (
+              <p className={verifyEmailPageStyles.notice} role="status">
+                Password reset successfully. Log in with your new password.
+              </p>
+            )}
 
             <button
               type="submit"

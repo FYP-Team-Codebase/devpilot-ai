@@ -127,6 +127,23 @@ export function logout() {
   localStorage.removeItem("user");
 }
 
+async function passwordResetRequest(endpoint, payload) {
+  const response = await fetch(`${API_URL}/auth/${endpoint}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await parseJsonResponse(response);
+  if (!response.ok || !data.success) {
+    throw createAuthError(data, "Unable to complete password reset. Please try again.");
+  }
+  return data;
+}
+
+export const requestPasswordReset = (email) => passwordResetRequest("forgot-password", { email });
+export const verifyPasswordResetOtp = (email, otp) => passwordResetRequest("verify-password-reset-otp", { email, otp });
+export const resetPassword = (resetToken, newPassword) => passwordResetRequest("reset-password", { resetToken, newPassword });
+
 export function getToken() {
   return localStorage.getItem("token");
 }

@@ -1,7 +1,7 @@
 const path = require("path");
 
 const MAX_PATH_LENGTH = 180;
-const ALLOWED_ROOT_FILES = new Set(["README.md", ".gitignore", ".env.example"]);
+const ALLOWED_ROOT_FILES = new Set(["README.md", ".gitignore", ".env.example", "package.json", "vite.config.js"]);
 const ALLOWED_ROOT_DIRECTORIES = ["frontend/", "backend/"];
 
 function createError(code, message) {

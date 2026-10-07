@@ -122,7 +122,6 @@ export function restoreProjectSession(project) {
   sessionStorage.removeItem(REQUIREMENTS_KEY)
   sessionStorage.removeItem(INSPIRATIONS_KEY)
   sessionStorage.setItem(CURRENT_PROJECT_ID_KEY, projectId)
-
   if (hasText(project?.prompt)) {
     sessionStorage.setItem(PROMPT_KEY, project.prompt.trim())
   }

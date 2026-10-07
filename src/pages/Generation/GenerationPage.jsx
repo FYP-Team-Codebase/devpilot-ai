@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { getProject } from '../../services/projectService'
+import { Link, useNavigate } from 'react-router-dom'
+import { generateProject, getProject } from '../../services/projectService'
 import { generationPageStyles as styles } from './GenerationPage.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -61,10 +61,13 @@ function getManifestImage(item) {
 }
 
 export default function GenerationPage() {
+  const navigate = useNavigate()
   const shouldReduceMotion = useReducedMotion()
   const [loadState, setLoadState] = useState('loading')
   const [project, setProject] = useState(null)
   const [inspirationManifest, setInspirationManifest] = useState([])
+  const [generationError, setGenerationError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const loadProject = useCallback(async () => {
     const projectId = sessionStorage.getItem(PROJECT_ID_KEY)
@@ -84,7 +87,6 @@ export default function GenerationPage() {
       if (!loadedProject) {
         throw new Error('Project details could not be found.')
       }
-
       setProject(loadedProject)
       setLoadState('success')
     } catch (error) {
@@ -93,6 +95,32 @@ export default function GenerationPage() {
       setLoadState('error')
     }
   }, [])
+
+  const handleGenerate = useCallback(async () => {
+    if (isSubmitting || !project?._id) return
+    setIsSubmitting(true)
+    setGenerationError('')
+    setProject((current) => current ? { ...current, generationStatus: 'generating', generationError: '' } : current)
+    try {
+      const data = await generateProject(project._id)
+      const generatedProject = getProjectFromResponse(data)
+      if (!generatedProject) throw new Error('Generation completed, but the project result was missing.')
+      setProject(generatedProject)
+    } catch (error) {
+      setGenerationError(error?.message || 'Project generation failed. Please try again.')
+      setProject((current) => current ? { ...current, generationStatus: 'failed' } : current)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [isSubmitting, project?._id])
+
+  const handlePreview = useCallback(() => {
+    const projectId = project?._id || sessionStorage.getItem(PROJECT_ID_KEY)
+    if (!projectId) return
+
+    sessionStorage.setItem(PROJECT_ID_KEY, projectId)
+    navigate('/preview')
+  }, [navigate, project?._id])
 
   useEffect(() => {
     let isCurrent = true
@@ -200,12 +228,16 @@ export default function GenerationPage() {
         project={project}
         inspirationManifest={inspirationManifest}
         shouldReduceMotion={shouldReduceMotion}
+        generationError={generationError}
+        isSubmitting={isSubmitting}
+        onGenerate={handleGenerate}
+        onPreview={handlePreview}
       />
     </motion.main>
   )
 }
 
-function ProjectReview({ project, inspirationManifest, shouldReduceMotion }) {
+function ProjectReview({ project, inspirationManifest, shouldReduceMotion, generationError, isSubmitting, onGenerate, onPreview }) {
   const requirements = project?.requirements || {}
   const status = project?.generationStatus || 'draft'
   const inspirations = toList(project?.inspirations)
@@ -227,8 +259,13 @@ function ProjectReview({ project, inspirationManifest, shouldReduceMotion }) {
           generatedFileCount={generatedFiles.length}
           hasCompletedOutput={hasCompletedOutput}
           shouldReduceMotion={shouldReduceMotion}
+          generationError={generationError || project?.generationError}
+          isSubmitting={isSubmitting}
+          onGenerate={onGenerate}
+          onPreview={onPreview}
         />
       </div>
+      {hasCompletedOutput && <GeneratedFiles files={generatedFiles} />}
     </>
   )
 }
@@ -337,7 +374,7 @@ function InspirationReference({ item, metadata }) {
   )
 }
 
-function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput, shouldReduceMotion }) {
+function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput, shouldReduceMotion, generationError, isSubmitting, onGenerate, onPreview }) {
   const content = {
     draft: {
       title: 'Complete project setup',
@@ -345,7 +382,7 @@ function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput,
     },
     ready: {
       title: 'Ready for generation',
-      copy: 'Your saved project context is ready. AI generation will be enabled when the generation engine is connected.',
+      copy: 'Your saved project context is ready. Generate a complete MERN application from your prompt and project decisions.',
     },
     generating: {
       title: 'Generating your project…',
@@ -353,7 +390,7 @@ function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput,
     },
     failed: {
       title: 'Generation didn’t complete',
-      copy: 'Your project information is still saved. Review the setup before generation retry is available.',
+      copy: 'Your project information is still saved. You can retry generation or edit the setup.',
     },
     completed: hasCompletedOutput ? {
       title: 'Generation completed',
@@ -376,22 +413,32 @@ function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput,
       </div>
       <h2 id="generation-action-title" className={styles.actionTitle}>{state.title}</h2>
       <p className={styles.actionCopy}>{state.copy}</p>
+      {generationError && <p role="alert" className={styles.actionCopy}>{generationError}</p>}
+      {hasCompletedOutput && (
+        <button type="button" className={styles.previewProjectButton} onClick={onPreview} aria-label="Preview Project">
+          Preview Project
+        </button>
+      )}
       {status === 'generating' && <GeneratingActivity shouldReduceMotion={shouldReduceMotion} />}
-      {status === 'ready' && <button type="button" className={styles.actionButton} disabled>Generate Project</button>}
+      {(status === 'ready' || status === 'failed') && (
+        <button type="button" className={styles.actionButton} onClick={onGenerate} disabled={isSubmitting}>
+          {isSubmitting ? 'Generating…' : status === 'failed' ? 'Retry Generation' : 'Generate Project'}
+        </button>
+      )}
       {status === 'draft' && (
         <div className={styles.actionLinks}>
           <Link to="/requirements" className={styles.primaryActionLink}>Review Requirements</Link>
           <Link to="/inspiration" className={styles.secondaryActionLink}>Review Inspirations</Link>
         </div>
       )}
-      {(status === 'failed' || !['draft', 'ready', 'generating', 'completed'].includes(status)) && (
+      {(!['draft', 'ready', 'generating', 'completed', 'failed'].includes(status)) && (
         <div className={styles.actionLinks}>
           <Link to="/requirements" className={styles.secondaryActionLink}>Edit Requirements</Link>
           <Link to="/inspiration" className={styles.secondaryActionLink}>Edit Inspirations</Link>
           <Link to="/dashboard" className={styles.secondaryActionLink}>Back to Dashboard</Link>
         </div>
       )}
-      {status === 'ready' && (
+      {(status === 'ready' || status === 'failed') && (
         <div className={styles.actionLinks}>
           <Link to="/requirements" className={styles.secondaryActionLink}>Edit Requirements</Link>
           <Link to="/inspiration" className={styles.secondaryActionLink}>Edit Inspirations</Link>
@@ -405,6 +452,17 @@ function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput,
         </div>
       )}
     </aside>
+  )
+}
+
+function GeneratedFiles({ files }) {
+  return (
+    <section className={styles.panel} aria-labelledby="generated-files-title">
+      <SectionHeading id="generated-files-title" title="Generated Files" description="Validated project files saved with this project." />
+      <ul className={styles.summaryList}>
+        {files.map((file) => <li key={file.path}>{file.path}</li>)}
+      </ul>
+    </section>
   )
 }
 

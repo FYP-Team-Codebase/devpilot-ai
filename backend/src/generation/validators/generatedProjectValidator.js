@@ -135,8 +135,21 @@ function hasSensitiveFileName(filePath) {
   return [".pem", ".key", ".crt"].some((extension) => baseName.endsWith(extension));
 }
 
-function containsSensitiveContent(content) {
+function isSafeEnvironmentExampleValue(value) {
+  return /^(?:your_[a-z0-9_]*|replace[-_ ]with[a-z0-9_-]*|<[^>]+>|\$\{[A-Z0-9_]+\}|process\.env\.[A-Z0-9_]+)$/i.test(value)
+    || /^mongodb:\/\/localhost:27017\/example\/?$/i.test(value);
+}
+
+function containsSensitiveContent(content, filePath) {
   if (/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/i.test(content)) return true;
+  if (filePath === ".env.example") {
+    if (/\b(?:sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/.test(content)) return true;
+    const sensitiveAssignment = /\b(?:OPENAI_API_KEY|ANTHROPIC_API_KEY|AWS_SECRET_ACCESS_KEY|JWT_SECRET|MONGODB_URI|DATABASE_URL|[A-Z0-9_]*(?:PASSWORD|SECRET|TOKEN|API_KEY)[A-Z0-9_]*)\s*[:=]\s*["']?([^\s"';,#]+)/gi;
+    for (const match of content.matchAll(sensitiveAssignment)) {
+      if (!isSafeEnvironmentExampleValue(match[1])) return true;
+    }
+    return false;
+  }
   if (/\b(?:OPENAI_API_KEY|ANTHROPIC_API_KEY|AWS_SECRET_ACCESS_KEY|JWT_SECRET|MONGODB_URI|DATABASE_URL)\s*[:=]\s*["']?(?!process\.env\.[A-Z0-9_]+\b)(?!your_[a-z0-9_]*|replace[-_ ]with|<[^>]+>|\$\{)[^\s"';,]+/i.test(content)) return true;
   if (/\b(?:sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16})\b/.test(content)) return true;
   return false;
@@ -193,7 +206,7 @@ function validateFiles(payload, errors) {
         errors.push(validationError("FILE_SIZE_EXCEEDED", `${filePath}.content`, `Generated file content may not exceed ${MAX_FILE_BYTES} bytes.`));
       }
 
-      if (containsSensitiveContent(file.content)) {
+      if (containsSensitiveContent(file.content, normalizedPath)) {
         errors.push(validationError("SENSITIVE_CONTENT", `${filePath}.content`, "Generated file contains a prohibited secret or private key."));
       }
     }

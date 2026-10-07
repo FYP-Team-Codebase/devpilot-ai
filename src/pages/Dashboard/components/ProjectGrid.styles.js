@@ -35,4 +35,16 @@ export const projectGridStyles = {
     'mb-4 rounded-dp-control border border-dp-error-border bg-dp-error-surface px-4 py-3 text-[13px] font-medium text-dp-error-text',
   retryButton:
     'shrink-0 cursor-pointer rounded-dp-control border border-dp-border bg-white px-3 py-1.5 text-[12.5px] font-semibold text-dp-black transition-[background-color,border-color,color] duration-200 hover:border-dp-border-dark hover:bg-neutral-50 hover:text-dp-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black focus-visible:ring-offset-2 focus-visible:ring-offset-dp-page',
+  deleteActions: 'mt-6 flex justify-end gap-2.5',
+  cancelDeleteButton:
+    'inline-flex min-h-9 cursor-pointer items-center justify-center rounded-dp-control border border-dp-border bg-white px-4 text-[13px] font-semibold text-dp-black transition-colors hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black disabled:cursor-wait disabled:opacity-50',
+  confirmDeleteButton:
+    'inline-flex min-h-9 cursor-pointer items-center justify-center rounded-dp-control border border-red-700 bg-red-700 px-4 text-[13px] font-semibold text-white transition-colors hover:border-red-800 hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-700 disabled:cursor-wait disabled:opacity-60',
+  confirmRenameButton:
+    'inline-flex min-h-9 cursor-pointer items-center justify-center rounded-dp-control border border-dp-black bg-dp-black px-4 text-[13px] font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dp-black disabled:cursor-wait disabled:opacity-60',
+  renameLabel: 'mt-5 block text-[12.5px] font-semibold text-dp-text',
+  renameInput:
+    'mt-1.5 min-h-10 w-full rounded-dp-control border border-dp-border bg-white px-3 text-sm text-dp-black outline-none focus:border-dp-black focus:ring-2 focus:ring-dp-black/15 disabled:cursor-wait disabled:opacity-60',
+  deleteError:
+    'mt-4 rounded-dp-control border border-dp-error-border bg-dp-error-surface px-3 py-2 text-[13px] text-dp-error-text',
 }

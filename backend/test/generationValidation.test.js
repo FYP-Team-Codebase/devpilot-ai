@@ -1,6 +1,7 @@
 const assert = require("assert");
 
 const { validateGeneratedProject } = require("../src/generation/validators/generatedProjectValidator");
+const { validateGeneratedPath } = require("../src/generation/validators/pathValidator");
 
 const validFrontendPackage = JSON.stringify({
   name: "generated-frontend",
@@ -84,6 +85,8 @@ function expectInvalid(name, fixture, expectedCode) {
 
 const tests = [
   ["minimal valid MERN project", () => expectValid("minimal valid MERN project", makeValidProject())],
+  ["root package.json path", () => assert.deepStrictEqual(validateGeneratedPath("package.json"), { valid: true, normalizedPath: "package.json" })],
+  ["root vite.config.js path", () => assert.deepStrictEqual(validateGeneratedPath("vite.config.js"), { valid: true, normalizedPath: "vite.config.js" })],
   ["valid TypeScript variant", () => expectValid("valid TypeScript variant", makeValidProject({ typescript: true }))],
   ["missing schemaVersion", () => { const x = makeValidProject(); delete x.schemaVersion; expectInvalid("missing schemaVersion", x, "INVALID_SCHEMA_VERSION"); }],
   ["wrong schemaVersion", () => { const x = makeValidProject(); x.schemaVersion = 2; expectInvalid("wrong schemaVersion", x, "INVALID_SCHEMA_VERSION"); }],
@@ -112,6 +115,10 @@ const tests = [
   ["lifecycle npm script", () => { const x = makeValidProject(); const pkg = JSON.parse(x.files[0].content); pkg.scripts.postinstall = "node setup.js"; x.files[0].content = JSON.stringify(pkg); expectInvalid("lifecycle npm script", x, "UNSAFE_SCRIPT_NAME"); }],
   ["dangerous shell npm script", () => { const x = makeValidProject(); const pkg = JSON.parse(x.files[0].content); pkg.scripts.build = "vite build && curl https://example.com"; x.files[0].content = JSON.stringify(pkg); expectInvalid("dangerous shell npm script", x, "UNSAFE_SCRIPT_COMMAND"); }],
   ["generated .env", () => { const x = makeValidProject(); x.files.push({ path: "frontend/.env", language: "text", content: "SECRET=value" }); expectInvalid("generated .env", x, "SENSITIVE_FILE"); }],
+  ["safe .env.example placeholders", () => { const x = makeValidProject(); x.files[9].content = ["OPENAI_API_KEY=your_api_key_here", "JWT_SECRET=replace_with_your_secret", "API_KEY=YOUR_API_KEY", "MONGODB_URI=your_mongodb_uri", "MONGODB_URI=mongodb://localhost:27017/example", "JWT_SECRET=<your-secret>", "JWT_SECRET=${YOUR_SECRET}"].join("\n"); expectValid("safe .env.example placeholders", x); }],
+  ["real API key in .env.example", () => { const x = makeValidProject(); x.files[9].content = "OPENAI_API_KEY=sk-abcdefghijklmnopqrstuvwxyz123456"; expectInvalid("real API key in .env.example", x, "SENSITIVE_CONTENT"); }],
+  ["real credential assignment in .env.example", () => { const x = makeValidProject(); x.files[9].content = "JWT_SECRET=production-secret-value"; expectInvalid("real credential assignment in .env.example", x, "SENSITIVE_CONTENT"); }],
+  ["private key in .env.example", () => { const x = makeValidProject(); x.files[9].content = "-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----"; expectInvalid("private key in .env.example", x, "SENSITIVE_CONTENT"); }],
   ["private key content", () => { const x = makeValidProject(); x.files[3].content = "-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----"; expectInvalid("private key content", x, "SENSITIVE_CONTENT"); }],
   ["obvious API secret", () => { const x = makeValidProject(); x.files[3].content = 'const OPENAI_API_KEY = "sk-abcdefghijklmnopqrstuvwxyz123456";'; expectInvalid("obvious API secret", x, "SENSITIVE_CONTENT"); }],
   ["OPENAI environment reference", () => { const x = makeValidProject(); x.files[5].content = "const apiKey = process.env.OPENAI_API_KEY;"; expectValid("OPENAI environment reference", x); }],

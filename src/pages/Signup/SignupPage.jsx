@@ -167,14 +167,11 @@ export default function SignupPage() {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    console.log('SIGNUP BUTTON CLICKED')
-
     const nextErrors = validate(values, userType)
 
     setErrors(nextErrors)
 
     if (Object.keys(nextErrors).length > 0) {
-      console.log('VALIDATION ERRORS:', nextErrors)
       return
     }
 
@@ -188,8 +185,6 @@ export default function SignupPage() {
         password: values.password,
         userType,
       })
-
-      console.log('SIGNUP SUCCESS:', response)
 
       setStatus('success')
 

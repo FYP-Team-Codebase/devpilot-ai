@@ -188,7 +188,6 @@ export default function PromptPage() {
         new Promise((resolve) => window.setTimeout(resolve, shouldReduceMotion ? 0 : 800)),
       ])
       const projectId = data?.project?._id
-
       if (!projectId) {
         throw new Error('Project was created, but the response did not include a project ID.')
       }

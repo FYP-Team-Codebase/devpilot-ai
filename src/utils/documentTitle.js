@@ -10,6 +10,7 @@ const DEV_APP_ROUTE_TITLES = {
   '/requirements': 'Requirements',
   '/inspiration': 'Inspiration',
   '/generation': 'Generation',
+  '/preview': 'Preview',
   '/dashboard': 'Dashboard',
   '/dashboard/projects': 'My Projects',
   '/dashboard/assets': 'My Assets',
@@ -31,6 +32,7 @@ const PROJECT_TITLE_ROUTES = new Set([
   '/requirements',
   '/inspiration',
   '/generation',
+  '/preview',
 ])
 
 const PLACEHOLDER_PROJECT_NAMES = new Set([

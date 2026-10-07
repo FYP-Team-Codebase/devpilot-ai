@@ -92,6 +92,15 @@ const projectSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.Mixed],
       default: [],
     },
+    editorDesign: {
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({}),
+    },
+    generationError: {
+      type: String,
+      default: "",
+      maxlength: 500,
+    },
   },
   {
     timestamps: true,

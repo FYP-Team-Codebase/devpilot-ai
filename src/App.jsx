@@ -21,6 +21,9 @@ const VerifyEmailPage = lazy(() => import('./pages/VerifyEmail/VerifyEmailPage')
 const PromptPage = lazy(() => import('./pages/Prompt/PromptPage'))
 const RequirementsPage = lazy(() => import('./pages/Requirements/RequirementsPage'))
 const GenerationPage = lazy(() => import('./pages/Generation/GenerationPage'))
+const PreviewPage = lazy(() => import('./pages/Preview/PreviewPage'))
+const EditPage = lazy(() => import('./pages/Edit/EditPage'))
+const ExportPage = lazy(() => import('./pages/Export/ExportPage'))
 const AboutPage = lazy(() => import('./pages/About/AboutPage'))
 const ProductsPage = lazy(() => import('./pages/Products/ProductsPage'))
 const BusinessPage = lazy(() => import('./pages/Business/BusinessPage'))
@@ -181,6 +184,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/preview"
+            element={
+              <ProtectedRoute>
+                {(user) => <DashboardPage user={user} content={<PreviewPage />} />}
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/edit" element={<ProtectedRoute>{(user) => <DashboardPage user={user} content={<EditPage user={user} />} />}</ProtectedRoute>} />
+          <Route path="/projects/:projectId/export" element={<ProtectedRoute>{(user) => <DashboardPage user={user} content={<ExportPage />} />}</ProtectedRoute>} />
           <Route
             path="/dashboard"
             element={

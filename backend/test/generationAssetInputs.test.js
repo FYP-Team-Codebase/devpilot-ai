@@ -1,4 +1,6 @@
 const assert = require("node:assert/strict");
+const { spawnSync } = require("node:child_process");
+const path = require("node:path");
 const test = require("node:test");
 const { extractPdfText } = require("../src/generation/context/assetContent");
 const {
@@ -33,8 +35,38 @@ function createTextPdf(text) {
 }
 
 test("extracts actual text from PDF attachments", async () => {
-  const text = await extractPdfText(createTextPdf("Build a calm booking dashboard"));
-  assert.match(text, /Build a calm booking dashboard/);
+  const globalNames = ["DOMMatrix", "ImageData", "Path2D"];
+  const previousGlobals = new Map(globalNames.map((name) => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
+  globalNames.forEach((name) => { delete globalThis[name]; });
+  try {
+    const text = await extractPdfText(createTextPdf("Build a calm booking dashboard"));
+    assert.match(text, /Build a calm booking dashboard/);
+    globalNames.forEach((name) => assert.equal(typeof globalThis[name], "function", `${name} should be initialized by the pdf-parse worker entry`));
+  } finally {
+    for (const [name, descriptor] of previousGlobals) {
+      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
+      else delete globalThis[name];
+    }
+  }
+});
+
+test("backend app startup does not load the PDF parser or native canvas", () => {
+  const script = `
+    const Module = require("node:module");
+    const originalLoad = Module._load;
+    Module._load = function(request, parent, isMain) {
+      if (["pdf-parse", "pdf-parse/worker", "@napi-rs/canvas"].includes(request)) {
+        throw new Error("PDF parser modules must remain lazy until a PDF is processed");
+      }
+      return originalLoad.call(this, request, parent, isMain);
+    };
+    require("./src/app.js");
+  `;
+  const result = spawnSync(process.execPath, ["-e", script], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
 test("sends selected visual references as Chat Completions image_url content parts", () => {

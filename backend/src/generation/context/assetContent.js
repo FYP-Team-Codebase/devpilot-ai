@@ -1,6 +1,5 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const { PDFParse } = require("pdf-parse");
 const cloudinaryService = require("../../services/cloudinaryService");
 
 const PUBLIC_ROOT = path.resolve(__dirname, "../../../../public");
@@ -32,7 +31,13 @@ function imageDataUrl(buffer, mimeType) {
 }
 
 async function extractPdfText(buffer) {
-  const parser = new PDFParse({ data: buffer });
+  // pdf-parse's Node build needs DOMMatrix/ImageData/Path2D before it loads.
+  // Its worker entry initializes those globals from @napi-rs/canvas and is
+  // specifically recommended for serverless deployments. Keep both imports
+  // lazy so app startup does not load native PDF/rendering modules.
+  const { CanvasFactory } = require("pdf-parse/worker");
+  const { PDFParse } = require("pdf-parse");
+  const parser = new PDFParse({ data: buffer, CanvasFactory });
   try {
     const result = await parser.getText();
     return String(result.text || "").trim();

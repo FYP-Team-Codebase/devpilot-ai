@@ -1,7 +1,10 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { updateProject } from '../../../services/projectService'
+import { getProject, updateProject } from '../../../services/projectService'
+import { listAssets } from '../../../services/assetService'
+import AssetUploader from '../../../components/AssetUploader'
+import { getAssetPlacements } from '../../../services/projectAssetSelections'
 import { inspirationGalleryStyles } from './InspirationGallery.styles'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -40,7 +43,12 @@ function getStoredSelected(availableInspirations) {
     return parsed
       .map((item) => {
         const id = item?.id || item?.inspirationId
-        return availableInspirations.find((inspiration) => inspiration.id === id)
+        const available = availableInspirations.find((inspiration) => inspiration.id === id)
+        if (!available) return null
+        const purpose = item.purpose || (available.assetId ? 'design-reference' : undefined)
+        const placements = getAssetPlacements(purpose || 'design-reference')
+        const placement = placements.some(([value]) => value === item.placement) ? item.placement : 'ai'
+        return { ...available, purpose, placement, instructions: item.instructions || '' }
       })
       .filter(Boolean)
   } catch {
@@ -95,11 +103,9 @@ function resolvePreviewPosition(item, fit) {
 function mapSelectedInspirations(items) {
   return items
     .filter((item) => typeof item?.id === 'string' && item.id.trim())
-    .map((item) => ({
-      source: 'devpilot',
-      inspirationId: item.id.trim(),
-      imageUrl: item.galleryPreview || item.thumbnail || item.fullPage || '',
-    }))
+    .map((item) => item.assetId
+      ? { source: 'userAsset', assetId: item.assetId }
+      : { source: 'devpilot', inspirationId: item.id.trim(), imageUrl: item.galleryPreview || item.thumbnail || item.fullPage || '' })
 }
 
 export default function InspirationGallery({ mode = 'standalone' }) {
@@ -138,9 +144,45 @@ export default function InspirationGallery({ mode = 'standalone' }) {
         }
 
         if (!isMounted) return
-        setInspirations(nextInspirations)
+        let uploaded = []
+        try { uploaded = (await listAssets()).filter((asset) => asset.category === 'inspiration').map((asset) => ({
+          id: asset.id,
+          assetId: asset.id,
+          title: asset.originalFilename,
+          category: 'Your uploads',
+          type: 'Image reference',
+          style: 'Uploaded inspiration',
+          description: 'Image uploaded to your private DevPilot asset library.',
+          designDirection: 'Use this image as a visual reference for the generated design.',
+          galleryPreview: asset.secureUrl,
+          thumbnail: asset.secureUrl,
+          fullPage: asset.secureUrl,
+          images: [{ src: asset.secureUrl, label: asset.originalFilename }],
+        })) } catch (assetError) { console.error('[inspirations] Uploaded references could not be loaded', assetError) }
+        const combined = [...nextInspirations, ...uploaded]
+        setInspirations(combined)
         setLoadState('success')
-        setSelectedInspirations(isGenerationMode ? getStoredSelected(nextInspirations) : [])
+        let savedSelection = []
+        let projectLoaded = false
+        const projectId = sessionStorage.getItem('devpilot-current-project-id')
+        if (isGenerationMode && projectId) {
+          try {
+            const project = (await getProject(projectId)).project || {}
+            projectLoaded = true
+            const assetSettings = new Map((project.assetSelections || []).map((selection) => [String(selection.assetId), selection]))
+            savedSelection = (project.inspirations || []).map((persisted) => {
+              const item = persisted.source === 'userAsset'
+                ? combined.find((entry) => entry.assetId && String(entry.assetId) === String(persisted.assetId))
+                : combined.find((entry) => entry.id === persisted.inspirationId)
+              if (!item) return null
+              const settings = assetSettings.get(String(item.assetId || ''))
+              if (!settings) return item
+              const placements = getAssetPlacements(settings.purpose)
+              return { ...item, purpose: settings.purpose, placement: placements.some(([value]) => value === settings.placement) ? settings.placement : 'ai', placementDetails: settings.placementDetails, instructions: settings.instructions, customPurpose: settings.customPurpose }
+            }).filter(Boolean)
+          } catch { /* fall back to the current browser selection when project data is unavailable */ }
+        }
+        setSelectedInspirations(isGenerationMode ? (projectLoaded ? savedSelection : getStoredSelected(combined)) : [])
         setSelectionReady(true)
       } catch (error) {
         if (!isMounted) return
@@ -272,8 +314,22 @@ export default function InspirationGallery({ mode = 'standalone' }) {
     setValidationError('')
 
     try {
+      const projectResult = await getProject(projectId)
+      const project = projectResult.project || {}
+      const previousGalleryAssetIds = new Set((project.inspirations || []).filter((item) => item.source === 'userAsset').map((item) => String(item.assetId)))
+      const retainedSelections = (project.assetSelections || []).filter((item) => !previousGalleryAssetIds.has(String(item.assetId)))
+      const selectedAssetSelections = selectedInspirations.filter((item) => item.assetId).map((item) => ({
+        assetId: item.assetId,
+        purpose: item.purpose || 'design-reference',
+        customPurpose: item.customPurpose || '',
+        placement: item.placement || 'ai',
+        placementDetails: item.placementDetails || '',
+        instructions: item.instructions || '',
+      }))
+      const mergedAssetSelections = Array.from(new Map([...retainedSelections, ...selectedAssetSelections].map((item) => [String(item.assetId), item])).values())
       await updateProject(projectId, {
         inspirations: mappedInspirations,
+        assetSelections: mergedAssetSelections,
         generationStatus: 'ready',
       })
       navigate('/generation')
@@ -335,6 +391,7 @@ export default function InspirationGallery({ mode = 'standalone' }) {
         showSelectionPanel={isGenerationMode}
         onOpen={setActiveItem}
         onRemove={removeSelection}
+        onConfigureSelection={(id, changes) => setSelectedInspirations((current) => current.map((item) => item.id === id ? { ...item, ...changes } : item))}
         onCategoryChange={setActiveCategory}
         isSelected={isSelected}
         shouldReduceMotion={shouldReduceMotion}
@@ -357,7 +414,10 @@ export default function InspirationGallery({ mode = 'standalone' }) {
 
       <AnimatePresence>
         {isAddOpen && (
-          <AddInspirationModal onClose={() => setIsAddOpen(false)} shouldReduceMotion={shouldReduceMotion} />
+          <AddInspirationModal onClose={() => setIsAddOpen(false)} onUploaded={(asset) => {
+            const uploaded = { id: asset.id, assetId: asset.id, title: asset.originalFilename, category: 'Your uploads', type: 'Image reference', style: 'Uploaded inspiration', description: 'Image uploaded to your private DevPilot asset library.', designDirection: 'Use this image as a visual reference for the generated design.', galleryPreview: asset.secureUrl, thumbnail: asset.secureUrl, fullPage: asset.secureUrl, images: [{ src: asset.secureUrl, label: asset.originalFilename }] }
+            setInspirations((items) => items.some((item) => item.id === uploaded.id) ? items : [...items, uploaded])
+          }} shouldReduceMotion={shouldReduceMotion} />
         )}
       </AnimatePresence>
 
@@ -398,7 +458,7 @@ export default function InspirationGallery({ mode = 'standalone' }) {
   )
 }
 
-function AddInspirationModal({ onClose, shouldReduceMotion }) {
+function AddInspirationModal({ onClose, onUploaded, shouldReduceMotion }) {
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') onClose()
@@ -432,9 +492,7 @@ function AddInspirationModal({ onClose, shouldReduceMotion }) {
         <div className={inspirationGalleryStyles.modalHeader}>
           <div>
             <h2 id="add-inspiration-title" className={inspirationGalleryStyles.modalTitle}>Add Inspiration</h2>
-            <p className={inspirationGalleryStyles.modalCopy}>
-              User inspiration uploads are not connected to persistent storage yet. This entry point is ready for image or website reference capture when that API is added.
-            </p>
+            <p className={inspirationGalleryStyles.modalCopy}>Upload an image to use as a trusted design reference.</p>
           </div>
           <button
             type="button"
@@ -445,10 +503,7 @@ function AddInspirationModal({ onClose, shouldReduceMotion }) {
             <InspirationIcon name="x" />
           </button>
         </div>
-        <div className={inspirationGalleryStyles.modalNotice}>
-          <p className={inspirationGalleryStyles.noticeTitle}>Upload service required</p>
-          <p className={inspirationGalleryStyles.noticeText}>No inspiration will be saved from this screen until storage is implemented.</p>
-        </div>
+        <div className="pt-4"><AssetUploader category="inspiration" projectId={sessionStorage.getItem('devpilot-current-project-id') || undefined} accept="image/png,image/jpeg,image/gif,image/webp" multiple onUploaded={onUploaded} /></div>
       </motion.section>
     </motion.div>
   )
@@ -468,6 +523,7 @@ function GalleryOverview({
   showSelectionPanel,
   onOpen,
   onRemove,
+  onConfigureSelection,
   onCategoryChange,
   isSelected,
   shouldReduceMotion,
@@ -538,6 +594,7 @@ function GalleryOverview({
                     key={item.id}
                     item={item}
                     onRemove={() => onRemove(item.id)}
+                    onConfigure={(changes) => onConfigureSelection(item.id, changes)}
                     shouldReduceMotion={shouldReduceMotion}
                   />
                 ))}
@@ -1146,7 +1203,8 @@ function MissingPreview({ title, folder }) {
   )
 }
 
-function SelectedItem({ item, onRemove, shouldReduceMotion }) {
+function SelectedItem({ item, onRemove, onConfigure, shouldReduceMotion }) {
+  const placements = getAssetPlacements(item.purpose || 'design-reference')
   return (
     <motion.div
       layout
@@ -1166,6 +1224,21 @@ function SelectedItem({ item, onRemove, shouldReduceMotion }) {
       <div className={inspirationGalleryStyles.selectedText}>
         <p className={inspirationGalleryStyles.selectedTitle}>{item.title}</p>
         <p className={inspirationGalleryStyles.selectedCategory}>{item.category}</p>
+        {item.assetId && <div className="mt-2 space-y-2">
+          <label className="block text-xs text-dp-muted">Purpose
+            <select className="mt-1 w-full rounded border border-dp-line bg-white px-2 py-1.5 text-xs" value={item.purpose || 'design-reference'} onChange={(event) => onConfigure({ purpose: event.target.value, placement: 'ai', customPurpose: event.target.value === 'other' ? item.customPurpose || '' : '' })}>
+              <option value="design-reference">Design Reference / Inspiration</option><option value="logo">Logo / Brand Identity</option><option value="background">Background / Hero Image</option><option value="content-image">Product / Content Image</option><option value="icon-illustration">Icon / Illustration</option><option value="portfolio-gallery">Portfolio / Gallery Item</option><option value="other">Other</option>
+            </select>
+          </label>
+          {item.purpose === 'other' && <label className="block text-xs text-dp-muted">Intended use<input className="mt-1 w-full rounded border border-dp-line px-2 py-1.5 text-xs" maxLength={160} value={item.customPurpose || ''} onChange={(event) => onConfigure({ customPurpose: event.target.value })} placeholder="Describe what this image is for" /></label>}
+          <label className="block text-xs text-dp-muted">Placement
+            <select className="mt-1 w-full rounded border border-dp-line bg-white px-2 py-1.5 text-xs" value={placements.some(([value]) => value === item.placement) ? item.placement : 'ai'} onChange={(event) => onConfigure({ placement: event.target.value, placementDetails: event.target.value === 'other' ? item.placementDetails || '' : '' })}>
+              {placements.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          {item.placement === 'other' && <label className="block text-xs text-dp-muted">Placement details<input className="mt-1 w-full rounded border border-dp-line px-2 py-1.5 text-xs" maxLength={160} value={item.placementDetails || ''} onChange={(event) => onConfigure({ placementDetails: event.target.value })} placeholder="Name the section or location" /></label>}
+          <details><summary className="cursor-pointer text-xs text-dp-muted">Instructions</summary><textarea aria-label={`Instructions for ${item.title}`} className="mt-1 w-full rounded border border-dp-line px-2 py-1.5 text-xs" rows={2} maxLength={1000} value={item.instructions || ''} onChange={(event) => onConfigure({ instructions: event.target.value })} /></details>
+        </div>}
       </div>
       <motion.button
         type="button"

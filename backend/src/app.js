@@ -10,6 +10,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const assetRoutes = require("./routes/assetRoutes");
+const cloudinaryService = require("./services/cloudinaryService");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
@@ -78,5 +80,11 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", requireDatabase, authRoutes);
 app.use("/api/projects", requireDatabase, authMiddleware, projectRoutes);
+app.use("/api/assets", authMiddleware, (req, res, next) => {
+  if (req.method === "POST" && !cloudinaryService.isConfigured()) {
+    return res.status(503).json({ success: false, message: "File uploads are not configured on this server." });
+  }
+  return requireDatabase(req, res, next);
+}, assetRoutes);
 
 module.exports = app;

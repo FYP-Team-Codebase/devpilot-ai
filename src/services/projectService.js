@@ -30,7 +30,11 @@ function getAuthHeaders() {
 }
 
 function createProjectError(data, fallbackMessage) {
-  return new Error(data?.message || fallbackMessage)
+  const requestId = typeof data?.requestId === 'string' ? data.requestId : ''
+  const error = new Error(data?.message || fallbackMessage)
+  error.code = typeof data?.code === 'string' ? data.code : undefined
+  error.requestId = requestId
+  return error
 }
 
 function normalizeProject(project) {

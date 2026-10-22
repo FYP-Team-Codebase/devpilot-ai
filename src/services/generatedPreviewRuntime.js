@@ -1,6 +1,9 @@
 import * as esbuild from 'esbuild-wasm'
 import wasmUrl from 'esbuild-wasm/esbuild.wasm?url'
 import { findGeneratedFrontendEntryPoint, normalizeGeneratedProjectFiles } from './generatedProjectFiles'
+import { previewExceptionSanitizerSource } from './previewErrorDiagnostics'
+import { collectExternalModuleSpecifiers, externalCssImportError, externalModuleImportError, isSupportedExternalCssResource } from './previewDependencyResolution'
+import { previewRouterShimSource } from './previewRouterShim'
 
 const supportedPackages = new Set([
   'react', 'react-dom', 'lucide-react', 'framer-motion', 'motion', 'react-router-dom',
@@ -66,6 +69,8 @@ function packageImports(packageJson, specifiers) {
   const requests = []
 
   for (const specifier of specifiers) {
+    const externalUrlError = externalModuleImportError(specifier)
+    if (externalUrlError) throw new Error(externalUrlError)
     const name = packageName(specifier)
     if (!supportedPackages.has(name) && !name.startsWith('@radix-ui/')) {
       throw new Error(`Preview cannot currently resolve dependency: ${name}`)
@@ -141,6 +146,11 @@ export async function bundleGeneratedFrontend(generatedFiles) {
       setup(build) {
         build.onResolve({ filter: /.*/ }, (args) => {
           if (args.namespace === 'preview-router') return { path: args.path, external: true }
+          if (isSupportedExternalCssResource(args)) return { path: args.path, external: true }
+          const externalCssError = externalCssImportError(args)
+          if (externalCssError) return { errors: [{ text: externalCssError }] }
+          const externalUrlError = externalModuleImportError(args.path)
+          if (externalUrlError) return { errors: [{ text: externalUrlError }] }
           if (args.path === 'react-router-dom') {
             if (!packageJson.dependencies?.['react-router-dom'] && !packageJson.peerDependencies?.['react-router-dom']) return { errors: [{ text: 'Preview does not load undeclared package "react-router-dom".' }] }
             return { path: args.path, namespace: 'preview-router' }
@@ -168,7 +178,6 @@ export async function bundleGeneratedFrontend(generatedFiles) {
             return { errors: [{ text: `Could not resolve generated import "${args.path}" from ${args.importer || entryPoint}.` }] }
           }
 
-          if (/^https:\/\/fonts\.googleapis\.com\//.test(args.path)) return { path: args.path, external: true }
           const name = packageName(args.path)
           const declared = Boolean(packageJson.dependencies?.[name] || packageJson.peerDependencies?.[name] || ['react', 'react-dom'].includes(name))
           if (!declared) return { errors: [{ text: `Preview does not load undeclared package "${name}".` }] }
@@ -192,49 +201,11 @@ export async function bundleGeneratedFrontend(generatedFiles) {
         })
 
         build.onLoad({ filter: /.*/, namespace: 'preview-router' }, () => ({
-          contents: `export * from "react-router-dom";
-import { MemoryRouter as RuntimeMemoryRouter, createMemoryRouter as runtimeCreateMemoryRouter, Link as RuntimeLink, NavLink as RuntimeNavLink, useLocation, useNavigate } from "react-router-dom";
-import * as React from "react";
-function DevPilotRouteBridge({ children }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    window.dispatchEvent(new CustomEvent("devpilot:generated-navigation", { detail: { pathname: location.pathname, search: location.search, hash: location.hash } }));
-  }, [location.pathname, location.search, location.hash]);
-  React.useEffect(() => {
-    const handleNavigation = (event) => {
-      const route = event.detail;
-      if (!route || typeof route.pathname !== "string" || !route.pathname.startsWith("/") || route.pathname.startsWith("//")) return;
-      navigate(route.pathname + (route.search || "") + (route.hash || ""));
-    };
-    window.addEventListener("devpilot:route-navigate", handleNavigation);
-    return () => window.removeEventListener("devpilot:route-navigate", handleNavigation);
-  }, [navigate]);
-  return React.createElement(React.Fragment, null, children);
-}
-function RuntimeRouter({ children, ...props }) {
-  const route = window.__DEVPILOT_INITIAL_ROUTE__ || "/";
-  return React.createElement(RuntimeMemoryRouter, { ...props, initialEntries: [route], initialIndex: 0 }, React.createElement(DevPilotRouteBridge, null, children));
-}
-export const BrowserRouter = RuntimeRouter;
-export const HashRouter = RuntimeRouter;
-export const MemoryRouter = RuntimeRouter;
-export const Link = (props) => React.createElement(RuntimeLink, { ...props, "data-devpilot-router-link": "" });
-export const NavLink = (props) => React.createElement(RuntimeNavLink, { ...props, "data-devpilot-router-link": "" });
-export function createBrowserRouter(routes, options = {}) {
-  const route = window.__DEVPILOT_INITIAL_ROUTE__ || "/";
-  const router = runtimeCreateMemoryRouter(routes, { ...options, initialEntries: [route], initialIndex: 0 });
-  router.subscribe((state) => window.dispatchEvent(new CustomEvent("devpilot:generated-navigation", { detail: { pathname: state.location.pathname, search: state.location.search, hash: state.location.hash } })));
-  window.dispatchEvent(new CustomEvent("devpilot:generated-navigation", { detail: { pathname: router.state.location.pathname, search: router.state.location.search, hash: router.state.location.hash } }));
-  window.addEventListener("devpilot:route-navigate", (event) => {
-    const next = event.detail;
-    if (next && typeof next.pathname === "string" && next.pathname.startsWith("/") && !next.pathname.startsWith("//")) router.navigate(next.pathname + (next.search || "") + (next.hash || ""));
-  });
-  return router;
-}
-export const createHashRouter = createBrowserRouter;`,
+          contents: previewRouterShimSource,
           loader: 'js',
         }))
+
+
       },
     }],
   })
@@ -242,7 +213,7 @@ export const createHashRouter = createBrowserRouter;`,
   const js = result.outputFiles.find((file) => file.path.endsWith('.js'))?.text
   const css = result.outputFiles.find((file) => file.path.endsWith('.css'))?.text || ''
   if (!js) throw new Error('The generated frontend bundle is empty.')
-  const externalSpecifiers = new Set(['react', 'react-dom', ...Object.values(result.metafile.outputs).flatMap((output) => output.imports || []).filter((item) => item.external).map((item) => item.path)])
+  const externalSpecifiers = new Set(['react', 'react-dom', ...collectExternalModuleSpecifiers(result.metafile)])
   const { imports, requests } = packageImports(packageJson, externalSpecifiers)
   await Promise.all(requests.map(verifyDependencyRequest))
   return { js, css, imports, dependencyRequests: requests, assets: makePublicAssetMap(files), title: getHtmlTitle(files.get('index.html')?.content), rootId: getHtmlRootId(files.get('index.html')?.content) }
@@ -264,13 +235,14 @@ function escapeScriptJson(value) {
 
 export function createPreviewDocument(imports, rootId = 'root') {
   const importMap = escapeScriptJson({ imports })
-      const safeRootId = /^[\w-]+$/.test(rootId) ? rootId : 'root'
+  const safeRootId = /^[\w-]+$/.test(rootId) ? rootId : 'root'
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' blob: https://esm.sh; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src https: data: blob:; connect-src https://esm.sh; form-action 'none'; base-uri 'none';"><script type="importmap">${importMap}</script><style>html,body,#${safeRootId}{min-height:100%;margin:0}#${safeRootId}{min-height:100vh}#preview-error{font:14px system-ui,sans-serif;margin:32px;color:#9b1c1c;white-space:pre-wrap}[data-devpilot-hovered="true"]{outline:1px solid #8b80ff!important;outline-offset:1px}[data-devpilot-selected="true"]{outline:2px solid #6d5dfc!important;outline-offset:2px}</style></head><body><div id="${safeRootId}"></div><script>(function(){
  var channel='devpilot-preview', stage='iframe-boot', runtimeFailed=false, runtimeReady=false, communicationPort=null;
+${previewExceptionSanitizerSource}
 function send(type,detail){var message=Object.assign({channel:channel,type:type},detail||{});if(communicationPort)communicationPort.postMessage(message)}
 function setStage(value){stage=value;send('stage',{stage:value})}
  function fail(message,details){if(runtimeFailed||runtimeReady)return;runtimeFailed=true;send('DEV_PILOT_PREVIEW_ERROR',Object.assign({stage:stage,errorType:'runtime',message:String(message||'Preview runtime error').slice(0,1000)},details||{}))}
-window.addEventListener('error',function(e){var target=e.target;var url=target&&(target.src||target.href)||'';fail(e.message||'Preview resource or script error',{errorType:url?'resource-load':'javascript',url:String(url).slice(0,500),filename:String(e.filename||'').slice(0,500),line:e.lineno||0})});
+window.addEventListener('error',function(e){var target=e.target;var url=target&&(target.src||target.href)||'';if(url){fail('Preview resource or script failed to load',{errorType:'resource-load'});return}var exception=sanitizePreviewException({name:e.error&&e.error.name,message:e.error&&e.error.message||e.message,stack:e.error&&e.error.stack,filename:e.filename,line:e.lineno,column:e.colno});fail(exception.message,{errorType:'javascript',errorName:exception.name,stack:exception.stack,filename:exception.filename,line:exception.line,column:exception.column})});
  window.addEventListener('unhandledrejection',function(e){var reason=e.reason,message=reason&&reason.message||reason||'Unhandled preview rejection';if(runtimeReady||(reason&&reason.code==='ERR_NETWORK')||/network error|failed to fetch|load failed|network request failed/i.test(String(message)))return;fail(message,{errorType:'unhandled-rejection'})});
  window.addEventListener('securitypolicyviolation',function(e){if(e.violatedDirective==='connect-src')return;fail('Iframe Content Security Policy blocked a resource',{errorType:'csp',directive:e.violatedDirective,blockedURI:String(e.blockedURI||'').slice(0,500)})});
 var selectionMode=false, selectedElement=null, hoveredElement=null, assets={}, editorState={};

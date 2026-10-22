@@ -2,7 +2,10 @@ import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCurrentUser } from '../../services/authService'
-import { updateProject } from '../../services/projectService'
+import { getProject, updateProject } from '../../services/projectService'
+import { listAssets } from '../../services/assetService'
+import ProjectAssetPicker from '../../components/ProjectAssetPicker'
+import { createAssetSelection, getPersistedAssetSelections } from '../../services/projectAssetSelections'
 import UserMenu from '../Dashboard/components/UserMenu'
 import { requirementsPageStyles } from './RequirementsPage.styles'
 
@@ -47,12 +50,6 @@ const COLORS = [
 const PAGES = ['Home', 'About', 'Services', 'Pricing', 'Portfolio', 'Blog', 'FAQ', 'Contact', 'Dashboard']
 const FEATURES = ['Authentication', 'CMS', 'Payment Integration', 'AI Chat', 'Admin Panel', 'Analytics', 'Notifications', 'Search']
 const DEVICES = ['Desktop', 'Tablet', 'Mobile']
-
-const ASSET_TYPES = [
-  { title: 'Logo', description: 'PNG, SVG or JPG' },
-  { title: 'Inspiration Images', description: 'Sites or designs you like' },
-  { title: 'Brand Assets', description: 'Fonts, colors, guidelines' },
-]
 
 const EMPTY_REQUIREMENTS = {
   projectName: '',
@@ -113,7 +110,7 @@ function getStoredRequirements() {
       pages: Array.isArray(parsed.pages) ? parsed.pages : fallback.pages,
       features: Array.isArray(parsed.features) ? parsed.features : fallback.features,
       devices: Array.isArray(parsed.devices) ? parsed.devices : fallback.devices,
-      assets: Array.isArray(parsed.assets) ? parsed.assets : fallback.assets,
+      assets: Array.isArray(parsed.assets) ? parsed.assets.map((asset) => createAssetSelection(asset, asset)) : fallback.assets,
       assetsSkipped: Boolean(parsed.assetsSkipped),
       noAdditionalNotes: Boolean(parsed.noAdditionalNotes),
     }
@@ -211,7 +208,11 @@ function mapRequirementsToProjectPayload(value) {
       features: value.features,
       devices: value.devices,
       notes: value.noAdditionalNotes ? '' : value.notes.trim(),
+      assetIds: value.assets.filter((asset) => asset.category === 'requirements' && asset.mimeType === 'application/pdf').map((asset) => asset.id).filter(Boolean),
     },
+    // Skip assets is an explicit choice. Do not persist the selections left in
+    // the picker when the user chose to skip them.
+    assetSelections: getPersistedAssetSelections(value.assets, value.assetsSkipped),
   }
 
   if (projectName) {
@@ -264,6 +265,25 @@ export default function RequirementsPage() {
     sessionStorage.setItem('devpilot-requirements', JSON.stringify(requirements))
     window.dispatchEvent(new Event('devpilot-requirements-changed'))
   }, [requirements])
+
+  useEffect(() => {
+    const projectId = sessionStorage.getItem('devpilot-current-project-id')
+    if (!projectId) return
+    let active = true
+    Promise.all([getProject(projectId), listAssets()]).then(([result, assets]) => {
+      if (!active) return
+      const project = result.project || {}
+      const byId = new Map(assets.map((asset) => [String(asset.id), asset]))
+      const restored = (project.assetSelections || []).map((selection) => {
+        const asset = byId.get(String(selection.assetId))
+        return asset ? createAssetSelection(asset, selection) : null
+      }).filter(Boolean)
+      setRequirements((current) => current.assetsSkipped || current.assets.length || !restored.length
+        ? current
+        : { ...current, assets: restored, assetsSkipped: false })
+    }).catch(() => {})
+    return () => { active = false }
+  }, [])
 
   function updateField(field, value) {
     setContinueError('')
@@ -541,24 +561,23 @@ export default function RequirementsPage() {
                 </SectionCard>
 
                 <SectionCard title="Upload Assets" sectionRef={assetsSectionRef} description="Helps the AI match your existing brand." delay={0.24} shouldReduceMotion={shouldReduceMotion}>
-                  <div className={requirementsPageStyles.assetGrid}>
-                    {ASSET_TYPES.map((asset) => (
-                      <div key={asset.title} className={requirementsPageStyles.assetCard}>
-                        <span className={requirementsPageStyles.assetIcon} aria-hidden="true">
-                          <RequirementsIcon name="upload" />
-                        </span>
-                        <p className={requirementsPageStyles.assetTitle}>{asset.title}</p>
-                        <p className={requirementsPageStyles.assetDescription}>{asset.description}</p>
-                        <p className={requirementsPageStyles.assetStatus}>Upload not configured</p>
-                      </div>
-                    ))}
-                  </div>
+                  <ProjectAssetPicker
+                    category="requirements"
+                    projectId={sessionStorage.getItem('devpilot-current-project-id') || undefined}
+                    selections={requirements.assets}
+                    onChange={(next) => setRequirements((current) => ({ ...current, assets: typeof next === 'function' ? next(current.assets) : next, assetsSkipped: false }))}
+                    emptyMessage="Add a logo, image, inspiration, or PDF requirements document. You can also use files already in My Assets."
+                  />
                   <div className={requirementsPageStyles.tileSpacing}>
                     <SelectTile
                       buttonRef={assetsRef}
                       label="Skip assets"
                       selected={requirements.assetsSkipped}
-                      onClick={() => updateField('assetsSkipped', !requirements.assetsSkipped)}
+                      onClick={() => setRequirements((current) => ({
+                        ...current,
+                        assetsSkipped: !current.assetsSkipped,
+                        assets: !current.assetsSkipped ? [] : current.assets,
+                      }))}
                       icon="check"
                       shouldReduceMotion={shouldReduceMotion}
                     />

@@ -8,7 +8,7 @@ export const userMenuStyles = {
   chevron: 'w-3 h-3 text-dp-muted transition-transform duration-150',
   chevronOpen: 'rotate-180',
   menu:
-    'absolute right-0 top-[calc(100%+8px)] z-[100] w-[220px] overflow-hidden rounded-2xl border border-dp-border bg-white shadow-dp-popover',
+    'fixed z-[70] w-[min(220px,calc(100vw-24px))] overflow-y-auto overscroll-contain rounded-2xl border border-dp-border bg-white shadow-dp-popover',
   menuHeader: 'flex items-center gap-2.5 p-3 px-3.5',
   menuAvatar:
     'grid h-8 w-8 shrink-0 place-items-center rounded-full bg-dp-black text-xs font-bold text-white',

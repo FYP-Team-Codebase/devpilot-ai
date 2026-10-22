@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { generateProject, getProject } from '../../services/projectService'
 import { generationPageStyles as styles } from './GenerationPage.styles'
+import { getGenerateActionState } from './generationActionState'
 
 const EASE = [0.16, 1, 0.3, 1]
 const PROJECT_ID_KEY = 'devpilot-current-project-id'
@@ -107,7 +108,8 @@ export default function GenerationPage() {
       if (!generatedProject) throw new Error('Generation completed, but the project result was missing.')
       setProject(generatedProject)
     } catch (error) {
-      setGenerationError(error?.message || 'Project generation failed. Please try again.')
+      const message = error?.message || 'Project generation failed. Please try again.'
+      setGenerationError(error?.requestId ? `${message} (Reference: ${error.requestId})` : message)
       setProject((current) => current ? { ...current, generationStatus: 'failed' } : current)
     } finally {
       setIsSubmitting(false)
@@ -375,6 +377,7 @@ function InspirationReference({ item, metadata }) {
 }
 
 function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput, shouldReduceMotion, generationError, isSubmitting, onGenerate, onPreview }) {
+  const generateAction = getGenerateActionState(status, isSubmitting)
   const content = {
     draft: {
       title: 'Complete project setup',
@@ -420,9 +423,9 @@ function GenerationActionPanel({ status, generatedFileCount, hasCompletedOutput,
         </button>
       )}
       {status === 'generating' && <GeneratingActivity shouldReduceMotion={shouldReduceMotion} />}
-      {(status === 'ready' || status === 'failed') && (
-        <button type="button" className={styles.actionButton} onClick={onGenerate} disabled={isSubmitting}>
-          {isSubmitting ? 'Generating…' : status === 'failed' ? 'Retry Generation' : 'Generate Project'}
+      {generateAction.visible && (
+        <button type="button" className={styles.actionButton} onClick={onGenerate} disabled={generateAction.disabled}>
+          {generateAction.label}
         </button>
       )}
       {status === 'draft' && (

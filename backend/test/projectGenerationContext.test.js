@@ -38,6 +38,7 @@ function makeManifest(entries = [manifestEntry()]) {
 function makeProject(overrides = {}) {
   return {
     _id: "507f1f77bcf86cd799439011",
+    user: "507f1f77bcf86cd799439099",
     projectName: "  Example Project  ",
     prompt: "  Build a trusted app  ",
     requirements: {
@@ -66,12 +67,22 @@ function loaderFor(manifest) {
   return async () => clone(manifest);
 }
 
+function buildContext(project, options = {}) {
+  return buildProjectGenerationContext(project, {
+    assetLoader: async () => [],
+    inspirationImageReader: async () => ({ bytes: Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), mimeType: "image/png" }),
+    assetReader: async () => Buffer.from("test"),
+    pdfTextExtractor: async () => "",
+    ...options,
+  });
+}
+
 async function expectReject(task, code) {
   await assert.rejects(task, (error) => error && error.code === code);
 }
 
 async function run() {
-  const context = await buildProjectGenerationContext(makeProject(), {
+  const context = await buildContext(makeProject(), {
     manifestLoader: loaderFor(makeManifest()),
   });
 
@@ -90,6 +101,8 @@ async function run() {
       devices: ["Desktop", "Mobile"],
       notes: "Keep it safe",
     },
+    assetManifest: [],
+    attachments: [],
     inspirations: [{
       id: "Agency Inspiration-1",
       source: "devpilot",
@@ -100,6 +113,7 @@ async function run() {
       tags: ["agency"],
       referenceImage: { path: validPath },
     }],
+    visualReferences: [{ inspirationId: "Agency Inspiration-1", category: "inspiration", role: "visual-inspiration", label: "Creative Agency", mimeType: "image/png", url: `data:image/png;base64,${Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]).toString("base64")}` }],
     generation: {
       target: "mern-web-application",
       frontend: "react-vite",
@@ -112,8 +126,8 @@ async function run() {
   assert.strictEqual(context.inspirations[0].referenceImage.path, validPath);
   assert.ok(!JSON.stringify(context).includes("must not leak"));
 
-  const missingRequirements = await buildProjectGenerationContext(
-    makeProject({ requirements: undefined }),
+  const missingRequirements = await buildContext(
+    makeProject({ requirements: undefined, inspirations: [] }),
     { manifestLoader: loaderFor(makeManifest([])) }
   );
   assert.deepStrictEqual(missingRequirements.requirements, {
@@ -131,7 +145,7 @@ async function run() {
     fullPage: "/inspirations/full.png",
     images: [{ src: "/inspirations/first.png" }],
   });
-  const priorityContext = await buildProjectGenerationContext(makeProject(), {
+  const priorityContext = await buildContext(makeProject(), {
     manifestLoader: loaderFor(makeManifest([priorityEntry])),
   });
   assert.strictEqual(priorityContext.inspirations[0].referenceImage.path, "/inspirations/thumbnail.png");
@@ -142,24 +156,25 @@ async function run() {
       { source: "devpilot", inspirationId: "Agency Inspiration-1", imageUrl: "/bad/second.png" },
     ],
   });
-  const deduped = await buildProjectGenerationContext(firstOccurrence, {
+  const deduped = await buildContext(firstOccurrence, {
     manifestLoader: loaderFor(makeManifest()),
   });
   assert.strictEqual(deduped.inspirations.length, 1);
 
-  const skipped = await buildProjectGenerationContext(makeProject({
+  const skipped = await buildContext(makeProject({
     inspirations: [
       { source: "user", inspirationId: "Agency Inspiration-1", imageUrl: validPath },
-      { source: "devpilot", inspirationId: "agency inspiration-1", imageUrl: validPath },
-      { source: "devpilot", inspirationId: "stale-id", imageUrl: validPath },
       { source: "other", inspirationId: "Agency Inspiration-1", imageUrl: validPath },
     ],
   }), { manifestLoader: loaderFor(makeManifest()) });
   assert.deepStrictEqual(skipped.inspirations, []);
+  await expectReject(buildContext(makeProject({ inspirations: [{ source: "devpilot", inspirationId: "stale-id" }] }), {
+    manifestLoader: loaderFor(makeManifest()),
+  }), "INSPIRATION_UNAVAILABLE");
 
   const originalProject = makeProject();
   const before = clone(originalProject);
-  await buildProjectGenerationContext(originalProject, { manifestLoader: loaderFor(makeManifest()) });
+  await buildContext(originalProject, { manifestLoader: loaderFor(makeManifest()) });
   assert.deepStrictEqual(originalProject, before);
   assert.strictEqual(originalProject.generationStatus, "ready");
 
@@ -186,26 +201,108 @@ async function run() {
     "/tmp/secret.png",
   ];
   for (const invalidPath of invalidPathCases) {
-    const result = await buildProjectGenerationContext(makeProject(), {
+    await expectReject(buildContext(makeProject(), {
       manifestLoader: loaderFor(makeManifest([manifestEntry({ galleryPreview: invalidPath, thumbnail: invalidPath, fullPage: invalidPath, images: [{ src: invalidPath }] })])),
-    });
-    assert.deepStrictEqual(result.inspirations, []);
+    }), "INSPIRATION_UNAVAILABLE");
   }
 
   await expectReject(
-    buildProjectGenerationContext(null, { manifestLoader: loaderFor(makeManifest()) }),
+    buildContext(null, { manifestLoader: loaderFor(makeManifest()) }),
     "MISSING_PROJECT"
   );
   await expectReject(
-    buildProjectGenerationContext(makeProject(), { manifestLoader: async () => { throw new Error("C:\\secret\\manifest.json"); } }),
+    buildContext(makeProject(), { manifestLoader: async () => { throw new Error("C:\\secret\\manifest.json"); } }),
     "INSPIRATION_MANIFEST_ERROR"
   );
   await expectReject(
-    buildProjectGenerationContext(makeProject(), { manifestLoader: async () => ({ inspirations: "invalid" }) }),
+    buildContext(makeProject(), { manifestLoader: async () => ({ inspirations: "invalid" }) }),
     "INVALID_INSPIRATION_MANIFEST"
   );
 
-  console.log("Project generation context tests passed: 37 assertions");
+  const requirementId = "607f1f77bcf86cd799439011";
+  const uploadedInspirationId = "607f1f77bcf86cd799439012";
+  const requirementImageId = "607f1f77bcf86cd799439013";
+  const ownedAssets = [
+    { _id: requirementId, owner: makeProject().user, category: "requirements", originalFilename: "brief.pdf", mimeType: "application/pdf", size: 1200, resourceType: "raw", secureUrl: "https://res.cloudinary.com/demo/raw/upload/brief.pdf" },
+    { _id: uploadedInspirationId, owner: makeProject().user, category: "inspiration", originalFilename: "reference.png", mimeType: "image/png", size: 900, resourceType: "image", secureUrl: "https://res.cloudinary.com/demo/image/upload/reference.png" },
+    { _id: requirementImageId, owner: makeProject().user, category: "requirements", originalFilename: "brand-logo.png", mimeType: "image/png", size: 900, resourceType: "image", secureUrl: "https://res.cloudinary.com/demo/image/upload/brand-logo.png" },
+  ];
+  let receivedAssetQuery;
+  const assetContext = await buildContext(makeProject({
+    requirements: { assetIds: [requirementId, requirementImageId] },
+    inspirations: [{ source: "userAsset", assetId: uploadedInspirationId }],
+  }), {
+    assetLoader: async (query) => { receivedAssetQuery = query; return ownedAssets; },
+    assetReader: async (asset) => asset._id === requirementId ? Buffer.from("pdf") : Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    pdfTextExtractor: async () => "Extracted client requirements",
+  });
+  assert.equal(String(receivedAssetQuery.owner), makeProject().user);
+  assert.deepStrictEqual(assetContext.attachments, [{
+    id: requirementId, filename: "brief.pdf", mimeType: "application/pdf", size: 1200,
+    extraction: "text-extracted", extractedText: "Extracted client requirements",
+  }, {
+    id: requirementImageId, filename: "brand-logo.png", mimeType: "image/png", size: 900,
+    extraction: "image-input", role: "content-asset", assetUrl: ownedAssets[2].secureUrl,
+  }]);
+  assert.ok(assetContext.visualReferences.some((reference) => reference.assetId === uploadedInspirationId && reference.role === "visual-inspiration" && reference.url.startsWith("data:image/png;base64,")));
+  assert.ok(assetContext.visualReferences.some((reference) => reference.assetId === requirementImageId && reference.role === "content-asset" && reference.url.startsWith("data:image/png;base64,")));
+  assert.ok(assetContext.inspirations.some((inspiration) => inspiration.id === uploadedInspirationId));
+
+  const configuredIds = [
+    "607f1f77bcf86cd799439021", "607f1f77bcf86cd799439022", "607f1f77bcf86cd799439023", "607f1f77bcf86cd799439024", "607f1f77bcf86cd799439025", "607f1f77bcf86cd799439026", "607f1f77bcf86cd799439027",
+  ];
+  const configuredAssets = configuredIds.map((id, index) => ({
+    _id: id, owner: makeProject().user, category: "general", originalFilename: ["logo.png", "hero.png", "reference.png", "product.png", "product-two.png", "illustration.png", "brief.pdf"][index],
+    mimeType: index === 6 ? "application/pdf" : "image/png", resourceType: index === 6 ? "raw" : "image", size: 100,
+    secureUrl: `https://res.cloudinary.com/demo/${index === 6 ? "raw" : "image"}/upload/${index}.asset`,
+  }));
+  const purposes = ["logo", "background", "design-reference", "content-image", "content-image", "other", "requirements-document"];
+  const mixedPurposeContext = await buildContext(makeProject({ inspirations: [], requirements: {}, assetSelections: configuredIds.map((assetId, index) => ({
+    assetId, purpose: purposes[index], customPurpose: index === 5 ? "Use as a menu illustration" : "", placement: ["header", "hero", "ai", "product", "gallery", "section", "ai"][index], placementDetails: index === 5 ? "Menu section" : "", instructions: `instruction-${index}`,
+  })) }), {
+    assetLoader: async (query) => { assert.equal(String(query.owner), makeProject().user); return configuredAssets; },
+    assetReader: async (asset) => asset.mimeType === "application/pdf" ? Buffer.from("pdf") : Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    pdfTextExtractor: async () => "Extracted page and workflow requirements",
+  });
+  assert.deepEqual(mixedPurposeContext.assetManifest.map((item) => item.purpose), purposes);
+  assert.equal(mixedPurposeContext.assetManifest[0].placement, "header");
+  assert.equal(mixedPurposeContext.assetManifest[0].instructions, "instruction-0");
+  assert.equal(mixedPurposeContext.assetManifest[4].placement, "gallery");
+  assert.equal(mixedPurposeContext.assetManifest[5].customPurpose, "Use as a menu illustration");
+  assert.equal(mixedPurposeContext.assetManifest[5].placementDetails, "Menu section");
+  assert.equal(mixedPurposeContext.assetManifest[5].instructions, "instruction-5");
+  assert.equal(mixedPurposeContext.assetManifest[6].extractedText, "Extracted page and workflow requirements");
+  assert.equal(mixedPurposeContext.visualReferences.find((item) => item.assetId === configuredIds[5]).customPurpose, "Use as a menu illustration");
+  assert.ok(mixedPurposeContext.visualReferences.some((item) => item.assetId === configuredIds[2] && item.role === "visual-inspiration"));
+  assert.ok(mixedPurposeContext.visualReferences.some((item) => item.assetId === configuredIds[0] && item.role === "content-asset"));
+  assert.ok(mixedPurposeContext.visualReferences.every((item) => item.url.startsWith("data:image/png;base64,")));
+
+  await assert.rejects(buildContext(makeProject({ inspirations: [{ source: "userAsset", assetId: uploadedInspirationId }] }), {
+    assetLoader: async () => [ownedAssets[1]],
+    assetReader: async () => { throw new Error("Cloud asset fetch failed"); },
+  }), (error) => error.code === "ASSET_PROCESSING_FAILED" && /could not be retrieved or read/i.test(error.message));
+  await assert.rejects(buildContext(makeProject({ requirements: { assetIds: [requirementId] }, inspirations: [] }), {
+    assetLoader: async () => [ownedAssets[0]],
+    assetReader: async () => Buffer.from("pdf"),
+    pdfTextExtractor: async () => "x".repeat(50001),
+  }), (error) => error.code === "ASSET_PROCESSING_FAILED" && /more extracted text/i.test(error.message));
+  await assert.rejects(buildContext(makeProject({ assetSelections: [{ assetId: requirementId, purpose: "requirements-document" }], requirements: {}, inspirations: [] }), {
+    assetLoader: async () => [ownedAssets[0]],
+    assetReader: async () => Buffer.from("pdf"),
+    pdfTextExtractor: async () => "",
+  }), (error) => error.code === "ASSET_PROCESSING_FAILED" && /no extractable text.*scanned PDFs are not supported/i.test(error.message));
+
+  for (const unavailableAssets of [[], [ownedAssets[0]]]) {
+    await expectReject(buildContext(makeProject({
+      requirements: { assetIds: [requirementId] },
+      inspirations: [{ source: "userAsset", assetId: uploadedInspirationId }],
+    }), { assetLoader: async (query) => {
+      assert.equal(String(query.owner), makeProject().user);
+      return unavailableAssets;
+    } }), "ASSET_UNAVAILABLE");
+  }
+
+  console.log("Project generation context tests passed.");
 }
 
 run().catch((error) => {

@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
+const { randomUUID } = require("node:crypto");
 
 const Project = require("../models/Project");
 const User = require("../models/User");
+const Asset = require("../models/Asset");
+const { normalizeAssetSelections } = require("../services/projectAssetSelections");
+const { getGenerationFailureResponse } = require("../services/generationFailureResponse");
+const { buildGenerationDiagnostic } = require("../services/generationDiagnostics");
 const { validateGeneratedPath } = require("../generation/validators/pathValidator");
-const {
-  buildProjectGenerationContext,
-  ProjectGenerationContextError,
-} = require("../generation/context/projectGenerationContext");
-const {
-  generateProject,
-  ProjectGenerationError,
-} = require("../services/projectGenerationService");
+const { buildProjectGenerationContext } = require("../generation/context/projectGenerationContext");
+const { generateProject, ProjectGenerationError, getGenerationBudgetMs } = require("../services/projectGenerationService");
 
 const ALLOWED_TOP_LEVEL_FIELDS = [
   "projectName",
   "prompt",
   "inspirations",
+  "assetSelections",
   "generationStatus",
 ];
 
@@ -26,9 +26,11 @@ const ALLOWED_REQUIREMENT_FIELDS = [
   "features",
   "devices",
   "notes",
+  "assetIds",
 ];
 
 const isValidProjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+const GENERATION_LEASE_MS = 15 * 60 * 1000;
 
 const hasOwn = (source, field) =>
   Object.prototype.hasOwnProperty.call(source, field);
@@ -243,6 +245,57 @@ const updateProject = async (req, res) => {
 
     const updates = pickProjectUpdates(body);
 
+    if (hasOwn(body, "assetSelections")) {
+      let selections;
+      try {
+        selections = normalizeAssetSelections(body.assetSelections);
+      } catch (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      if (selections.some((selection) => !mongoose.Types.ObjectId.isValid(selection.assetId))) {
+        return res.status(400).json({ success: false, message: "One or more selected assets are invalid." });
+      }
+      const ids = selections.map((selection) => selection.assetId);
+      const owned = ids.length
+        ? await Asset.find({ _id: { $in: ids }, owner: req.userId, status: "active" }).select("_id mimeType")
+        : [];
+      const ownedById = new Map(owned.map((asset) => [String(asset._id), asset]));
+      if (ownedById.size !== ids.length) {
+        return res.status(400).json({ success: false, message: "One or more selected assets are unavailable." });
+      }
+      for (const selection of selections) {
+        const asset = ownedById.get(selection.assetId);
+        const isPdf = asset.mimeType === "application/pdf";
+        if ((selection.purpose === "requirements-document") !== isPdf) {
+          return res.status(400).json({ success: false, message: "PDF files must be requirements documents, and image files must use an image purpose." });
+        }
+      }
+      updates.assetSelections = selections;
+    }
+
+    if (Array.isArray(body.inspirations)) {
+      for (const inspiration of body.inspirations) {
+        if (inspiration?.source === "userAsset") {
+          if (!mongoose.Types.ObjectId.isValid(inspiration.assetId)) {
+            return res.status(400).json({ success: false, message: "Invalid inspiration asset." });
+          }
+          const asset = await Asset.findOne({ _id: inspiration.assetId, owner: req.userId, category: "inspiration", status: "active" });
+          if (!asset) return res.status(400).json({ success: false, message: "Inspiration asset is unavailable." });
+          inspiration.imageUrl = asset.secureUrl;
+          inspiration.inspirationId = "";
+        }
+      }
+    }
+
+    if (body.requirements && Object.prototype.hasOwnProperty.call(body.requirements, "assetIds")) {
+      const ids = body.requirements.assetIds;
+      if (!Array.isArray(ids) || ids.length > 20 || ids.some((id) => !mongoose.Types.ObjectId.isValid(id))) {
+        return res.status(400).json({ success: false, message: "Invalid requirement attachments." });
+      }
+      const assets = await Asset.find({ _id: { $in: ids }, owner: req.userId, category: "requirements", status: "active" }).select("_id");
+      if (assets.length !== new Set(ids.map(String)).size) return res.status(400).json({ success: false, message: "One or more requirement attachments are unavailable." });
+    }
+
     Object.entries(updates).forEach(([field, value]) => {
       project[field] = value;
     });
@@ -318,18 +371,30 @@ const deleteProject = async (req, res) => {
 };
 
 const generateProjectForUser = async (req, res) => {
+  const generationId = randomUUID();
   const { id } = req.params;
   if (!isValidProjectId(id)) {
     return res.status(400).json({ success: false, message: "Invalid project ID." });
   }
 
+  const generationDeadlineAt = Date.now() + getGenerationBudgetMs();
+  const clientAbortController = new AbortController();
+  const abortForDisconnect = () => {
+    if (!res.writableEnded) clientAbortController.abort();
+  };
+  const onRequestAborted = () => abortForDisconnect();
+  const onRequestError = (error) => {
+    if (req.aborted || error?.message === "aborted") abortForDisconnect();
+  };
+  req.once?.("aborted", onRequestAborted);
+  req.on?.("error", onRequestError);
+  res.once?.("close", abortForDisconnect);
+
   let claimedProject;
+  let generationStage = "load-project";
   try {
     const project = await Project.findOne({ _id: id, user: req.userId });
     if (!project) return res.status(404).json({ success: false, message: "Project not found." });
-    if (project.generationStatus === "generating") {
-      return res.status(409).json({ success: false, message: "This project is already generating." });
-    }
     if (!project.prompt?.trim()) {
       return res.status(400).json({ success: false, message: "Add a project prompt before generating." });
     }
@@ -345,47 +410,76 @@ const generateProjectForUser = async (req, res) => {
       return res.status(400).json({ success: false, message: "Select at least one inspiration before generating." });
     }
 
+    generationStage = "claim-generation";
+    const staleBefore = new Date(Date.now() - GENERATION_LEASE_MS);
     claimedProject = await Project.findOneAndUpdate(
-      { _id: id, user: req.userId, generationStatus: { $ne: "generating" } },
-      { $set: { generationStatus: "generating", generationError: "" } },
+      {
+        _id: id,
+        user: req.userId,
+        $or: [
+          { generationStatus: { $ne: "generating" } },
+          { generationStatus: "generating", generationStartedAt: { $lt: staleBefore } },
+          { generationStatus: "generating", generationStartedAt: null, updatedAt: { $lt: staleBefore } },
+        ],
+      },
+      { $set: { generationStatus: "generating", generationError: "", generationStartedAt: new Date(), generationRunId: generationId } },
       { new: true }
     );
     if (!claimedProject) {
-      return res.status(409).json({ success: false, message: "This project is already generating." });
+      return res.status(409).json({ success: false, code: "GENERATION_IN_PROGRESS", requestId: generationId, message: "This project is already generating." });
     }
 
+    generationStage = "build-context";
     const context = await buildProjectGenerationContext(claimedProject);
-    const result = await generateProject(context);
-    claimedProject.generatedFiles = result.generatedFiles;
-    claimedProject.projectName = result.projectName;
-    claimedProject.generationStatus = "completed";
-    claimedProject.generationError = "";
-    await claimedProject.save();
+    generationStage = "provider-generation";
+    const result = await generateProject(context, { generationId, deadlineAt: generationDeadlineAt, signal: clientAbortController.signal });
+    if (clientAbortController.signal.aborted) {
+      throw new ProjectGenerationError("Generation was cancelled because the client disconnected.", "GENERATION_CANCELLED", { generationId, stage: "provider-network" });
+    }
+    generationStage = "persist-generated-project";
+    const persistedProject = await Project.findOneAndUpdate(
+      { _id: id, user: req.userId, generationStatus: "generating", generationRunId: generationId },
+      { $set: { generatedFiles: result.generatedFiles, projectName: result.projectName, generationStatus: "completed", generationError: "", generationStartedAt: null, generationRunId: "" } },
+      { new: true },
+    );
+    if (!persistedProject) {
+      console.warn("Generation result was discarded because its lease was superseded:", JSON.stringify({ generationId, stage: "persist-generated-project" }));
+      return res.status(409).json({ success: false, code: "GENERATION_SUPERSEDED", requestId: generationId, message: "A newer generation attempt replaced this one. Refresh the project before retrying." });
+    }
 
     return res.status(200).json({
       success: true,
-      project: claimedProject,
+      project: persistedProject,
       generation: result.generationMetadata,
     });
   } catch (error) {
-    const safeMessage = error instanceof ProjectGenerationError || error instanceof ProjectGenerationContextError
-      ? error.message.slice(0, 500)
-      : "Project generation failed. Please try again.";
+    const failure = getGenerationFailureResponse(error);
+    const expected = error instanceof ProjectGenerationError
+      || error?.name === "ProjectGenerationContextError";
     if (claimedProject) {
       try {
         await Project.updateOne(
-          { _id: id, user: req.userId, generationStatus: "generating" },
-          { $set: { generationStatus: "failed", generationError: safeMessage } }
+          { _id: id, user: req.userId, generationStatus: "generating", generationRunId: generationId },
+          { $set: { generationStatus: "failed", generationError: failure.message, generationStartedAt: null, generationRunId: "" } }
         );
       } catch (persistError) {
-        console.error("Unable to persist failed project generation status:", persistError.message);
+        console.error("Unable to persist failed project generation status:", JSON.stringify(
+          buildGenerationDiagnostic(persistError, { stage: "persist-failure-status", status: 500 }),
+        ));
       }
     }
-    if (error?.code === "PROVIDER_NOT_CONFIGURED") {
-      return res.status(503).json({ success: false, message: "AI generation is not configured on the server." });
-    }
-    console.error("Project generation failed:", error?.code || error?.name || "unknown error");
-    return res.status(502).json({ success: false, message: safeMessage });
+    if (!error.generationId) error.generationId = generationId;
+    console.error("Project generation failed:", JSON.stringify(buildGenerationDiagnostic(error, {
+      stage: generationStage,
+      status: failure.status,
+      expected,
+    })));
+    if (res.destroyed || res.writableEnded) return;
+    return res.status(failure.status).json({ success: false, code: failure.code, requestId: generationId, message: failure.message });
+  } finally {
+    req.off?.("aborted", onRequestAborted);
+    req.off?.("error", onRequestError);
+    res.off?.("close", abortForDisconnect);
   }
 };
 

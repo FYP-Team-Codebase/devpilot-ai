@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../../../services/authService'
 import { userMenuStyles } from './UserMenu.styles'
+import { calculateUserMenuPosition, isOutsideUserMenuEvent } from './userMenuPosition'
+import { createUserMenuPortal } from './userMenuPortal'
 
 function getDisplayName(user) {
   if (user?.name?.trim()) return user.name.trim()
@@ -18,23 +20,57 @@ function getInitials(user) {
 
 export default function UserMenu({ user }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [menuPosition, setMenuPosition] = useState(null)
   const ref = useRef(null)
+  const triggerRef = useRef(null)
+  const menuRef = useRef(null)
   const navigate = useNavigate()
   const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     if (!isOpen) return
     function handleClick(e) {
-      if (ref.current && !ref.current.contains(e.target)) setIsOpen(false)
+      if (isOutsideUserMenuEvent(e.target, ref.current, menuRef.current)) setIsOpen(false)
     }
     function handleKey(e) {
-      if (e.key === 'Escape') setIsOpen(false)
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+        triggerRef.current?.focus()
+      }
     }
     document.addEventListener('mousedown', handleClick)
     document.addEventListener('keydown', handleKey)
     return () => {
       document.removeEventListener('mousedown', handleClick)
       document.removeEventListener('keydown', handleKey)
+    }
+  }, [isOpen])
+
+  useLayoutEffect(() => {
+    if (!isOpen) return undefined
+
+    function updatePosition() {
+      const trigger = triggerRef.current
+      if (!trigger) return
+      const nextPosition = calculateUserMenuPosition(
+        trigger.getBoundingClientRect(),
+        { height: menuRef.current?.getBoundingClientRect().height || 0 },
+        { width: window.innerWidth, height: window.innerHeight },
+      )
+      setMenuPosition((current) => current
+        && current.top === nextPosition.top
+        && current.right === nextPosition.right
+        && current.maxHeight === nextPosition.maxHeight
+        ? current
+        : nextPosition)
+    }
+
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
     }
   }, [isOpen])
 
@@ -50,12 +86,25 @@ export default function UserMenu({ user }) {
 
   const displayName = getDisplayName(user)
 
+  function handleTriggerClick() {
+    if (isOpen) {
+      setIsOpen(false)
+      return
+    }
+    const rect = triggerRef.current?.getBoundingClientRect()
+    if (rect) {
+      setMenuPosition(calculateUserMenuPosition(rect, { height: 0 }, { width: window.innerWidth, height: window.innerHeight }))
+    }
+    setIsOpen(true)
+  }
+
   return (
     <div className={userMenuStyles.root} ref={ref}>
       <motion.button
+        ref={triggerRef}
         type="button"
         className={userMenuStyles.trigger}
-        onClick={() => setIsOpen((p) => !p)}
+        onClick={handleTriggerClick}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         whileHover={shouldReduceMotion ? undefined : { y: -1 }}
@@ -69,11 +118,16 @@ export default function UserMenu({ user }) {
         </svg>
       </motion.button>
 
-      <AnimatePresence>
-        {isOpen && (
+      {createUserMenuPortal(isOpen && (
           <motion.div
+            ref={menuRef}
             className={userMenuStyles.menu}
             role="menu"
+            style={{
+              top: menuPosition?.top ?? 12,
+              right: menuPosition?.right ?? 12,
+              maxHeight: menuPosition?.maxHeight ?? 'calc(100dvh - 24px)',
+            }}
             initial={shouldReduceMotion ? false : { opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
@@ -98,8 +152,7 @@ export default function UserMenu({ user }) {
               Log out
             </button>
           </motion.div>
-        )}
-      </AnimatePresence>
+        ), typeof document === 'undefined' ? null : document.body)}
     </div>
   )
 }

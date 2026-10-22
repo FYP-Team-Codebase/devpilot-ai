@@ -6,6 +6,8 @@ import PromptComposer from './components/PromptComposer'
 import ProjectGrid from './components/ProjectGrid'
 import ActivityFeed from './components/ActivityFeed'
 import { logout } from '../../services/authService'
+import AssetUploader from '../../components/AssetUploader'
+import { deleteAsset, formatAssetSize, listAssets } from '../../services/assetService'
 import { dashboardPageStyles } from './DashboardPage.styles'
 
 const InspirationGallery = lazy(() => import('./components/InspirationGallery'))
@@ -174,8 +176,43 @@ export function ProjectsPage() {
 export function MyAssetsPage() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [isUploadOpen, setIsUploadOpen] = useState(false)
+  const [assets, setAssets] = useState([])
+  const [loadState, setLoadState] = useState('loading')
+  const [loadError, setLoadError] = useState('')
+  const [deleteError, setDeleteError] = useState('')
   const shouldReduceMotion = useReducedMotion()
   const filters = ['All', 'Images', 'Logos', 'Other']
+
+  async function refreshAssets() {
+    setLoadState('loading')
+    try { setAssets(await listAssets()); setLoadState('success'); setLoadError('') }
+    catch (error) { setLoadError(error.message || 'Could not load assets.'); setLoadState('error') }
+  }
+
+  useEffect(() => {
+    let isMounted = true
+    listAssets().then((items) => {
+      if (!isMounted) return
+      setAssets(items)
+      setLoadState('success')
+    }).catch((error) => {
+      if (!isMounted) return
+      setLoadError(error.message || 'Could not load assets.')
+      setLoadState('error')
+    })
+    return () => { isMounted = false }
+  }, [])
+  const filteredAssets = assets.filter((asset) => activeFilter === 'all'
+    || (activeFilter === 'images' && asset.resourceType === 'image')
+    || (activeFilter === 'logos' && /logo/i.test(asset.originalFilename))
+    || (activeFilter === 'other' && asset.resourceType !== 'image'))
+
+  async function handleDelete(asset) {
+    if (!window.confirm(`Delete ${asset.originalFilename}?`)) return
+    setDeleteError('')
+    try { await deleteAsset(asset.id); await refreshAssets() }
+    catch (error) { setDeleteError(error.message || 'Could not delete asset.') }
+  }
 
   return (
     <>
@@ -218,7 +255,10 @@ export function MyAssetsPage() {
         })}
       </div>
 
-      <section className={dashboardPageStyles.emptyPanel}>
+      {loadState === 'loading' && <p role="status" className="py-8 text-sm text-dp-muted">Loading assets…</p>}
+      {loadState === 'error' && <p role="alert" className="py-8 text-sm text-red-600">{loadError}</p>}
+      {deleteError && <p role="alert" className="py-3 text-sm text-red-600">{deleteError}</p>}
+      {loadState === 'success' && assets.length === 0 && <section className={dashboardPageStyles.emptyPanel}>
         <span className={dashboardPageStyles.emptyIcon} aria-hidden="true">
           <DashboardIcon name="assets" />
         </span>
@@ -237,18 +277,28 @@ export function MyAssetsPage() {
           <DashboardIcon name="plus" />
           Upload Asset
         </motion.button>
-      </section>
+      </section>}
+
+      {loadState === 'success' && filteredAssets.length > 0 && <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {filteredAssets.map((asset) => <article key={asset.id} className="overflow-hidden rounded-xl border border-dp-line bg-white">
+          {asset.resourceType === 'image' ? <img src={asset.secureUrl} alt={asset.originalFilename} className="h-40 w-full object-cover" loading="lazy" /> : <div className="flex h-40 items-center justify-center bg-dp-surface text-3xl font-semibold text-dp-muted">PDF</div>}
+          <div className="flex items-center justify-between gap-3 p-4">
+            <div className="min-w-0"><p className="truncate text-sm font-semibold">{asset.originalFilename}</p><p className="mt-1 text-xs text-dp-muted">{asset.format.toUpperCase()} · {formatAssetSize(asset.size)}{asset.status === 'delete_pending' ? ' · Cleanup pending' : ''}</p></div>
+            <button type="button" onClick={() => handleDelete(asset)} className="text-sm text-red-600 underline">Delete</button>
+          </div>
+        </article>)}
+      </section>}
 
       <AnimatePresence>
         {isUploadOpen && (
-          <AssetUploadModal onClose={() => setIsUploadOpen(false)} shouldReduceMotion={shouldReduceMotion} />
+          <AssetUploadModal onClose={() => setIsUploadOpen(false)} onUploaded={() => refreshAssets()} shouldReduceMotion={shouldReduceMotion} />
         )}
       </AnimatePresence>
     </>
   )
 }
 
-function AssetUploadModal({ onClose, shouldReduceMotion }) {
+function AssetUploadModal({ onClose, onUploaded, shouldReduceMotion }) {
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') onClose()
@@ -282,9 +332,7 @@ function AssetUploadModal({ onClose, shouldReduceMotion }) {
         <div className={dashboardPageStyles.modalHeader}>
           <div>
             <h2 id="asset-upload-title" className={dashboardPageStyles.modalTitle}>Upload Asset</h2>
-            <p className={dashboardPageStyles.modalCopy}>
-              Persistent asset storage is not configured yet. This entry point is ready for the upload service when it is available.
-            </p>
+            <p className={dashboardPageStyles.modalCopy}>Upload reusable images and PDFs to your private asset library.</p>
           </div>
           <button
             type="button"
@@ -295,10 +343,7 @@ function AssetUploadModal({ onClose, shouldReduceMotion }) {
             <DashboardIcon name="x" />
           </button>
         </div>
-        <div className={dashboardPageStyles.modalNotice}>
-          <p className={dashboardPageStyles.modalNoticeTitle}>Upload backend required</p>
-          <p className={dashboardPageStyles.modalNoticeText}>No files will be stored from this screen until asset storage is implemented.</p>
-        </div>
+        <div className="p-5"><AssetUploader category="general" onUploaded={onUploaded} /></div>
       </motion.section>
     </motion.div>
   )

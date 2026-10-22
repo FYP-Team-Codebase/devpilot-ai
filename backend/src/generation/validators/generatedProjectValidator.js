@@ -9,6 +9,7 @@ const {
 } = require("../schemas/generatedProjectSchema");
 const { validateGeneratedPath } = require("./pathValidator");
 const { validatePackageJson } = require("./packageJsonValidator");
+const { CANONICAL_REQUIRED_PROJECT_FILES, REQUIRED_ENTRYPOINT_FILE_GROUPS } = require("../schemas/projectContract");
 
 const MAX_FILES = 80;
 const MAX_FILE_BYTES = 128 * 1024;
@@ -28,14 +29,8 @@ const EXTENSION_LANGUAGES = new Map([
   [".svg", "svg"],
 ]);
 
-const REQUIRED_FILES = [
-  "frontend/package.json",
-  "frontend/index.html",
-  "backend/package.json",
-  "README.md",
-  ".gitignore",
-  ".env.example",
-];
+const ENTRYPOINT_FILE_SET = new Set(REQUIRED_ENTRYPOINT_FILE_GROUPS.flat());
+const REQUIRED_FILES = CANONICAL_REQUIRED_PROJECT_FILES.filter((filePath) => !ENTRYPOINT_FILE_SET.has(filePath));
 
 function validationError(code, errorPath, message) {
   return { code, path: errorPath, message };
@@ -232,29 +227,30 @@ function validateFiles(payload, errors) {
 }
 
 function validateRequiredStructure(payload, files, paths, errors) {
+  const [frontendMainFiles, frontendAppFiles, backendServerFiles, backendAppFiles] = REQUIRED_ENTRYPOINT_FILE_GROUPS;
   REQUIRED_FILES.forEach((requiredPath) => {
     if (!paths.has(requiredPath)) {
       errors.push(validationError("MISSING_REQUIRED_FILE", "files", `Required file is missing: ${requiredPath}.`));
     }
   });
 
-  if (paths.has("frontend/src/main.jsx") && paths.has("frontend/src/main.tsx")) {
+  if (frontendMainFiles.every((filePath) => paths.has(filePath))) {
     errors.push(validationError("DUPLICATE_ENTRYPOINT_VARIANT", "files", "Only one frontend main entrypoint variant may be generated."));
   }
 
-  if (!paths.has("frontend/src/main.jsx") && !paths.has("frontend/src/main.tsx")) {
+  if (!frontendMainFiles.some((filePath) => paths.has(filePath))) {
     errors.push(validationError("MISSING_REQUIRED_FILE", "files", "A frontend/src/main.jsx or frontend/src/main.tsx file is required."));
   }
 
-  if (!paths.has("frontend/src/App.jsx") && !paths.has("frontend/src/App.tsx")) {
+  if (!frontendAppFiles.some((filePath) => paths.has(filePath))) {
     errors.push(validationError("MISSING_REQUIRED_FILE", "files", "A frontend/src/App.jsx or frontend/src/App.tsx file is required."));
   }
 
-  if (!paths.has("backend/src/server.js") && !paths.has("backend/src/server.ts")) {
+  if (!backendServerFiles.some((filePath) => paths.has(filePath))) {
     errors.push(validationError("MISSING_REQUIRED_FILE", "files", "A backend/src/server.js or backend/src/server.ts file is required."));
   }
 
-  if (!paths.has("backend/src/app.js") && !paths.has("backend/src/app.ts")) {
+  if (!backendAppFiles.some((filePath) => paths.has(filePath))) {
     errors.push(validationError("MISSING_REQUIRED_FILE", "files", "A backend/src/app.js or backend/src/app.ts file is required."));
   }
 
@@ -270,11 +266,11 @@ function validateRequiredStructure(payload, files, paths, errors) {
       }
     });
 
-    if (isNonEmptyString(entrypoints.frontend) && !["frontend/src/main.jsx", "frontend/src/main.tsx"].includes(entrypoints.frontend.trim())) {
+    if (isNonEmptyString(entrypoints.frontend) && !frontendMainFiles.includes(entrypoints.frontend.trim())) {
       errors.push(validationError("INVALID_ENTRYPOINT", "project.entrypoints.frontend", "Frontend entrypoint must be frontend/src/main.jsx or frontend/src/main.tsx."));
     }
 
-    if (isNonEmptyString(entrypoints.backend) && !["backend/src/server.js", "backend/src/server.ts"].includes(entrypoints.backend.trim())) {
+    if (isNonEmptyString(entrypoints.backend) && !backendServerFiles.includes(entrypoints.backend.trim())) {
       errors.push(validationError("INVALID_ENTRYPOINT", "project.entrypoints.backend", "Backend entrypoint must be backend/src/server.js or backend/src/server.ts."));
     }
   }

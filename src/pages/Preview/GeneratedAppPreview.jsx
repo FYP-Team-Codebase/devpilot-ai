@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { bundleGeneratedFrontend, createPreviewDocument } from '../../services/generatedPreviewRuntime'
+import { sanitizePreviewException } from '../../services/previewErrorDiagnostics'
 import { previewPageStyles as styles } from './PreviewPage.styles'
 
 const VIEWPORTS = {
@@ -65,9 +66,12 @@ export default function GeneratedAppPreview({ files, selectedFile, mode, editorE
       }
       if (event.data.type === 'DEV_PILOT_PREVIEW_READY' || event.data.type === 'ready') { runtimeStageRef.current = 'runtime-ready'; setRuntimeState('ready'); setRuntimeError('') }
       if (event.data.type === 'DEV_PILOT_PREVIEW_ERROR' || event.data.type === 'error') {
-        const message = event.data.message || 'The application encountered a runtime error.'
+        const exception = event.data.errorType === 'javascript'
+          ? sanitizePreviewException({ name: event.data.errorName, message: event.data.message, stack: event.data.stack, filename: event.data.filename, line: event.data.line, column: event.data.column })
+          : null
+        const message = exception?.message || event.data.message || 'The application encountered a runtime error.'
         runtimeStageRef.current = event.data.stage || runtimeStageRef.current || 'iframe module evaluation'
-        const diagnostic = { stage: runtimeStageRef.current, errorType: event.data.errorType || 'runtime', message, url: event.data.url, specifier: event.data.specifier, packageName: event.data.packageName, directive: event.data.directive, blockedURI: event.data.blockedURI }
+        const diagnostic = { stage: runtimeStageRef.current, errorType: event.data.errorType || 'runtime', errorName: exception?.name, message, filename: exception?.filename, line: exception?.line || event.data.line, column: exception?.column, stack: exception?.stack, url: event.data.url, specifier: event.data.specifier, packageName: event.data.packageName, directive: event.data.directive, blockedURI: event.data.blockedURI }
         setRuntimeError(Object.entries(diagnostic).filter(([, value]) => value !== undefined && value !== '').map(([key, value]) => `${key}: ${value}`).join('\n'))
         setRuntimeState('error')
       }

@@ -9,7 +9,8 @@ import PricingSection from './components/sections/Pricing/PricingSection'
 import FinalCtaSection from './components/sections/FinalCta/FinalCtaSection'
 import FooterSection from './components/sections/Footer/FooterSection'
 import ScrollHandoff from './components/motion/ScrollHandoff'
-import { getCurrentUser, getToken } from './services/authService'
+import { getToken, useCurrentUser } from './services/authService'
+import { refreshDemoSubscription } from './services/subscriptionService'
 import { getSectionIdFromHash, scrollToLandingSection } from './utils/landingScroll'
 import useDocumentTitle from './hooks/useDocumentTitle'
 import { getDocumentTitle } from './utils/documentTitle'
@@ -29,6 +30,7 @@ const ProductsPage = lazy(() => import('./pages/Products/ProductsPage'))
 const BusinessPage = lazy(() => import('./pages/Business/BusinessPage'))
 const PricingPage = lazy(() => import('./pages/Pricing/PricingPage'))
 const ContactPage = lazy(() => import('./pages/Contact/ContactPage'))
+const CheckoutPage = lazy(() => import('./pages/Checkout/CheckoutPage'))
 
 const loadDashboardModule = () => import('./pages/Dashboard/DashboardPage')
 const DashboardPage = lazy(loadDashboardModule)
@@ -52,7 +54,7 @@ function RouteLoader() {
 function ProtectedRoute({ children }) {
   const location = useLocation()
   const token = getToken()
-  const user = getCurrentUser()
+  const user = useCurrentUser()
   const isAuthenticated = Boolean(token && user)
 
   if (!isAuthenticated) {
@@ -66,6 +68,13 @@ function ProtectedRoute({ children }) {
   }
 
   return children(user)
+}
+
+function SessionSubscriptionSync() {
+  useEffect(() => {
+    if (getToken()) refreshDemoSubscription().catch(() => {})
+  }, [])
+  return null
 }
 
 function LandingPage() {
@@ -139,8 +148,10 @@ function DocumentTitleManager() {
 function App() {
   return (
     <BrowserRouter>
-      <DocumentTitleManager />
-      <Suspense fallback={<RouteLoader />}>
+      <>
+        <SessionSubscriptionSync />
+        <DocumentTitleManager />
+        <Suspense fallback={<RouteLoader />}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -148,6 +159,7 @@ function App() {
           <Route path="/business" element={<BusinessPage />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/checkout" element={<ProtectedRoute>{() => <CheckoutPage />}</ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -215,7 +227,8 @@ function App() {
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Suspense>
+        </Suspense>
+      </>
     </BrowserRouter>
   )
 }

@@ -1,11 +1,13 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { promptComposerStyles } from './PromptComposer.styles'
+import { getCurrentPlanId } from '../../../utils/subscription'
 
-const STATS = ['Free Plan', '0 Projects', '0 AI Generations']
+const STATS = ['0 Projects', '0 AI Generations']
 
-export default function PromptComposer() {
+export default function PromptComposer({ user }) {
   const shouldReduceMotion = useReducedMotion()
+  const stats = [`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`, ...STATS]
 
   return (
     <motion.section
@@ -54,7 +56,7 @@ export default function PromptComposer() {
       </div>
 
       <div className={promptComposerStyles.stats}>
-        {STATS.map((stat) => (
+        {stats.map((stat) => (
           <span key={stat} className={promptComposerStyles.stat}>
             {stat}
           </span>

@@ -1,4 +1,53 @@
+import { useSyncExternalStore } from 'react'
+
 const API_URL = (import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "");
+let currentUserSnapshot
+let hasReadCurrentUser = false
+let currentUserRevision = 0
+const currentUserSubscribers = new Set()
+
+function readStoredUser() {
+  const rawUser = localStorage.getItem('user')
+  if (!rawUser) return null
+  try { return JSON.parse(rawUser) } catch {
+    localStorage.removeItem('user')
+    return null
+  }
+}
+
+function notifyUserSubscribers() {
+  currentUserSubscribers.forEach((subscriber) => subscriber())
+}
+
+function handleStorageChange(event) {
+  if (event.key === 'user' || event.key === null) {
+    currentUserSnapshot = readStoredUser()
+    hasReadCurrentUser = true
+    currentUserRevision += 1
+    notifyUserSubscribers()
+  }
+}
+
+function subscribeCurrentUser(subscriber) {
+  currentUserSubscribers.add(subscriber)
+  if (currentUserSubscribers.size === 1) window.addEventListener('storage', handleStorageChange)
+  return () => {
+    currentUserSubscribers.delete(subscriber)
+    if (currentUserSubscribers.size === 0) window.removeEventListener('storage', handleStorageChange)
+  }
+}
+
+function getCurrentUserSnapshot() {
+  if (!hasReadCurrentUser) {
+    currentUserSnapshot = readStoredUser()
+    hasReadCurrentUser = true
+  }
+  return currentUserSnapshot
+}
+
+export function useCurrentUser() {
+  return useSyncExternalStore(subscribeCurrentUser, getCurrentUserSnapshot, () => null)
+}
 
 function createAuthError(data, fallbackMessage) {
   const error = new Error(data?.message || fallbackMessage);
@@ -14,6 +63,19 @@ function createAuthError(data, fallbackMessage) {
   }
 
   return error;
+}
+
+export function setCurrentUser(user) {
+  if (user) localStorage.setItem("user", JSON.stringify(user));
+  else localStorage.removeItem("user");
+  currentUserSnapshot = user || null
+  hasReadCurrentUser = true
+  currentUserRevision += 1
+  notifyUserSubscribers()
+}
+
+export function getCurrentUserRevision() {
+  return currentUserRevision
 }
 
 async function parseJsonResponse(response) {
@@ -54,7 +116,7 @@ export async function login(payload) {
   }
 
   if (data.user) {
-    localStorage.setItem("user", JSON.stringify(data.user));
+    setCurrentUser(data.user);
   }
 
   return data;
@@ -98,7 +160,7 @@ export async function verifyEmail(email, code) {
   }
 
   if (data.user) {
-    localStorage.setItem("user", JSON.stringify(data.user));
+    setCurrentUser(data.user);
   }
 
   return data;
@@ -124,7 +186,7 @@ export async function resendVerification(email) {
 
 export function logout() {
   localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  setCurrentUser(null)
 }
 
 async function passwordResetRequest(endpoint, payload) {
@@ -149,16 +211,5 @@ export function getToken() {
 }
 
 export function getCurrentUser() {
-  const user = localStorage.getItem("user");
-
-  if (!user) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(user);
-  } catch {
-    localStorage.removeItem("user");
-    return null;
-  }
+  return getCurrentUserSnapshot()
 }

@@ -22,6 +22,7 @@ const getPublicUser = (user) => ({
   role: user.role,
   userType: user.userType,
   isEmailVerified: user.isEmailVerified === true,
+  subscription: user.subscription || { plan: "free", status: "inactive", simulated: false, activatedAt: null },
 });
 
 const generateToken = (userId) => {

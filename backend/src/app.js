@@ -11,6 +11,7 @@ const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const assetRoutes = require("./routes/assetRoutes");
+const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const cloudinaryService = require("./services/cloudinaryService");
 const authMiddleware = require("./middleware/authMiddleware");
 
@@ -79,6 +80,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", requireDatabase, authRoutes);
+app.use("/api/subscriptions", authMiddleware, requireDatabase, subscriptionRoutes);
 app.use("/api/projects", requireDatabase, authMiddleware, projectRoutes);
 app.use("/api/assets", authMiddleware, (req, res, next) => {
   if (req.method === "POST" && !cloudinaryService.isConfigured()) {

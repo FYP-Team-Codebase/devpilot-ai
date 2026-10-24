@@ -106,7 +106,7 @@ export default function LoginPage() {
 
       setStatus('success')
 
-      navigate(redirectPath, { replace: true })
+      navigate(redirectPath, { replace: true, state: location.state?.checkoutFrom ? { checkoutFrom: location.state.checkoutFrom } : undefined })
     } catch (error) {
       setStatus('error')
 

@@ -6,7 +6,7 @@ import { getSafeRedirectPath } from '../utils/routeRedirect'
 
 const LOGIN_ROUTE = '/login'
 const PROMPT_ROUTE = '/prompt'
-const DASHBOARD_PRICING_ROUTE = '/dashboard/pricing'
+const CHECKOUT_ROUTE = '/checkout'
 
 function isAuthenticated() {
   return Boolean(getToken() && getCurrentUser())
@@ -20,12 +20,12 @@ export default function useLandingNavigation() {
     const safeDestination = getSafeRedirectPath(destination)
 
     if (isAuthenticated()) {
-      navigate(safeDestination)
+      navigate(safeDestination, { state: safeDestination === CHECKOUT_ROUTE ? { checkoutFrom: location.pathname } : undefined })
       return
     }
 
     navigate(LOGIN_ROUTE, {
-      state: { from: safeDestination },
+      state: { from: safeDestination, ...(safeDestination === CHECKOUT_ROUTE ? { checkoutFrom: location.pathname } : {}) },
     })
   }
 
@@ -36,7 +36,7 @@ export default function useLandingNavigation() {
 
   function handleGoPro(event) {
     event?.preventDefault()
-    navigateWithAuth(DASHBOARD_PRICING_ROUTE)
+    navigateWithAuth(CHECKOUT_ROUTE)
   }
 
   function handleSectionClick(event, sectionId) {

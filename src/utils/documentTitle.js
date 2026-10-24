@@ -18,6 +18,7 @@ const DEV_APP_ROUTE_TITLES = {
   '/dashboard/pricing': 'Pricing',
   '/dashboard/settings': 'Settings',
   '/dashboard/profile': 'Profile',
+  '/checkout': 'Secure Checkout',
 }
 
 const COMPANY_ROUTE_TITLES = {

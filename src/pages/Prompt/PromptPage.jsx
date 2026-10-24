@@ -1,7 +1,8 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCurrentUser } from '../../services/authService'
+import { useCurrentUser } from '../../services/authService'
+import { getCurrentPlanId } from '../../utils/subscription'
 import { createProject, getRecentProjects } from '../../services/projectService'
 import UserMenu from '../Dashboard/components/UserMenu'
 import { promptPageStyles } from './PromptPage.styles'
@@ -111,7 +112,7 @@ function normalizeProject(p) {
 }
 
 export default function PromptPage() {
-  const user = getCurrentUser()
+  const user = useCurrentUser()
   const navigate = useNavigate()
   const [value, setValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
@@ -233,6 +234,7 @@ export default function PromptPage() {
   return (
     <div className={promptPageStyles.page}>
       <PromptSidebar
+        user={user}
         isOpen={isSidebarOpen}
         recentProjects={recentProjects}
         onClose={() => setIsSidebarOpen(false)}
@@ -482,7 +484,7 @@ function PromptHeader({ user, onMenuToggle }) {
             Pricing
           </a>
           <span className={promptPageStyles.planPill}>
-            Free Plan
+            {`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`}
           </span>
           <motion.button
             type="button"
@@ -504,7 +506,7 @@ function PromptHeader({ user, onMenuToggle }) {
   )
 }
 
-function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
+function PromptSidebar({ user, isOpen, recentProjects, onClose, onNewProject }) {
   const shouldReduceMotion = useReducedMotion()
 
   return (
@@ -615,7 +617,7 @@ function PromptSidebar({ isOpen, recentProjects, onClose, onNewProject }) {
 
         <div className={promptPageStyles.sidebarPlan}>
           <div>
-            <p className={promptPageStyles.sidebarPlanTitle}>Free Plan</p>
+            <p className={promptPageStyles.sidebarPlanTitle}>{`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`}</p>
             <p className={promptPageStyles.sidebarPlanText}>Starter workspace</p>
           </div>
           <a

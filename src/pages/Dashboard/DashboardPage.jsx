@@ -1,6 +1,6 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { Link, NavLink, Outlet, useOutletContext } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 import DashboardHeader from './components/DashboardHeader'
 import PromptComposer from './components/PromptComposer'
 import ProjectGrid from './components/ProjectGrid'
@@ -9,6 +9,9 @@ import { logout } from '../../services/authService'
 import AssetUploader from '../../components/AssetUploader'
 import { deleteAsset, formatAssetSize, listAssets } from '../../services/assetService'
 import { dashboardPageStyles } from './DashboardPage.styles'
+import { setCurrentUser, useCurrentUser } from '../../services/authService'
+import { cancelDemoSubscription, refreshDemoSubscription } from '../../services/subscriptionService'
+import { getCurrentPlanId, hasActiveProSubscription } from '../../utils/subscription'
 
 const InspirationGallery = lazy(() => import('./components/InspirationGallery'))
 
@@ -141,16 +144,16 @@ export default function DashboardPage({ user, content }) {
 }
 
 export function DashboardHome() {
-  const { searchQuery } = useOutletContext()
+  const { searchQuery, user } = useOutletContext()
 
   return (
     <>
-      <PromptComposer />
+      <PromptComposer user={user} />
 
       <div className={dashboardPageStyles.homeGrid}>
         <div className={dashboardPageStyles.homeMain}>
           <ProjectGrid searchQuery={searchQuery} />
-          <UpgradeBanner />
+          <UpgradeBanner user={user} />
         </div>
 
         <aside className={dashboardPageStyles.homeAside}>
@@ -375,12 +378,11 @@ function DashboardRouteLoader() {
 
 export function PricingPage() {
   const { user } = useOutletContext()
+  const navigate = useNavigate()
   const currentPlan = getCurrentPlanId(user)
   const shouldReduceMotion = useReducedMotion()
-  const [isUpgradeNoticeOpen, setIsUpgradeNoticeOpen] = useState(false)
   const [isTeamNoticeOpen, setIsTeamNoticeOpen] = useState(false)
   const [isComparisonOpen, setIsComparisonOpen] = useState(false)
-
   return (
     <>
       <section className={dashboardPageStyles.pricingSection} aria-labelledby="pricing-heading">
@@ -407,7 +409,7 @@ export function PricingPage() {
               currentPlan={currentPlan}
               index={index}
               shouldReduceMotion={shouldReduceMotion}
-              onUpgrade={() => setIsUpgradeNoticeOpen(true)}
+              onUpgrade={() => navigate('/checkout', { state: { checkoutFrom: '/dashboard/pricing' } })}
               onTeamContact={() => setIsTeamNoticeOpen(true)}
             />
           ))}
@@ -443,18 +445,10 @@ export function PricingPage() {
         </AnimatePresence>
 
         <p className={dashboardPageStyles.pricingNote}>
-          You can upgrade when billing is connected to your DevPilot account.
+          Pro checkout is a simulated university demo. No payment is processed.
         </p>
+        <ManageSubscriptionSection />
       </section>
-
-      <AnimatePresence>
-        {isUpgradeNoticeOpen && (
-          <UpgradeUnavailableDialog
-            onClose={() => setIsUpgradeNoticeOpen(false)}
-            shouldReduceMotion={shouldReduceMotion}
-          />
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {isTeamNoticeOpen && (
@@ -464,6 +458,7 @@ export function PricingPage() {
           />
         )}
       </AnimatePresence>
+
     </>
   )
 }
@@ -680,64 +675,6 @@ function PlanComparison({ currentPlan, shouldReduceMotion }) {
   )
 }
 
-function UpgradeUnavailableDialog({ onClose, shouldReduceMotion }) {
-  useEffect(() => {
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') onClose()
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
-
-  return (
-    <motion.div
-      className={dashboardPageStyles.modalOverlay}
-      initial={shouldReduceMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.16, ease: 'easeOut' }}
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose()
-      }}
-    >
-      <motion.section
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="upgrade-unavailable-title"
-        className={dashboardPageStyles.modalPanelNarrow}
-        initial={shouldReduceMotion ? false : { opacity: 0, y: 8, scale: 0.985 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={shouldReduceMotion ? undefined : { opacity: 0, y: 8, scale: 0.985 }}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className={dashboardPageStyles.modalHeader}>
-          <div>
-            <h2 id="upgrade-unavailable-title" className={dashboardPageStyles.modalTitle}>Upgrade to Pro</h2>
-            <p className={dashboardPageStyles.modalCopy}>
-              Payment checkout is not connected yet. Your plan has not been changed.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className={dashboardPageStyles.modalClose}
-            aria-label="Close upgrade dialog"
-          >
-            <DashboardIcon name="x" />
-          </button>
-        </div>
-        <div className={dashboardPageStyles.modalNoticeCompact}>
-          <p className={dashboardPageStyles.modalNoticeTitle}>Billing backend required</p>
-          <p className={dashboardPageStyles.modalNoticeText}>
-            A real checkout or subscription endpoint needs to be added before upgrades can be processed.
-          </p>
-        </div>
-      </motion.section>
-    </motion.div>
-  )
-}
-
 function TeamUnavailableDialog({ onClose, shouldReduceMotion }) {
   useEffect(() => {
     function handleKeyDown(event) {
@@ -804,21 +741,6 @@ function PlanCheckIcon() {
   )
 }
 
-function getCurrentPlanId(user) {
-  const rawPlan =
-    user?.selectedPlan ||
-    user?.plan ||
-    user?.subscriptionPlan ||
-    user?.subscription?.plan ||
-    user?.billing?.plan
-
-  if (!rawPlan) return 'free'
-
-  const normalized = String(rawPlan).trim().toLowerCase()
-  if (normalized.includes('team')) return 'team'
-  return normalized.includes('pro') ? 'pro' : 'free'
-}
-
 export function SettingsPage() {
   const { user } = useOutletContext()
 
@@ -867,7 +789,7 @@ export function ProfilePage() {
           <DetailRow label="Full Name" value={user.name || '-'} />
           <DetailRow label="Email" value={user.email || '-'} />
           <DetailRow label="Avatar" value={user.avatar ? 'Configured' : initials} />
-          <DetailRow label="Account plan" value={user.plan || 'Free Plan'} />
+          <DetailRow label="Account plan" value={`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`} />
           <DetailRow label="User type" value={formatUserType(user.userType)} />
         </div>
 
@@ -878,7 +800,86 @@ export function ProfilePage() {
           </p>
         </div>
       </section>
+      <ManageSubscriptionSection />
     </>
+  )
+}
+
+function ManageSubscriptionSection() {
+  const user = useCurrentUser()
+  const [loadState, setLoadState] = useState('loading')
+  const [loadError, setLoadError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [cancelError, setCancelError] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const cancelInFlight = useRef(false)
+  const planId = getCurrentPlanId(user)
+  const activePro = hasActiveProSubscription(user)
+  const subscriptionStatus = user?.subscription?.status
+
+  useEffect(() => {
+    let mounted = true
+    refreshDemoSubscription()
+      .then(() => { if (mounted) setLoadState('ready') })
+      .catch((error) => { if (mounted) { setLoadError(error.message || 'Unable to load subscription details.'); setLoadState('error') } })
+    return () => { mounted = false }
+  }, [])
+
+  async function retryRefresh() {
+    setLoadError('')
+    setLoadState('loading')
+    try {
+      await refreshDemoSubscription()
+      setLoadState('ready')
+    } catch (error) {
+      setLoadError(error.message || 'Unable to load subscription details.')
+      setLoadState('error')
+    }
+  }
+
+  async function handleCancel() {
+    if (cancelInFlight.current || busy || !hasActiveProSubscription(user)) return
+    cancelInFlight.current = true
+    setBusy(true)
+    setCancelError('')
+    setNotice('')
+    try {
+      const result = await cancelDemoSubscription()
+      setCurrentUser({ ...user, subscription: result.subscription })
+      setNotice(result.message)
+      setConfirmOpen(false)
+    } catch (error) {
+      setCancelError(error.message || 'Unable to cancel your demo subscription. Please try again.')
+    } finally {
+      setBusy(false)
+      cancelInFlight.current = false
+    }
+  }
+
+  return (
+    <section className="mt-6 rounded-2xl border border-[#e5e5e1] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="manage-subscription-title">
+      <div className="flex flex-wrap items-start justify-between gap-5">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#777]">Account billing</p>
+          <h2 id="manage-subscription-title" className="mt-2 text-xl font-semibold">Manage Subscription</h2>
+          {loadState === 'loading' ? <p className="mt-3 text-sm text-[#666]" role="status">Checking your saved subscription…</p> : loadState === 'error' ? <div className="mt-3" role="alert"><p className="text-sm text-red-800">{loadError}</p><button type="button" onClick={retryRefresh} className="mt-2 min-h-9 text-sm font-medium underline underline-offset-4">Retry</button></div> : <div className="mt-3 space-y-1 text-sm" aria-live="polite"><p><span className="font-medium">Current Plan:</span> {`${planId.charAt(0).toUpperCase()}${planId.slice(1)}`}</p><p><span className="font-medium">Subscription status:</span> {activePro ? 'Active' : subscriptionStatus === 'canceled' ? 'Canceled' : 'No active subscription'}</p></div>}
+        </div>
+        {loadState === 'ready' && activePro && <button type="button" onClick={() => { setCancelError(''); setConfirmOpen(true) }} className="min-h-11 rounded-xl border border-red-200 px-5 py-3 text-sm font-semibold text-red-800 hover:border-red-400 hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800">Cancel Subscription</button>}
+      </div>
+      {notice && <p className="mt-4 text-sm text-[#555]" role="status">{notice}</p>}
+      {confirmOpen && <div className="fixed inset-0 z-50 grid place-items-center bg-black/45 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setConfirmOpen(false) }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="cancel-subscription-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
+          <h3 id="cancel-subscription-title" className="text-xl font-semibold">Cancel Pro subscription?</h3>
+          <p className="mt-3 text-sm leading-6 text-[#60605c]">This is a simulated subscription. No real money was charged. Confirming cancellation removes Pro access and returns this account to Free.</p>
+          {cancelError && <p className="mt-4 text-sm text-red-700" role="alert">{cancelError}</p>}
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <button type="button" disabled={busy} onClick={handleCancel} className="min-h-11 rounded-xl bg-[#171717] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">{busy ? 'Canceling…' : 'Confirm Cancellation'}</button>
+            <button type="button" disabled={busy} onClick={() => setConfirmOpen(false)} className="min-h-11 rounded-xl border border-[#d9d9d4] px-4 py-3 text-sm font-medium disabled:opacity-60">Keep Subscription</button>
+          </div>
+        </section>
+      </div>}
+    </section>
   )
 }
 
@@ -1153,9 +1154,11 @@ function AITipsCard() {
   )
 }
 
-function UpgradeBanner() {
+function UpgradeBanner({ user }) {
   const features = ['Unlimited AI Generations', 'Faster generation', 'Premium templates', 'Priority support']
   const shouldReduceMotion = useReducedMotion()
+
+  if (hasActiveProSubscription(user)) return null
 
   return (
     <motion.section
@@ -1193,8 +1196,9 @@ function UpgradeBanner() {
           </ul>
         </div>
 
-        <Link
-          to="/dashboard/pricing"
+          <Link
+          to="/checkout"
+            state={{ checkoutFrom: '/dashboard' }}
           className={dashboardPageStyles.upgradeLink}
         >
           Upgrade to Pro

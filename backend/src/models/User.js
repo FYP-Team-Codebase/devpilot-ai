@@ -39,6 +39,14 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
+    subscription: {
+      plan: { type: String, enum: ["free", "pro", "team"], default: "free" },
+      status: { type: String, enum: ["active", "inactive", "canceled"], default: "inactive" },
+      simulated: { type: Boolean, default: false },
+      activatedAt: { type: Date, default: null },
+      canceledAt: { type: Date, default: null },
+    },
+
     isEmailVerified: {
       type: Boolean,
       default: false,

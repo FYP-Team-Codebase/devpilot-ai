@@ -1,7 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCurrentUser } from '../../services/authService'
+import { useCurrentUser } from '../../services/authService'
+import { getCurrentPlanId } from '../../utils/subscription'
 import { getProject, updateProject } from '../../services/projectService'
 import { listAssets } from '../../services/assetService'
 import ProjectAssetPicker from '../../components/ProjectAssetPicker'
@@ -223,7 +224,7 @@ function mapRequirementsToProjectPayload(value) {
 }
 
 export default function RequirementsPage() {
-  const user = getCurrentUser()
+  const user = useCurrentUser()
   const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [requirements, setRequirements] = useState(getStoredRequirements)
@@ -386,6 +387,7 @@ export default function RequirementsPage() {
   return (
     <div className={requirementsPageStyles.page}>
       <RequirementsSidebar
+        user={user}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
@@ -693,7 +695,7 @@ function RequirementsHeader({ user, onMenuToggle }) {
             Pricing
           </a>
           <span className={requirementsPageStyles.planPill}>
-            Free Plan
+            {`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`}
           </span>
           <motion.button
             type="button"
@@ -715,7 +717,7 @@ function RequirementsHeader({ user, onMenuToggle }) {
   )
 }
 
-function RequirementsSidebar({ isOpen, onClose }) {
+function RequirementsSidebar({ user, isOpen, onClose }) {
   const shouldReduceMotion = useReducedMotion()
 
   return (
@@ -791,7 +793,7 @@ function RequirementsSidebar({ isOpen, onClose }) {
         </div>
 
         <div className={requirementsPageStyles.sidebarPlan}>
-          <p className={requirementsPageStyles.sidebarTitle}>Free Plan</p>
+          <p className={requirementsPageStyles.sidebarTitle}>{`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`}</p>
           <p className={requirementsPageStyles.sidebarPlanText}>Starter workspace</p>
           <a
             href="/dashboard/pricing"

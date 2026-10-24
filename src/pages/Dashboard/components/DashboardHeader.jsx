@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import UserMenu from './UserMenu'
 import { dashboardHeaderStyles } from './DashboardHeader.styles'
+import { getCurrentPlanId } from '../../../utils/subscription'
 
 const NOTIFICATIONS = []
 
@@ -61,7 +62,7 @@ export default function DashboardHeader({ user, onMenuToggle, onSearch }) {
           </div>
 
           <span className={dashboardHeaderStyles.planPill}>
-            Free Plan
+            {`${getCurrentPlanId(user).charAt(0).toUpperCase()}${getCurrentPlanId(user).slice(1)} Plan`}
           </span>
 
           <NotificationBell notifications={NOTIFICATIONS} shouldReduceMotion={shouldReduceMotion} />

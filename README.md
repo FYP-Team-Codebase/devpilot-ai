@@ -1,4 +1,30 @@
-# React + Vite
+# DevPilot
+
+DevPilot is organized as a two-part application:
+
+- `frontend/` contains the React + Vite client.
+- `backend/` contains the Node.js + Express API.
+- `api/` contains the Vercel serverless API entry point.
+
+## Development
+
+Install and run the frontend from `frontend/`:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Run the backend in a second terminal:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+The frontend proxies `/api` requests to `http://localhost:5000` during development.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

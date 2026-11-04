@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const MANIFEST_PATH = path.resolve(__dirname, "../../../../public/inspirations/manifest.json");
+const MANIFEST_PATH = path.resolve(__dirname, "../../../../frontend/public/inspirations/manifest.json");
 
 class InspirationManifestError extends Error {
   constructor(message, code = "INSPIRATION_MANIFEST_ERROR") {

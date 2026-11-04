@@ -2,7 +2,7 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const cloudinaryService = require("../../services/cloudinaryService");
 
-const PUBLIC_ROOT = path.resolve(__dirname, "../../../../public");
+const PUBLIC_ROOT = path.resolve(__dirname, "../../../../frontend/public");
 
 function mimeTypeForImagePath(imagePath) {
   const extension = path.extname(imagePath).toLowerCase();

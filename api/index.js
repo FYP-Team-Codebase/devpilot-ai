@@ -1,3 +1,1 @@
-import app from "../backend/src/app.js";
-
-export default app;
+module.exports = require("../backend/src/app.js");
